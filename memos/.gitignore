@@ -1,0 +1,29 @@
+# temp folder
+tmp
+
+# Frontend asset
+web/dist
+
+# Build artifacts
+build/
+bin/
+memos
+
+# Plan/design documents
+docs/plans/
+
+.DS_Store
+
+# Jetbrains
+.idea
+
+# Docker Compose Environment File
+.env
+
+dist
+
+# VSCode settings
+.vscode
+
+# Git worktrees
+.worktrees/
