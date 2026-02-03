@@ -19,3 +19,13 @@ repos:
       - id: terraform_validate
       - id: terraform_docs
       - id: terraform_tflint
+
+  - repo: https://github.com/mxab/pre-commit-trivy.git
+    rev: v0.17.0
+    hooks:
+      - id: trivyconfig-docker
+        files: ^Dockerfile$
+        args:
+          - --skip-version-check
+          - --severity
+          - MEDIUM,HIGH,CRITICAL
