@@ -23,7 +23,7 @@ repos:
     rev: v2.12.0
     hooks:
       - id: hadolint
-        files: ^Dockerfile$
+        files: ^memos/Dockerfile$
 
   # --------------------
   # Dockerfile security
@@ -32,7 +32,7 @@ repos:
     rev: v0.17.0
     hooks:
       - id: trivyconfig-docker
-        files: ^Dockerfile$
+        files: ^memos/Dockerfile$
         args:
           - --skip-version-check
           - --severity
