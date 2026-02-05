@@ -34,7 +34,6 @@ repos:
       - id: trivyconfig-docker
         pass_filenames: false
         args:
-          - config
           - memos
           - --file-patterns
           - Dockerfile
