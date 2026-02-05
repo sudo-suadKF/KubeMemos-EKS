@@ -32,11 +32,16 @@ repos:
     rev: v0.17.0
     hooks:
       - id: trivyconfig-docker
-        files: ^memos/Dockerfile$
+        pass_filenames: false
         args:
+          - config
+          - memos
+          - --file-patterns
+          - Dockerfile
           - --skip-version-check
           - --severity
           - MEDIUM,HIGH,CRITICAL
+
 
   # --------------------
   # Terraform core + security
