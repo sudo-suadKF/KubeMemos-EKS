@@ -16,7 +16,7 @@ func (d *DB) UpsertUserSetting(ctx context.Context, upsert *store.UserSetting) (
 			user_id, key, value
 		)
 		VALUES (?, ?, ?)
-		ON CONFLICT(user_id, key) DO UPDATE 
+		ON CONFLICT(user_id, key) DO UPDATE
 		SET value = EXCLUDED.value
 	`
 	if _, err := d.db.ExecContext(ctx, stmt, upsert.UserID, upsert.Key.String(), upsert.Value); err != nil {

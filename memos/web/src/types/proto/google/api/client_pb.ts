@@ -950,4 +950,3 @@ export const oauth_scopes: GenExtension<ServiceOptions, string> = /*@__PURE__*/
  */
 export const api_version: GenExtension<ServiceOptions, string> = /*@__PURE__*/
   extDesc(file_google_api_client, 3);
-

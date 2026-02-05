@@ -87,4 +87,3 @@ export enum Direction {
  */
 export const DirectionSchema: GenEnum<Direction> = /*@__PURE__*/
   enumDesc(file_api_v1_common, 1);
-
