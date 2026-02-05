@@ -351,4 +351,3 @@ export const resource_definition: GenExtension<FileOptions, ResourceDescriptor[]
  */
 export const resource: GenExtension<MessageOptions, ResourceDescriptor> = /*@__PURE__*/
   extDesc(file_google_api_resource, 2);
-

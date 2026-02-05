@@ -152,9 +152,9 @@ jobs:
           if [ "$GOOS" = "windows" ]; then
             OUTPUT_NAME="memos.exe"
           fi
-          
+
           mkdir -p build
-          
+
           # Build static binary with optimizations
           go build \
             -trimpath \
@@ -162,7 +162,7 @@ jobs:
             -tags netgo,osusergo \
             -o "build/${OUTPUT_NAME}" \
             ./cmd/memos
-          
+
           echo "✓ Built: build/${OUTPUT_NAME}"
           ls -lh build/
 
@@ -175,13 +175,13 @@ jobs:
           GOARM: ${{ matrix.goarm }}
         run: |
           cd build
-          
+
           # Construct package name: memos-{version}-{os}-{arch}[v{arm_version}]
           PACKAGE_NAME="memos-${VERSION}-${GOOS}-${GOARCH}"
           if [ -n "$GOARM" ]; then
             PACKAGE_NAME="${PACKAGE_NAME}v${GOARM}"
           fi
-          
+
           # Package based on platform
           if [ "$GOOS" = "windows" ]; then
             ARTIFACT_NAME="${PACKAGE_NAME}.zip"
@@ -190,7 +190,7 @@ jobs:
             ARTIFACT_NAME="${PACKAGE_NAME}.tar.gz"
             tar czf "${ARTIFACT_NAME}" memos
           fi
-          
+
           # Output for next step
           echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
           echo "✓ Package created: ${ARTIFACT_NAME} ($(du -h "${ARTIFACT_NAME}" | cut -f1))"
@@ -239,7 +239,7 @@ jobs:
             echo "| Platform | Artifact | Size |"
             echo "|----------|----------|------|"
           } >> $GITHUB_STEP_SUMMARY
-          
+
           # List all artifacts with sizes
           cd artifacts
           for dir in */; do
@@ -253,7 +253,7 @@ jobs:
               fi
             fi
           done
-          
+
           {
             echo ""
             echo "### 📥 Download"

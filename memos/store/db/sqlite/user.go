@@ -110,7 +110,7 @@ func (d *DB) ListUsers(ctx context.Context, find *store.FindUser) ([]*store.User
 
 	orderBy := []string{"created_ts DESC", "row_status DESC"}
 	query := `
-		SELECT 
+		SELECT
 			id,
 			username,
 			role,

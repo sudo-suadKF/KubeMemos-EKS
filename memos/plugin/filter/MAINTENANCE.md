@@ -6,16 +6,16 @@ extending or debugging the package.
 
 ## Adding a New Memo Field
 
-1. **Update the schema**  
-   - Add the field entry in `schema.go`.  
+1. **Update the schema**
+   - Add the field entry in `schema.go`.
    - Define the backing column (`Column`), JSON path (if applicable), type, and
-     allowed operators.  
+     allowed operators.
    - Include the CEL variable in `EnvOptions`.
-2. **Adjust parser or renderer (if needed)**  
+2. **Adjust parser or renderer (if needed)**
    - For non-scalar fields (JSON booleans, lists), add handling in
-     `parser.go` or extend the renderer helpers.  
+     `parser.go` or extend the renderer helpers.
    - Keep validation in the parser (e.g., reject unsupported operators).
-3. **Write a golden test**  
+3. **Write a golden test**
    - Extend the dialect-specific memo filter tests under
      `store/db/{sqlite,mysql,postgres}/memo_filter_test.go` with a case that
      exercises the new field.

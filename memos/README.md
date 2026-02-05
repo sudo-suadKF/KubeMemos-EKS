@@ -23,7 +23,7 @@ An open-source, self-hosted note-taking service. Your thoughts, your data, your 
 ---
 
 [**TestMu AI** - The world’s first full-stack Agentic AI Quality Engineering platform](https://www.testmu.ai/?utm_source=memos&utm_medium=sponsor)
-  
+
 <a href="https://www.testmu.ai/?utm_source=memos&utm_medium=sponsor" target="_blank" rel="noopener">
   <img src="https://usememos.com/sponsors/testmu.svg" alt="TestMu AI" height="36" />
 </a>

@@ -247,4 +247,3 @@ export const ShortcutService: GenService<{
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_v1_shortcut_service, 0);
-

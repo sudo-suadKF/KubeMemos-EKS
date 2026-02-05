@@ -296,4 +296,3 @@ export const AuthService: GenService<{
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_v1_auth_service, 0);
-

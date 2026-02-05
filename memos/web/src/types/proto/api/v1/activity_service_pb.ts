@@ -301,4 +301,3 @@ export const ActivityService: GenService<{
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_v1_activity_service, 0);
-

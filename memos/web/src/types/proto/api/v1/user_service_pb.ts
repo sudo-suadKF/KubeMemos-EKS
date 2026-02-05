@@ -1527,4 +1527,3 @@ export const UserService: GenService<{
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_v1_user_service, 0);
-

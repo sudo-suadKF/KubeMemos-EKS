@@ -319,4 +319,3 @@ export const AttachmentService: GenService<{
   },
 }> = /*@__PURE__*/
   serviceDesc(file_api_v1_attachment_service, 0);
-
