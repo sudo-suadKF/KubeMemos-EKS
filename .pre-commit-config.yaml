@@ -36,7 +36,7 @@ repos:
         args:
           - memos
           - --file-patterns
-          - Dockerfile
+          - dockerfile:Dockerfile
           - --skip-version-check
           - --severity
           - MEDIUM,HIGH,CRITICAL
