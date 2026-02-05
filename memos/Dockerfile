@@ -29,4 +29,4 @@ VOLUME /var/opt/memos
 
 EXPOSE 5230
 
-ENTRYPOINT ["/memos"]
+ENTRYPOINT ["/cmd/memos"]
