@@ -19,7 +19,7 @@ RUN --mount=type=cache,target=/go/pkg/mod --mount=type=cache,target=/root/.cache
 FROM scratch
 
 COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /app/memos /usr/local/memos/memos
+COPY --from=builder /app/memos /usr/local/bin/memos
 
 USER nonroot
 
@@ -29,4 +29,4 @@ VOLUME /var/opt/memos
 
 EXPOSE 5230
 
-ENTRYPOINT ["./memos"]
+ENTRYPOINT ["/usr/local/bin/memos"]
