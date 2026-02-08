@@ -2,10 +2,12 @@ FROM node:25-alpine AS frontend
 
 WORKDIR /web
 
+COPY web/package.json web/package-lock.json* ./
+
+RUN npm ci
+
 COPY web/ .
 
-RUN npm install
-RUN npm install -g vite
 RUN npm run release
 
 FROM golang:1.25-alpine AS backend
@@ -32,7 +34,7 @@ FROM scratch
 
 COPY --from=backend /etc/passwd /etc/passwd
 COPY --from=backend /app/memos /usr/local/bin/memos
-COPY --from=backend /app/server/router/frontend/dist ./server/router/frontend/dist
+COPY --from=backend /app/server/router/frontend/dist /server/router/frontend/dist
 
 USER nonroot
 
