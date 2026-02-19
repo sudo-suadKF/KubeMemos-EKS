@@ -1,7 +1,7 @@
 variable "ecr-repo-name" {
   description = "Contains ECR repo's name"
   type        = string
-  default     = "KubeMemo-eks"
+  default     = "kube-memo-eks"
 }
 
 variable "ecr-repo-tag-mutability" {
