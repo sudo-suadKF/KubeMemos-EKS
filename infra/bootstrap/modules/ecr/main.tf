@@ -5,4 +5,8 @@ resource "aws_ecr_repository" "eks-docker-image" {
   image_scanning_configuration {
     scan_on_push = true
   }
+
+  encryption_configuration {
+    encryption_type = "KMS"
+  }
 }
