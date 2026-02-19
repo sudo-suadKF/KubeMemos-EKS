@@ -58,13 +58,5 @@ repos:
 
       - id: terraform_checkov
 
-  # --------------------
-  # Terraform linting
-  # --------------------
-  - repo: https://github.com/gruntwork-io/pre-commit
-    rev: v0.1.30
-    hooks:
-      - id: tflint
-        files: \.tf$
-        args:
-          - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
+      - id: terraform_tflint
+        pass_filenames: false
