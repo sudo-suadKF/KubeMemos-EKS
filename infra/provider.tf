@@ -11,11 +11,10 @@ terraform {
     key          = "terraform.tfstate"
     use_lockfile = true
     region       = "eu-west-2"
+    encrypt      = true
   }
 }
 
 provider "aws" {
-
   region = "eu-west-2"
-
 }
