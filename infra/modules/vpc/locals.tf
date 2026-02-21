@@ -3,26 +3,26 @@ locals {
   public_subnets = {
 
     sub1 = {
-      cidr_block        = "10.0.0.0/19"
-      availability_zone = "eu-west-2a"
+      cidr_block        = var.public-sub1-cidr
+      availability_zone = var.az1
       tags = {
-        Name = "public-sub1"
+        Name = var.public-sub1-tags
       }
     }
 
     sub2 = {
-      cidr_block        = "10.0.32.0/19"
-      availability_zone = "eu-west-2b"
+      cidr_block        = var.public-sub2-cidr
+      availability_zone = var.az2
       tags = {
-        Name = "public-sub2"
+        Name = var.public-sub2-tags
       }
     }
 
     sub3 = {
-      cidr_block        = "10.0.64.0/19"
-      availability_zone = "eu-west-2c"
+      cidr_block        = var.public-sub3-cidr
+      availability_zone = var.az3
       tags = {
-        Name = "public-sub3"
+        Name = var.public-sub3-tags
       }
     }
   }
@@ -30,26 +30,26 @@ locals {
   private_subnets = {
 
     sub1 = {
-      cidr_block        = "10.0.96.0/19"
-      availability_zone = "eu-west-2a"
+      cidr_block        = var.private-sub1-cidr
+      availability_zone = var.az1
       tags = {
-        Name = "private-sub1"
+        Name = var.private-sub1-tags
       }
     }
 
     sub2 = {
-      cidr_block        = "10.0.128.0/19"
-      availability_zone = "eu-west-2b"
+      cidr_block        = var.private-sub2-cidr
+      availability_zone = var.az2
       tags = {
-        Name = "private-sub2"
+        Name = var.private-sub2-tags
       }
     }
 
     sub3 = {
-      cidr_block        = "10.0.160.0/19"
-      availability_zone = "eu-west-2c"
+      cidr_block        = var.private-sub3-cidr
+      availability_zone = var.az3
       tags = {
-        Name = "private-sub3"
+        Name = var.private-sub3-tags
       }
     }
   }
