@@ -53,3 +53,47 @@ resource "aws_nat_gateway" "my-nat-gw" {
 
   depends_on = [aws_internet_gateway.my-igw]
 }
+
+# Public RT
+resource "aws_route_table" "public-rt" {
+  vpc_id = aws_vpc.my-vpc.id
+
+  route {
+    cidr_block = "0.0.0.0"
+    gateway_id = aws_internet_gateway.my-igw.id
+  }
+
+  tags = {
+    Name = "public-rt"
+  }
+}
+
+# Associate to public subnets
+resource "aws_route_table_association" "public-rt-to-public-subnets" {
+  for_each = aws_subnet.public_subnets
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
+# Private RT
+resource "aws_route_table" "private-rt" {
+  vpc_id = aws_vpc.my-vpc.id
+
+  route {
+    cidr_block     = "0.0.0.0"
+    nat_gateway_id = aws_nat_gateway.my-nat-gw.id
+  }
+
+  tags = {
+    Name = "private-rt"
+  }
+}
+
+# Associate to private subnets
+resource "aws_route_table_association" "private-rt-to-private-subnets" {
+  for_each = aws_subnet.private_subnets
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.private-rt.id
+}
