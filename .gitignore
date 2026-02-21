@@ -2,3 +2,4 @@
 terraform.tfstate
 .pre-commit-trivy-cache
 .terraform.lock.hcl
+.infracost
