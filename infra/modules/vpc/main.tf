@@ -31,3 +31,25 @@ resource "aws_subnet" "private_subnets" {
   availability_zone = each.value.availability_zone
   tags              = each.value.tags
 }
+
+# IGW
+resource "aws_internet_gateway" "my-igw" {
+  vpc_id = aws_vpc.my-vpc.id
+
+  tags = {
+    Name = "my-igw"
+  }
+}
+
+# NAT GW
+resource "aws_nat_gateway" "my-nat-gw" {
+  vpc_id            = aws_vpc.my-vpc.id
+  availability_mode = "regional"
+  connectivity_type = "public"
+
+  tags = {
+    Name = "my-nat-gw"
+  }
+
+  depends_on = [aws_internet_gateway.my-igw]
+}
