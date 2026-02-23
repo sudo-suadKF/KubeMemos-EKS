@@ -51,3 +51,20 @@ resource "aws_iam_role_policy_attachment" "policy-role-attach" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role = aws_iam_role.my-cluster-iam-role.name
 }
+
+resource "aws_eks_node_group" "my-node-group" {
+  cluster_name = aws_eks_cluster.my-eks-cluster.name
+  node_group_name = "my-node-group"
+  node_role_arn = ""
+  subnet_ids = var.private-subs-id
+
+  scaling_config {
+    desired_size = 3
+    max_size = 4
+    min_size = 1
+  }
+
+  update_config {
+    max_unavailable = 1
+  }
+}
