@@ -16,7 +16,7 @@ resource "aws_eks_cluster" "my-eks-cluster" {
   }
   
   depends_on = [
-    aws_iam_role_policy_attachment.cluster_AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.policy-role-attach,
   ]
 }
 
@@ -30,7 +30,7 @@ resource "aws_eks_addon" "my-addons" {
 
 resource "aws_iam_role" "my-cluster-iam-role" {
   name = "eks-cluster-iam-role"
-  assume_role_policy = jsondecode({
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
