@@ -26,6 +26,7 @@ module "vpc" {
   az3                 = var.az3
 }
 
-# module "eks" {
-#   source = "value"
-# }
+module "eks" {
+  source = "./modules/eks"
+  public-subs-id = module.vpc.public-subs-id
+}
