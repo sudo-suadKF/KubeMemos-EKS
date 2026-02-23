@@ -1,10 +1,10 @@
 resource "aws_eks_cluster" "my-eks-cluster" {
-  name     = "my-eks-cluster"
+  name     = var.eks-cluster-name
   role_arn = aws_iam_role.my-cluster-iam-role.arn
-  version  = "1.35"
+  version  = var.k8s-version
 
   access_config {
-    authentication_mode                         = "API"
+    authentication_mode                         = var.auth-mode
     bootstrap_cluster_creator_admin_permissions = true
   }
 
@@ -12,7 +12,7 @@ resource "aws_eks_cluster" "my-eks-cluster" {
     subnet_ids              = var.public-subs-id
     endpoint_private_access = true
     endpoint_public_access  = true
-    public_access_cidrs     = ["0.0.0.0/0"]
+    public_access_cidrs     = [var.internet-cidr]
   }
   
   depends_on = [
@@ -29,7 +29,7 @@ resource "aws_eks_addon" "my-addons" {
 }
 
 resource "aws_iam_role" "my-cluster-iam-role" {
-  name = "eks-cluster-iam-role"
+  name = var.eks-cluster-iam-role-name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -48,29 +48,29 @@ resource "aws_iam_role" "my-cluster-iam-role" {
 }
 
 resource "aws_iam_role_policy_attachment" "policy-role-attach" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  policy_arn = var.eks-cluster-policy-arn
   role = aws_iam_role.my-cluster-iam-role.name
 }
 
 resource "aws_eks_node_group" "my-node-group" {
   cluster_name = aws_eks_cluster.my-eks-cluster.name
-  node_group_name = "my-node-group"
+  node_group_name = var.node-group-name
   node_role_arn = aws_iam_role.node-group-role.arn
   subnet_ids = var.private-subs-id
 
   scaling_config {
-    desired_size = 3
-    max_size = 4
-    min_size = 1
+    desired_size = var.desired-size
+    max_size = var.max-size
+    min_size = var.min-size
   }
 
   update_config {
-    max_unavailable = 1
+    max_unavailable = var.max-unavailable
   }
 }
 
 resource "aws_iam_role" "node-group-role" {
-  name = "eks-node-group-role"
+  name = var.node-group-iam-role-name
   assume_role_policy = jsonencode({
     Statement = [{
       Action = "sts:AssumeRole"
@@ -84,16 +84,16 @@ resource "aws_iam_role" "node-group-role" {
 }
 
 resource "aws_iam_role_policy_attachment" "worker-node-ec2-attach" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  policy_arn = var.eks-worker-node-policy-arn
   role       = aws_iam_role.node-group-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "networking-pod-ip-attach" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  policy_arn = var.eks-cni-policy-arn
   role       = aws_iam_role.node-group-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "worker-node-ecr-attach" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  policy_arn = var.ecr-policy-arn
   role       = aws_iam_role.node-group-role.name
 }
