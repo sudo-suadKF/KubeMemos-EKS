@@ -25,3 +25,7 @@ module "vpc" {
   az2                 = var.az2
   az3                 = var.az3
 }
+
+# module "eks" {
+#   source = "value"
+# }

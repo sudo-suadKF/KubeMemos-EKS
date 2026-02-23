@@ -37,7 +37,7 @@ variable "nat-gw-tags" {
 variable "internet-cidr" {
   description = "Contains internet's cidr block"
   type        = string
-  default     = "0.0.0.0"
+  default     = "0.0.0.0/0"
 }
 
 variable "public-rt-tags" {
