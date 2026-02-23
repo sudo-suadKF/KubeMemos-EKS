@@ -31,7 +31,7 @@ variable "nat-gw-connectivity" {
 variable "nat-gw-tags" {
   description = "Contains NAT GWs tag"
   type        = string
-  default     = "my-nay-gw"
+  default     = "my-nat-gw"
 }
 
 variable "internet-cidr" {
