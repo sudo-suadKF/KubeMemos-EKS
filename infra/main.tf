@@ -29,4 +29,5 @@ module "vpc" {
 module "eks" {
   source = "./modules/eks"
   public-subs-id = module.vpc.public-subs-id
+  private-subs-id = module.vpc.private-subs-id
 }
