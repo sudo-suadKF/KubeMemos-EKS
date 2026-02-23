@@ -3,6 +3,11 @@ variable "public-subs-id" {
   type        = list(string)
 }
 
+variable "private-subs-id" {
+  description = "Contains private subnets IDs"
+  type        = list(string)
+}
+
 variable "addons" {
   description = "Contains addons for cluster"
   type        = list(string)
