@@ -10,6 +10,11 @@ resource "aws_vpc" "my-vpc" {
 
 # Public Subnets
 resource "aws_subnet" "public_subnets" {
+  for_each = local.public_subnets
+
+  vpc_id                  = aws_vpc.my-vpc.id
+  map_public_ip_on_launch = false
+
   vpc_id                  = aws_vpc.my-vpc.id
   map_public_ip_on_launch = false
 
@@ -22,6 +27,11 @@ resource "aws_subnet" "public_subnets" {
 
 # Private Subnets
 resource "aws_subnet" "private_subnets" {
+  for_each = local.private_subnets
+
+  vpc_id                  = aws_vpc.my-vpc.id
+  map_public_ip_on_launch = false
+
   vpc_id                  = aws_vpc.my-vpc.id
   map_public_ip_on_launch = false
 

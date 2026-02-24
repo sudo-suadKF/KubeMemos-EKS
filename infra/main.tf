@@ -25,3 +25,33 @@ module "vpc" {
   az2                 = var.az2
   az3                 = var.az3
 }
+
+module "eks" {
+  source                     = "./modules/eks"
+  public-subs-id             = module.vpc.public-subs-id
+  private-subs-id            = module.vpc.private-subs-id
+  eks-cluster-name           = var.eks-cluster-name
+  eks-cluster-iam-role-name  = var.eks-cluster-iam-role-name
+  eks-cluster-policy-arn     = var.eks-cluster-policy-arn
+  eks-cni-policy-arn         = var.eks-cni-policy-arn
+  eks-worker-node-policy-arn = var.eks-worker-node-policy-arn
+  ecr-policy-arn             = var.ecr-policy-arn
+  internet-cidr              = var.internet-cidr
+  addons                     = var.addons
+  node-group-name            = var.node-group-name
+  node-group-iam-role-name   = var.node-group-iam-role-name
+  k8s-version                = var.k8s-version
+  desired-size               = var.desired-size
+  max-size                   = var.max-size
+  min-size                   = var.min-size
+  max-unavailable            = var.max-unavailable
+  auth-mode                  = var.auth-mode
+  aws-account-id             = var.aws-account-id
+}
+
+module "sg" {
+  source            = "./modules/sg"
+  eks-cluster-sg-id = module.eks.eks-cluster-sg-id
+  internet-cidr     = var.internet-cidr
+  vpc-id            = module.vpc.vpc-id
+}
