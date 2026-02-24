@@ -29,8 +29,8 @@ resource "aws_eks_cluster" "my-eks-cluster" {
 }
 
 resource "aws_kms_key" "eks-encrypt" {
-  description = "KMS key for EKS encryption"
-  enable_key_rotation = true
+  description             = "KMS key for EKS encryption"
+  enable_key_rotation     = true
   deletion_window_in_days = 7
 
   policy = jsonencode({
@@ -136,11 +136,11 @@ resource "aws_iam_role" "node-group-role" {
 
 resource "aws_iam_role_policy_attachment" "eks-node-policies-attach" {
   for_each = toset([
-    var.eks-worker-node-policy-arn, 
-    var.eks-cni-policy-arn, 
+    var.eks-worker-node-policy-arn,
+    var.eks-cni-policy-arn,
     var.ecr-policy-arn
   ])
 
   policy_arn = each.value
-  role = aws_iam_role.node-group-role.name
+  role       = aws_iam_role.node-group-role.name
 }

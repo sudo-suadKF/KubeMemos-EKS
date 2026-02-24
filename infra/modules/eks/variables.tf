@@ -90,5 +90,5 @@ variable "ecr-policy-arn" {
 
 variable "aws-account-id" {
   description = "Contains AWS account id"
-  type = string
+  type        = string
 }
