@@ -1,5 +1,7 @@
-.terraform*
-terraform.tfstate
+**/.terraform/
+**/.terraform.lock.hcl
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/.infracost/
 .pre-commit-trivy-cache
-.terraform.lock.hcl
-.infracost
+*/terraform.tfvars
