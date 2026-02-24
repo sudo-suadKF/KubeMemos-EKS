@@ -53,10 +53,6 @@ repos:
           - --args=-recursive
 
       - id: terraform_validate
-        args:
-          - --args=-no-color
-        env:
-          TF_CLI_ARGS_init: "-backend=false"
 
       - id: terraform_docs
 
