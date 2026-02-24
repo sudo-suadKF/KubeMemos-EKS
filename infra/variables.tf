@@ -147,95 +147,95 @@ variable "private-sub3-tags" {
 #EKS variables
 variable "addons" {
   description = "Contains addons for cluster"
-  type = list(string)
+  type        = list(string)
   default     = ["vpc-cni", "coredns", "kube-proxy", "eks-pod-identity-agent"]
 }
 
 variable "eks-cluster-name" {
   description = "Contains eks cluster's name"
-  type = string
-  default = "my-eks-cluster"
+  type        = string
+  default     = "my-eks-cluster"
 }
 
 variable "k8s-version" {
   description = "Contains k8s version"
-  type = string
-  default = "1.35"
+  type        = string
+  default     = "1.35"
 }
 
 variable "auth-mode" {
   description = "Contains authentication mode value"
-  type = string
-  default = "API"
+  type        = string
+  default     = "API"
 }
 
 variable "eks-cluster-iam-role-name" {
   description = "Contains name of eks cluster's IAM role name"
-  type = string
-  default = "eks-cluster-iam-role"
+  type        = string
+  default     = "eks-cluster-iam-role"
 }
 
 variable "eks-cluster-policy-arn" {
   description = "Contains arn of eks cluster policy"
-  type = string
-  default = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  type        = string
+  default     = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
 variable "node-group-name" {
   description = "Contains node group name"
-  type = string
-  default = "my-node-group"
+  type        = string
+  default     = "my-node-group"
 }
 
 variable "desired-size" {
   description = "Contains desired size of node groups"
-  type = number
-  default = 3
+  type        = number
+  default     = 3
 }
 
 variable "max-size" {
   description = "Contains max size of node groups"
-  type = number
-  default = 4
+  type        = number
+  default     = 4
 }
 
 variable "min-size" {
   description = "Contains min size of node groups"
-  type = number
-  default = 1
+  type        = number
+  default     = 1
 }
 
 variable "max-unavailable" {
   description = "Contains max unavailable number of node group during update"
-  type = number
-  default = 1
+  type        = number
+  default     = 1
 }
 
 variable "node-group-iam-role-name" {
   description = "Contains name of iam role for worker nodes"
-  type = string
-  default = "eks-node-group-role"
+  type        = string
+  default     = "eks-node-group-role"
 }
 
 variable "eks-worker-node-policy-arn" {
   description = "Contains arn of worker node policy"
-  type = string
-  default = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  type        = string
+  default     = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
 variable "eks-cni-policy-arn" {
   description = "Contains arn of cni policy"
-  type = string
-  default = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  type        = string
+  default     = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
 variable "ecr-policy-arn" {
   description = "Contains arn of ecr policy"
-  type = string
-  default = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  type        = string
+  default     = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 variable "aws-account-id" {
   description = "Contains AWS account id"
-  type = string
+  type        = string
 }

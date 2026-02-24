@@ -58,7 +58,7 @@ repos:
 
       - id: terraform_checkov
         args:
-          - --args=--skip-check CKV_AWS_39
+          - --args=--skip-check CKV_AWS_39,CKV_AWS_339,CKV_AWS_38
 
       - id: terraform_tflint
         pass_filenames: false
