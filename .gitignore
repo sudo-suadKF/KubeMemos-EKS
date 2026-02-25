@@ -5,3 +5,4 @@
 **/.infracost/
 .pre-commit-trivy-cache
 */terraform.tfvars
+*/bootstrap/terraform.tfvars
