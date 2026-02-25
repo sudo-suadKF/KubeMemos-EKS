@@ -7,3 +7,8 @@ variable "ecr-repo-tag-mutability" {
   description = "Contains ECR repo's tag mutability value"
   type        = string
 }
+
+variable "aws-account-id" {
+  description = "Contains AWS account id"
+  type        = string
+}

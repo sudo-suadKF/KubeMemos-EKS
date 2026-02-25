@@ -39,3 +39,8 @@ variable "s3-bucket-sse-algorithm" {
   type        = string
   default     = "AES256"
 }
+
+variable "aws-account-id" {
+  description = "Contains AWS account id"
+  type        = string
+}
