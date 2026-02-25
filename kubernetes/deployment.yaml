@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memos-deployment
+  labels:
+    app: memos
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: memos
+  template:
+    metadata:
+      labels:
+        app: memos
+    spec:
+      containers:
+      - name: memos-app
+        image: 541064517911.dkr.ecr.eu-west-2.amazonaws.com/kube-memo-eks:latest
+        ports:
+        - containerPort: 8081
+        resources:
+          limits:
+            memory: 512Mi
+            cpu: "1"
+          requests:
+            memory: 256Mi
+            cpu: "0.2"
