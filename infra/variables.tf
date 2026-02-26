@@ -239,3 +239,27 @@ variable "aws-account-id" {
   description = "Contains AWS account id"
   type        = string
 }
+
+variable "cluster-log-types" {
+  description = "Contains cluster log types"
+  type        = list(string)
+  default     = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+}
+
+variable "secrets" {
+  description = "Contains resource's secrets"
+  type        = string
+  default     = "secrets"
+}
+
+variable "kms-eks-description" {
+  description = "Contains the description of kms key for eks cluster"
+  type        = string
+  default     = "KMS key for EKS encryption"
+}
+
+variable "kms-alias-eks-name" {
+  description = "Contains the alias name"
+  type        = string
+  default     = "alias/eks-secrets"
+}
