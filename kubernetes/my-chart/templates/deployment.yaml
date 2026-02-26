@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: memos-deployment
+  name: {{ .Values.deployment.name }}-deployment
   labels:
-    app: memos
+    app: {{ .Values.deployment.name }}
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: memos
+      app: {{ .Values.deployment.name }}
   template:
     metadata:
       labels:
-        app: memos
+        app: {{ .Values.deployment.name }}
     spec:
       containers:
       - name: {{ .Values.deployment.name }}

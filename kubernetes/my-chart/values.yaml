@@ -6,7 +6,7 @@
 replicaCount: 1
 
 deployment:
-  name: memos-app
+  name: memos
   image: "541064517911.dkr.ecr.eu-west-2.amazonaws.com/kube-memo-eks"
   tag: "latest"
 
