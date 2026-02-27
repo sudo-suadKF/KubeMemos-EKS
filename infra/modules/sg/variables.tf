@@ -80,5 +80,5 @@ variable "ip-protocol_-1" {
 
 variable "ip-protocol-udp" {
   description = "UDP protocol"
-  type        = string
+  type        = number
 }

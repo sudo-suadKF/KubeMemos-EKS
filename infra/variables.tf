@@ -263,3 +263,87 @@ variable "kms-alias-eks-name" {
   type        = string
   default     = "alias/eks-secrets"
 }
+
+variable "node-sg-name" {
+  description = "Name of node sg"
+  type        = string
+  default     = "node-sg"
+}
+
+variable "node-sg-description" {
+  description = "Description of node sg"
+  type        = string
+  default     = "sg for eks worker nodes"
+}
+
+variable "node-sg-tags" {
+  description = "Tags of node sg"
+  type        = string
+  default     = "eks-node-sg"
+}
+
+variable "ingress-rule-cluster-node-description" {
+  description = "Description of ingress rule of cluster to node"
+  type        = string
+  default     = "ingress for cluster api to worker node"
+}
+
+variable "ip-protocol-tcp" {
+  description = "TCP protocol"
+  type        = string
+  default     = "tcp"
+}
+
+variable "port-HTTPS" {
+  description = "Port number of HTTPS"
+  type        = number
+  default     = 443
+}
+
+variable "ingress-rule-cluster-kubelet-description" {
+  description = "Description of ingress rule of cluster to kubelet"
+  type        = string
+  default     = "ingress for cluster api to kubelet"
+}
+
+variable "port-10250" {
+  description = "Port number 10250"
+  type        = number
+  default     = 10250
+}
+
+variable "ingress-rule-node-node-TCP-description" {
+  description = "Description of ingress rule of node to node TCP"
+  type        = string
+  default     = "ingress for node to node TCP communication"
+}
+
+variable "port-DNS" {
+  description = "Port number 53"
+  type        = number
+  default     = 53
+}
+
+variable "ingress-rule-node-node-UDP-description" {
+  description = "Description of ingress rule of node to node UDP"
+  type        = string
+  default     = "ingress for node to node UDP communication"
+}
+
+variable "egress-rule-node-description" {
+  description = "Description of ingress rule of node to node UDP"
+  type        = string
+  default     = "egress for worker node to internet"
+}
+
+variable "ip-protocol_-1" {
+  description = "Ip protocol -1, all traffic"
+  type        = string
+  default     = "-1"
+}
+
+variable "ip-protocol-udp" {
+  description = "UDP protocol"
+  type        = number
+  default     = 53
+}

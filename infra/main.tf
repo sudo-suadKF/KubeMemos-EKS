@@ -54,8 +54,22 @@ module "eks" {
 }
 
 module "sg" {
-  source            = "./modules/sg"
-  eks-cluster-sg-id = module.eks.eks-cluster-sg-id
-  internet-cidr     = var.internet-cidr
-  vpc-id            = module.vpc.vpc-id
+  source                                   = "./modules/sg"
+  eks-cluster-sg-id                        = module.eks.eks-cluster-sg-id
+  internet-cidr                            = var.internet-cidr
+  vpc-id                                   = module.vpc.vpc-id
+  node-sg-description                      = var.node-sg-description
+  node-sg-name                             = var.node-sg-name
+  node-sg-tags                             = var.node-sg-tags
+  ingress-rule-cluster-kubelet-description = var.ingress-rule-cluster-kubelet-description
+  ingress-rule-cluster-node-description    = var.ingress-rule-cluster-node-description
+  ingress-rule-node-node-TCP-description   = var.ingress-rule-node-node-TCP-description
+  ingress-rule-node-node-UDP-description   = var.ingress-rule-node-node-UDP-description
+  egress-rule-node-description             = var.egress-rule-node-description
+  ip-protocol-tcp                          = var.ip-protocol-tcp
+  ip-protocol-udp                          = var.ip-protocol-udp
+  ip-protocol_-1                           = var.ip-protocol_-1
+  port-DNS                                 = var.port-DNS
+  port-10250                               = var.port-10250
+  port-HTTPS                               = var.port-HTTPS
 }
