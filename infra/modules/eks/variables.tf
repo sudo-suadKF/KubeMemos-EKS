@@ -92,3 +92,28 @@ variable "aws-account-id" {
   description = "Contains AWS account id"
   type        = string
 }
+
+variable "cluster-log-types" {
+  description = "Contains cluster log types"
+  type        = list(string)
+}
+
+variable "secrets" {
+  description = "Contains resource's secrets"
+  type        = string
+}
+
+variable "kms-eks-description" {
+  description = "Contains the description of kms key for eks cluster"
+  type        = string
+}
+
+variable "kms-alias-eks-name" {
+  description = "Contains the alias name"
+  type        = string
+}
+
+variable "delete-window" {
+  description = "Days to delete"
+  type        = number
+}
