@@ -2,7 +2,7 @@ resource "aws_eks_cluster" "my-eks-cluster" {
   name                      = var.eks-cluster-name
   role_arn                  = aws_iam_role.my-cluster-iam-role.arn
   version                   = var.k8s-version
-  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+  enabled_cluster_log_types = var.cluster-log-types
 
   access_config {
     authentication_mode                         = var.auth-mode
@@ -20,7 +20,7 @@ resource "aws_eks_cluster" "my-eks-cluster" {
     provider {
       key_arn = aws_kms_key.eks-encrypt.arn
     }
-    resources = ["secrets"]
+    resources = [var.secrets]
   }
 
   depends_on = [
@@ -29,7 +29,7 @@ resource "aws_eks_cluster" "my-eks-cluster" {
 }
 
 resource "aws_kms_key" "eks-encrypt" {
-  description             = "KMS key for EKS encryption"
+  description             = var.kms-eks-description
   enable_key_rotation     = true
   deletion_window_in_days = 7
 
@@ -67,7 +67,7 @@ resource "aws_kms_key" "eks-encrypt" {
 }
 
 resource "aws_kms_alias" "eks_secrets" {
-  name          = "alias/eks-secrets"
+  name          = var.kms-alias-eks-name
   target_key_id = aws_kms_key.eks-encrypt.id
 }
 

@@ -347,3 +347,9 @@ variable "ip-protocol-udp" {
   type        = number
   default     = 53
 }
+
+variable "delete-window" {
+  description = "Days to delete"
+  type        = number
+  default     = 7
+}

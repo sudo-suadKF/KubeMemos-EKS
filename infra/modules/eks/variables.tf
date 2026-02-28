@@ -112,3 +112,8 @@ variable "kms-alias-eks-name" {
   description = "Contains the alias name"
   type        = string
 }
+
+variable "delete-window" {
+  description = "Days to delete"
+  type        = number
+}

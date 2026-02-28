@@ -51,6 +51,7 @@ module "eks" {
   secrets                    = var.secrets
   kms-alias-eks-name         = var.kms-alias-eks-name
   kms-eks-description        = var.kms-eks-description
+  delete-window              = var.delete-window
 }
 
 module "sg" {
