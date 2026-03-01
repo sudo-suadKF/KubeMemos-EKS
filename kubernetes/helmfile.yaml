@@ -5,6 +5,9 @@ repositories:
   - name: external-dns
     url: https://kubernetes-sigs.github.io/external-dns/
 
+  - name: cert-manager
+    url: https://charts.jetstack.io
+
 releases:
   - name: traefik
     chart: traefik/traefik
@@ -21,3 +24,10 @@ releases:
       - helm-values/external-dns.yaml
     needs:
       - traefik/traefik
+
+  - name: cert-manager
+    chart: cert-manager/cert-manager
+    namespace: cert-manager
+    createNamespace: true
+    values:
+      - installCRDs: true
