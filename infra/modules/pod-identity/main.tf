@@ -1,10 +1,10 @@
 data "aws_route53_zone" "my-hosted-zone" {
-  name         = "sudosuad.co.uk"
+  name         = var.my-hosted-zone-name
   private_zone = false
 }
 
 resource "aws_iam_role" "pod-identity" {
-  name = "eks-pod-identity-role"
+  name = var.iam-role-pod-identity-name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -21,12 +21,12 @@ resource "aws_iam_role" "pod-identity" {
   })
 
   tags = {
-    Name = "Pod Identity ExternalDNS"
+    Name = var.iam-role-pod-identity-tags
   }
 }
 
 resource "aws_iam_policy" "external-dns" {
-  name = "external-dns"
+  name = var.external-dns
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -60,7 +60,7 @@ resource "aws_iam_role_policy_attachment" "attach-pod-identity" {
 
 resource "aws_eks_pod_identity_association" "external-dns" {
   cluster_name    = var.eks-cluster-name
-  namespace       = "external-dns"
-  service_account = "external-dns"
+  namespace       = var.external-dns
+  service_account = var.external-dns
   role_arn        = aws_iam_role.pod-identity.arn
 }

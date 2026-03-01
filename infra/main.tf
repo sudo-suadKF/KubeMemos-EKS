@@ -76,6 +76,10 @@ module "sg" {
 }
 
 module "pod-identity" {
-  source           = "./modules/pod-identity"
-  eks-cluster-name = module.eks.eks-cluster-name
+  source                     = "./modules/pod-identity"
+  eks-cluster-name           = module.eks.eks-cluster-name
+  external-dns               = var.external-dns
+  iam-role-pod-identity-name = var.iam-role-pod-identity-name
+  my-hosted-zone-name        = var.my-hosted-zone-name
+  iam-role-pod-identity-tags = var.iam-role-pod-identity-tags
 }
