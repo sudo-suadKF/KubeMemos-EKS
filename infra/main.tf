@@ -74,3 +74,8 @@ module "sg" {
   port-10250                               = var.port-10250
   port-HTTPS                               = var.port-HTTPS
 }
+
+module "pod-identity" {
+  source           = "./modules/pod-identity"
+  eks-cluster-name = module.eks.eks-cluster-name
+}
