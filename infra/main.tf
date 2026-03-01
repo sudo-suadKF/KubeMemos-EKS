@@ -76,6 +76,6 @@ module "sg" {
 }
 
 module "pod-identity" {
-  source = "./modules/pod-identity"
+  source           = "./modules/pod-identity"
   eks-cluster-name = module.eks.eks-cluster-name
 }
