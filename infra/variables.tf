@@ -344,8 +344,8 @@ variable "ip-protocol_-1" {
 
 variable "ip-protocol-udp" {
   description = "UDP protocol"
-  type        = number
-  default     = 53
+  type        = string
+  default     = "udp"
 }
 
 variable "delete-window" {
