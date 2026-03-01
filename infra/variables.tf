@@ -353,3 +353,27 @@ variable "delete-window" {
   type        = number
   default     = 7
 }
+
+variable "my-hosted-zone-name" {
+  description = "Hosted zone name"
+  type        = string
+  default     = "sudosuad.co.uk"
+}
+
+variable "iam-role-pod-identity-name" {
+  description = "Name of the iam role for pod identity"
+  type        = string
+  default     = "eks-pod-identity-role"
+}
+
+variable "external-dns" {
+  description = "Word external dns"
+  type        = string
+  default     = "external-dns"
+}
+
+variable "iam-role-pod-identity-tags" {
+  description = "Tag for iam role po identity"
+  type        = string
+  default     = "Pod Identity ExternalDNS"
+}
