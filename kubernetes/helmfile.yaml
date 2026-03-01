@@ -20,4 +20,4 @@ releases:
     values:
       - helm-values/external-dns.yaml
     needs:
-      - traefik
+      - traefik/traefik
