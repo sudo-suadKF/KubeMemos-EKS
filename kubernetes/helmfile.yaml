@@ -2,6 +2,9 @@ repositories:
   - name: traefik
     url: https://traefik.github.io/charts
 
+  - name: external-dns
+    url: https://kubernetes-sigs.github.io/external-dns/
+
 releases:
   - name: traefik
     chart: traefik/traefik
@@ -9,3 +12,12 @@ releases:
     createNamespace: true
     values:
     - helm-values/traefik.yaml
+
+  - name: external-dns
+    chart: external-dns/external-dns
+    namespace: external-dns
+    createNamespace: true
+    values:
+      - helm-values/external-dns.yaml
+    needs:
+      - traefik
