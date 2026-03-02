@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.deployment.name }}-ingress-https
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-https
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.tls.certresolver: le
+spec:
+  ingressClassName: traefik
+  tls:
+  - hosts:
+    - {{ .Values.deployment.name }}.sudosuad.co.uk
+    secretName: {{ .Values.deployment.name }}-tls
+  rules:
+  - host: {{ .Values.deployment.name }}.sudosuad.co.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.deployment.name }}-service
+            port:
+              number: 80
