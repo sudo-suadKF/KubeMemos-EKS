@@ -39,3 +39,7 @@ releases:
     chart: argo-cd/argo-cd
     namespace: argo-cd
     createNamespace: true
+    values:
+      - server:
+          extraArgs:
+            - --insecure
