@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: prometheus-ingress-http
+  namespace: monitoring
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: web
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirectscheme@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: prometheus.sudosuad.co.uk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: prometheus-grafana-kube-pr-prometheus
+            port:
+              number: 9090
