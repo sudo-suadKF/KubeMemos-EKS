@@ -11,6 +11,9 @@ repositories:
   - name: argo-cd
     url: https://argoproj.github.io/argo-helm
 
+  - name: prometheus-grafana
+    url: https://prometheus-community.github.io/helm-charts
+
 releases:
   - name: traefik
     chart: traefik/traefik
@@ -43,3 +46,17 @@ releases:
       - server:
           extraArgs:
             - --insecure
+    needs:
+      - traefik/traefik
+      - external-dns/external-dns
+      - cert-manager/cert-manager
+
+  - name: prometheus-grafana
+    chart: prometheus-grafana/kube-prometheus-stack
+    namespace: monitoring
+    createNamespace: true
+    disableValidation: true
+    needs:
+      - traefik/traefik
+      - external-dns/external-dns
+      - cert-manager/cert-manager
