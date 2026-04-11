@@ -58,3 +58,31 @@ resource "aws_vpc_security_group_egress_rule" "node-egress" {
   cidr_ipv4         = var.internet-cidr
   ip_protocol       = var.ip-protocol_-1
 }
+
+# SG for RDS Proxy
+
+resource "aws_security_group" "rds-proxy-sg" {
+  name        = "rds-proxy-sg"
+  description = "sg for rds proxy"
+  vpc_id      = var.vpc-id
+
+  tags = {
+    Name = "rds-proxy-sg"
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "rds-proxy-sg-ingress" {
+  description                  = "ingress rule for rds proxy sg"
+  security_group_id            = aws_security_group.rds-proxy-sg.id
+  referenced_security_group_id = aws_security_group.node-sg.id
+  ip_protocol                  = var.ip-protocol-tcp
+  from_port                    = 5432
+  to_port                      = 5432
+}
+
+resource "aws_vpc_security_group_egress_rule" "rds-proxy-sg-egress" {
+  description       = "egress rule for rds proxy sg"
+  security_group_id = aws_security_group.rds-proxy-sg
+  ip_protocol       = var.ip-protocol_-1
+  cidr_ipv4         = var.internet-cidr
+}
