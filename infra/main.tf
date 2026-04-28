@@ -26,65 +26,68 @@ module "vpc" {
   az3                 = var.az3
 }
 
-# module "eks" {
-#   source                     = "./modules/eks"
-#   public-subs-id             = module.vpc.public-subs-id
-#   private-subs-id            = module.vpc.private-subs-id
-#   eks-cluster-name           = var.eks-cluster-name
-#   eks-cluster-iam-role-name  = var.eks-cluster-iam-role-name
-#   eks-cluster-policy-arn     = var.eks-cluster-policy-arn
-#   eks-cni-policy-arn         = var.eks-cni-policy-arn
-#   eks-worker-node-policy-arn = var.eks-worker-node-policy-arn
-#   ecr-policy-arn             = var.ecr-policy-arn
-#   internet-cidr              = var.internet-cidr
-#   addons                     = var.addons
-#   node-group-name            = var.node-group-name
-#   node-group-iam-role-name   = var.node-group-iam-role-name
-#   k8s-version                = var.k8s-version
-#   desired-size               = var.desired-size
-#   max-size                   = var.max-size
-#   min-size                   = var.min-size
-#   max-unavailable            = var.max-unavailable
-#   auth-mode                  = var.auth-mode
-#   aws-account-id             = var.aws-account-id
-#   cluster-log-types          = var.cluster-log-types
-#   secrets                    = var.secrets
-#   kms-alias-eks-name         = var.kms-alias-eks-name
-#   kms-eks-description        = var.kms-eks-description
-#   delete-window              = var.delete-window
-# }
+module "eks" {
+  source                     = "./modules/eks"
+  public-subs-id             = module.vpc.public-subs-id
+  private-subs-id            = module.vpc.private-subs-id
+  eks-cluster-name           = var.eks-cluster-name
+  eks-cluster-iam-role-name  = var.eks-cluster-iam-role-name
+  eks-cluster-policy-arn     = var.eks-cluster-policy-arn
+  eks-cni-policy-arn         = var.eks-cni-policy-arn
+  eks-worker-node-policy-arn = var.eks-worker-node-policy-arn
+  ecr-policy-arn             = var.ecr-policy-arn
+  internet-cidr              = var.internet-cidr
+  addons                     = var.addons
+  node-group-name            = var.node-group-name
+  node-group-iam-role-name   = var.node-group-iam-role-name
+  k8s-version                = var.k8s-version
+  desired-size               = var.desired-size
+  max-size                   = var.max-size
+  min-size                   = var.min-size
+  max-unavailable            = var.max-unavailable
+  auth-mode                  = var.auth-mode
+  aws-account-id             = var.aws-account-id
+  cluster-log-types          = var.cluster-log-types
+  secrets                    = var.secrets
+  kms-alias-eks-name         = var.kms-alias-eks-name
+  kms-eks-description        = var.kms-eks-description
+  delete-window              = var.delete-window
+}
 
-# module "sg" {
-#   source                                   = "./modules/sg"
-#   eks-cluster-sg-id                        = module.eks.eks-cluster-sg-id
-#   internet-cidr                            = var.internet-cidr
-#   vpc-id                                   = module.vpc.vpc-id
-#   node-sg-description                      = var.node-sg-description
-#   node-sg-name                             = var.node-sg-name
-#   node-sg-tags                             = var.node-sg-tags
-#   ingress-rule-cluster-kubelet-description = var.ingress-rule-cluster-kubelet-description
-#   ingress-rule-cluster-node-description    = var.ingress-rule-cluster-node-description
-#   ingress-rule-node-node-TCP-description   = var.ingress-rule-node-node-TCP-description
-#   ingress-rule-node-node-UDP-description   = var.ingress-rule-node-node-UDP-description
-#   egress-rule-node-description             = var.egress-rule-node-description
-#   ip-protocol-tcp                          = var.ip-protocol-tcp
-#   ip-protocol-udp                          = var.ip-protocol-udp
-#   ip-protocol_-1                           = var.ip-protocol_-1
-#   port-DNS                                 = var.port-DNS
-#   port-10250                               = var.port-10250
-#   port-HTTPS                               = var.port-HTTPS
-# }
+module "sg" {
+  source                                   = "./modules/sg"
+  eks-cluster-sg-id                        = module.eks.eks-cluster-sg-id
+  internet-cidr                            = var.internet-cidr
+  vpc-id                                   = module.vpc.vpc-id
+  node-sg-description                      = var.node-sg-description
+  node-sg-name                             = var.node-sg-name
+  node-sg-tags                             = var.node-sg-tags
+  ingress-rule-cluster-kubelet-description = var.ingress-rule-cluster-kubelet-description
+  ingress-rule-cluster-node-description    = var.ingress-rule-cluster-node-description
+  ingress-rule-node-node-TCP-description   = var.ingress-rule-node-node-TCP-description
+  ingress-rule-node-node-UDP-description   = var.ingress-rule-node-node-UDP-description
+  egress-rule-node-description             = var.egress-rule-node-description
+  ip-protocol-tcp                          = var.ip-protocol-tcp
+  ip-protocol-udp                          = var.ip-protocol-udp
+  ip-protocol_-1                           = var.ip-protocol_-1
+  port-DNS                                 = var.port-DNS
+  port-10250                               = var.port-10250
+  port-HTTPS                               = var.port-HTTPS
+}
 
-# module "pod-identity" {
-#   source                     = "./modules/pod-identity"
-#   eks-cluster-name           = module.eks.eks-cluster-name
-#   external-dns               = var.external-dns
-#   iam-role-pod-identity-name = var.iam-role-pod-identity-name
-#   my-hosted-zone-name        = var.my-hosted-zone-name
-#   iam-role-pod-identity-tags = var.iam-role-pod-identity-tags
-# }
+module "pod-identity" {
+  source                     = "./modules/pod-identity"
+  eks-cluster-name           = module.eks.eks-cluster-name
+  external-dns               = var.external-dns
+  iam-role-pod-identity-name = var.iam-role-pod-identity-name
+  my-hosted-zone-name        = var.my-hosted-zone-name
+  iam-role-pod-identity-tags = var.iam-role-pod-identity-tags
+}
 
 module "rds" {
   source          = "./modules/rds"
   private-subs-id = module.vpc.private-subs-id
+  rds-sg-id = module.sg.rds-sg-id
+  aws-account-id = var.aws-account-id
 }
+
