@@ -8,8 +8,8 @@ resource "aws_db_subnet_group" "rds-private-subnets" {
   }
 }
 
-resource "aws_db_instance" "primary" {
-  identifier           = "primary-db"
+resource "aws_db_instance" "postgres-rds" {
+  identifier           = "production-rds"
   db_subnet_group_name = aws_db_subnet_group.rds-private-subnets.name
   vpc_security_group_ids = [ var.rds-sg-id ]
   publicly_accessible = false
@@ -24,16 +24,16 @@ resource "aws_db_instance" "primary" {
   storage_type = "gp3"
   allocated_storage    = 20
   max_allocated_storage = 50
-
   storage_encrypted = true
   kms_key_id = aws_kms_key.rds-kms.arn
   
-
   multi_az = true
 
-  db_name              = "primary_db"
-  username             = "foo"
-  password             = "foobarbaz"
+  db_name              = "postgres-rds"
+  username             = "memos-user"
+  manage_master_user_password = true
+
+
   parameter_group_name = aws_db_parameter_group.postgres-parameter-group.name
   skip_final_snapshot  = true
 }
