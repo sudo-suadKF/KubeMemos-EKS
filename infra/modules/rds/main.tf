@@ -30,8 +30,8 @@ resource "aws_db_instance" "postgres-rds" {
   
   multi_az = true
 
-  db_name              = "postgres-rds"
-  username             = "memos-user"
+  db_name              = "postgresrds"
+  username             = "memosuser"
   manage_master_user_password = true
   #iam_database_authentication_enabled = true
 
@@ -41,9 +41,6 @@ resource "aws_db_instance" "postgres-rds" {
   performance_insights_enabled = true
   performance_insights_retention_period = 7
   performance_insights_kms_key_id = aws_kms_key.rds-kms.arn
-
-  
-
 
   parameter_group_name = aws_db_parameter_group.postgres-parameter-group.name
   skip_final_snapshot  = true
