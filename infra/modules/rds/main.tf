@@ -24,6 +24,7 @@ resource "aws_db_instance" "postgres-rds" {
   storage_type = "gp3"
   allocated_storage    = 20
   max_allocated_storage = 50
+
   storage_encrypted = true
   kms_key_id = aws_kms_key.rds-kms.arn
   
@@ -32,6 +33,16 @@ resource "aws_db_instance" "postgres-rds" {
   db_name              = "postgres-rds"
   username             = "memos-user"
   manage_master_user_password = true
+  #iam_database_authentication_enabled = true
+
+  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade", "iam-db-auth-error"]
+  monitoring_interval = 60
+  monitoring_role_arn = aws_iam_role.rds-monitoring-role.arn
+  performance_insights_enabled = true
+  performance_insights_retention_period = 7
+  performance_insights_kms_key_id = aws_kms_key.rds-kms.arn
+
+  
 
 
   parameter_group_name = aws_db_parameter_group.postgres-parameter-group.name
@@ -132,4 +143,26 @@ resource "aws_kms_key" "rds-kms" {
 resource "aws_kms_alias" "rds" {
   name          = "alias/memos-rds"
   target_key_id = aws_kms_key.rds-kms.key_id
+}
+
+resource "aws_iam_role" "rds-monitoring-role" {
+  name = "rds-monitoring"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "monitoring.rds.amazonaws.com"
+        }
+      }
+    ]
+  }) 
+}
+
+resource "aws_iam_role_policy_attachment" "rds-monitoring-policy" {
+  role = aws_iam_role.rds-monitoring-role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }
