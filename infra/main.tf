@@ -75,8 +75,8 @@ module "sg" {
   port-HTTPS                               = var.port-HTTPS
 }
 
-module "pod-identity" {
-  source                     = "./modules/pod-identity"
+module "pod-ids" {
+  source                     = "./modules/pod-ids"
   eks-cluster-name           = module.eks.eks-cluster-name
   external-dns               = var.external-dns
   iam-role-pod-identity-name = var.iam-role-pod-identity-name
