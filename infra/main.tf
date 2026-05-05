@@ -75,11 +75,19 @@ module "sg" {
   port-HTTPS                               = var.port-HTTPS
 }
 
-module "pod-identity" {
-  source                     = "./modules/pod-identity"
+module "pod-ids" {
+  source                     = "./modules/pod-ids"
   eks-cluster-name           = module.eks.eks-cluster-name
   external-dns               = var.external-dns
   iam-role-pod-identity-name = var.iam-role-pod-identity-name
   my-hosted-zone-name        = var.my-hosted-zone-name
   iam-role-pod-identity-tags = var.iam-role-pod-identity-tags
 }
+
+module "rds" {
+  source          = "./modules/rds"
+  private-subs-id = module.vpc.private-subs-id
+  rds-sg-id = module.sg.rds-sg-id
+  aws-account-id = var.aws-account-id
+}
+
