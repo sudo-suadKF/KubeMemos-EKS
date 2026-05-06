@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ .Values.deployment.name }}
 spec:
-  replicas: 10
+  replicas: 3
   selector:
     matchLabels:
       app: {{ .Values.deployment.name }}
@@ -17,6 +17,12 @@ spec:
       containers:
       - name: {{ .Values.deployment.name }}
         image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+        env:
+          - name: MEMOS_DRIVER
+            value: "postgres"
+          
+          - name: MEMOS_DSN
+            value: "postgresql://memosuser:memospassword@production-rds.c7ueomi6yzcn.eu-west-2.rds.amazonaws.com:5432/postgresrds?sslmode=require"
         ports:
         - containerPort: 8081
         resources:
