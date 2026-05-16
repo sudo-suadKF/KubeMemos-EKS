@@ -360,10 +360,10 @@ variable "my-hosted-zone-name" {
   default     = "sudosuad.co.uk"
 }
 
-variable "iam-role-pod-identity-name" {
+variable "iam-role-pod-id-dns-name" {
   description = "Name of the iam role for pod identity"
   type        = string
-  default     = "eks-pod-identity-role"
+  default     = "eks-pod-id-role-dns"
 }
 
 variable "external-dns" {
@@ -372,7 +372,7 @@ variable "external-dns" {
   default     = "external-dns"
 }
 
-variable "iam-role-pod-identity-tags" {
+variable "iam-role-pod-id-dns-tags" {
   description = "Tag for iam role po identity"
   type        = string
   default     = "Pod Identity ExternalDNS"
