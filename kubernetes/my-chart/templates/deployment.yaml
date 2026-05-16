@@ -20,9 +20,12 @@ spec:
         env:
           - name: MEMOS_DRIVER
             value: "postgres"
-          
+
           - name: MEMOS_DSN
-            value: "postgresql://memosuser:memospassword@production-rds.c7ueomi6yzcn.eu-west-2.rds.amazonaws.com:5432/postgresrds?sslmode=require"
+            valueFrom:
+              secretKeyRef:
+                name: memos-dsn
+                key: MEMOS_DSN
         ports:
         - containerPort: 8081
         resources:

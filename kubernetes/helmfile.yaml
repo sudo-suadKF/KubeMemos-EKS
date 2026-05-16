@@ -14,6 +14,9 @@ repositories:
   - name: prometheus-grafana
     url: https://prometheus-community.github.io/helm-charts
 
+  - name: external-secrets
+    url: https://charts.external-secrets.io
+
 releases:
   - name: traefik
     chart: traefik/traefik
@@ -60,3 +63,10 @@ releases:
       - traefik/traefik
       - external-dns/external-dns
       - cert-manager/cert-manager
+
+  - name: external-secrets
+    chart: external-secrets/external-secrets
+    namespace: external-secrets
+    createNamespace: true
+    values:
+      - helm-values/external-secrets.yaml
