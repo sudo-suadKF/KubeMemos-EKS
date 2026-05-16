@@ -118,11 +118,6 @@ resource "aws_eks_node_group" "my-node-group" {
   update_config {
     max_unavailable = var.max-unavailable
   }
-
-  # launch_template {
-  #   id      = aws_launch_template.node-group.id
-  #   version = "1"
-  # }
 }
 
 resource "aws_iam_role" "node-group-role" {
@@ -149,17 +144,3 @@ resource "aws_iam_role_policy_attachment" "eks-node-policies-attach" {
   policy_arn = each.value
   role       = aws_iam_role.node-group-role.name
 }
-
-# resource "aws_launch_template" "node-group" {
-#   name_prefix            = "node-group-"
-#   vpc_security_group_ids = [var.node-sg-id]
-
-#   block_device_mappings {
-#     device_name = "/dev/sdf"
-#     ebs {
-#       volume_size           = 20
-#       volume_type           = "gp3"
-#       delete_on_termination = true
-#     }
-#   }
-# }

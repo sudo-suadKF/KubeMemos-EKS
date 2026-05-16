@@ -52,7 +52,6 @@ module "eks" {
   kms-alias-eks-name         = var.kms-alias-eks-name
   kms-eks-description        = var.kms-eks-description
   delete-window              = var.delete-window
-  node-sg-id = module.sg.node-sg-id
 }
 
 module "sg" {

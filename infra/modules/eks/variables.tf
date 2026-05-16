@@ -117,8 +117,3 @@ variable "delete-window" {
   description = "Days to delete"
   type        = number
 }
-
-variable "node-sg-id" {
-  description = "Node SG ID"
-  type = string
-}
