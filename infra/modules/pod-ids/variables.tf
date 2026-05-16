@@ -8,7 +8,7 @@ variable "my-hosted-zone-name" {
   type        = string
 }
 
-variable "iam-role-pod-identity-name" {
+variable "iam-role-pod-id-dns-name" {
   description = "Name of the iam role for pod identity"
   type        = string
 }
@@ -18,7 +18,12 @@ variable "external-dns" {
   type        = string
 }
 
-variable "iam-role-pod-identity-tags" {
+variable "iam-role-pod-id-dns-tags" {
   description = "Tag for iam role po identity"
   type        = string
+}
+
+variable "rds-secret-arn" {
+  description = "RDS secret ARN"
+  type = string
 }

@@ -79,9 +79,10 @@ module "pod-ids" {
   source                     = "./modules/pod-ids"
   eks-cluster-name           = module.eks.eks-cluster-name
   external-dns               = var.external-dns
-  iam-role-pod-identity-name = var.iam-role-pod-identity-name
+  iam-role-pod-id-dns-name = var.iam-role-pod-id-dns-name
   my-hosted-zone-name        = var.my-hosted-zone-name
-  iam-role-pod-identity-tags = var.iam-role-pod-identity-tags
+  rds-secret-arn = module.rds.rds-secret-arn
+  iam-role-pod-id-dns-tags = var.iam-role-pod-id-dns-tags
 }
 
 module "rds" {

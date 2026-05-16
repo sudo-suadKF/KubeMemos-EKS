@@ -4,7 +4,7 @@ data "aws_route53_zone" "my-hosted-zone" {
 }
 
 resource "aws_iam_role" "pod-id-external-dns" {
-  name = var.iam-role-pod-identity-name
+  name = var.iam-role-pod-id-dns-name
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -21,7 +21,7 @@ resource "aws_iam_role" "pod-id-external-dns" {
   })
 
   tags = {
-    Name = var.iam-role-pod-identity-tags
+    Name = var.iam-role-pod-id-dns-tags
   }
 }
 
@@ -53,7 +53,7 @@ resource "aws_iam_policy" "external-dns" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "attach-pod-identity" {
+resource "aws_iam_role_policy_attachment" "attach-pod-id-dns" {
   policy_arn = aws_iam_policy.external-dns.arn
   role       = aws_iam_role.pod-id-external-dns.name
 }
@@ -63,4 +63,56 @@ resource "aws_eks_pod_identity_association" "external-dns" {
   namespace       = var.external-dns
   service_account = var.external-dns
   role_arn        = aws_iam_role.pod-id-external-dns.arn
+}
+
+resource "aws_iam_role" "pod-id-external-secrets" {
+  name = "eks-pod-id-role-secrets"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Sid : "AllowEksAuthToAssumeRoleForPodIdentity"
+      Effect = "Allow"
+      Principal = {
+        Service = "pods.eks.amazonaws.com"
+      }
+      Action = [
+        "sts:AssumeRole",
+        "sts:TagSession"
+      ]
+    }]
+  })
+
+  tags = {
+    Name = "Pod ID ExternalSecrets"
+  }
+}
+
+resource "aws_iam_policy" "external-secrets" {
+  name = "external-secrets"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "secretsmanager:GetResourcePolicy",
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret",
+        "secretsmanager:ListSecretVersionIds"
+      ]
+      Resource = var.rds-secret-arn
+    }]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "attach-pod-id-secrets" {
+  policy_arn = aws_iam_policy.external-secrets.arn
+  role       = aws_iam_role.pod-id-external-secrets.name
+}
+
+resource "aws_eks_pod_identity_association" "external-secrets" {
+  cluster_name    = var.eks-cluster-name
+  namespace       = "external-secrets"
+  service_account = "external-secrets"
+  role_arn        = aws_iam_role.pod-id-external-secrets.arn
 }

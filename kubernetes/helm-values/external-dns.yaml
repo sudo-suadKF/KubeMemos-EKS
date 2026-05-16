@@ -2,7 +2,8 @@ sources:
   - ingress
   - service
 
-provider: aws
+provider:
+  name: aws
 
 aws:
   region: eu-west-2
