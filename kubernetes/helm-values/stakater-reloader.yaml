@@ -1,0 +1,18 @@
+reloader:
+  deployment:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 150m
+        memory: 512Mi
+
+reloader.enableHA: true
+reloader.deployment.replicas: 2
+reloader.reloadOnCreate: true
+reloader.syncAfterRestart: true
+reloader.reloadStrategy: annotations
+reloader.readOnlyRootFileSystem: true
+reloader.watchGlobally: true
+reloader.podMonitor.enabled: true

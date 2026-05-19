@@ -79,4 +79,4 @@ releases:
     namespace: stakater-reloader
     createNamespace: true
     values:
-      -
+      - helm-values/stakater-reloader.yaml
