@@ -75,7 +75,7 @@ releases:
       - helm-values/external-secrets.yaml
 
   - name: stakater-reloader
-    chart: stakater/reloader
+    chart: stakater-reloader/reloader
     namespace: stakater-reloader
     createNamespace: true
     values:
