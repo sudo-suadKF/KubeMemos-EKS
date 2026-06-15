@@ -17,6 +17,9 @@ repositories:
   - name: external-secrets
     url: https://charts.external-secrets.io
 
+  - name: stakater-reloader
+    url: https://stakater.github.io/stakater-charts
+
 releases:
   - name: traefik
     chart: traefik/traefik
@@ -70,3 +73,10 @@ releases:
     createNamespace: true
     values:
       - helm-values/external-secrets.yaml
+
+  - name: stakater-reloader
+    chart: stakater-reloader/reloader
+    namespace: stakater-reloader
+    createNamespace: true
+    values:
+      - helm-values/stakater-reloader.yaml
