@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_ecr_repository" "eks-docker-image" {
   name                 = var.ecr-repo-name
   image_tag_mutability = var.ecr-repo-tag-mutability
@@ -25,7 +27,7 @@ resource "aws_kms_key" "ecr-encrypt" {
         Sid    = "Enable IAM User Permissions"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${var.aws-account-id}:root"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         },
         Action   = "kms:*"
         Resource = "*"
