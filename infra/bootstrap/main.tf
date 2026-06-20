@@ -12,3 +12,7 @@ module "s3" {
   s3-bucket-tag               = var.s3-bucket-tag
   s3-bucket-versioning-status = var.s3-bucket-versioning-status
 }
+
+module "secret" {
+  source = "./modules/secret"
+}
