@@ -2,7 +2,6 @@ module "ecr" {
   source                  = "./modules/ecr"
   ecr-repo-name           = var.ecr-repo-name
   ecr-repo-tag-mutability = var.ecr-repo-tag-mutability
-  aws-account-id          = var.aws-account-id
 }
 
 module "s3" {
@@ -12,4 +11,8 @@ module "s3" {
   s3-bucket-sse-algorithm     = var.s3-bucket-sse-algorithm
   s3-bucket-tag               = var.s3-bucket-tag
   s3-bucket-versioning-status = var.s3-bucket-versioning-status
+}
+
+module "secret" {
+  source = "./modules/secret"
 }
