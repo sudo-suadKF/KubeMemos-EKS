@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "random_password" "rds-password" {
   length           = 32
   special          = true
@@ -11,6 +13,7 @@ resource "random_password" "rds-password" {
 
 resource "aws_secretsmanager_secret" "rds-credentials" {
   name = "production/rds/credentials"
+  kms_key_id = aws_kms_key.secrets-encrypt.key_id
 }
 
 resource "aws_secretsmanager_secret_version" "rds-credentials" {
@@ -19,4 +22,30 @@ resource "aws_secretsmanager_secret_version" "rds-credentials" {
     username            = "memos-user"
     password = random_password.rds-password.result
   })
+}
+
+resource "aws_kms_key" "secrets-encrypt" {
+  description             = "KMS key for Secrets Manager"
+  deletion_window_in_days = 7
+  enable_key_rotation     = true
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "EnableRootAccess"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_kms_alias" "secrets-alias" {
+  name          = "alias/secrets-manager"
+  target_key_id = aws_kms_key.secrets-encrypt.key_id
 }
