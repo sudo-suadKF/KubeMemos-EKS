@@ -235,11 +235,6 @@ variable "ecr-policy-arn" {
   default     = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
-variable "aws-account-id" {
-  description = "Contains AWS account id"
-  type        = string
-}
-
 variable "cluster-log-types" {
   description = "Contains cluster log types"
   type        = list(string)

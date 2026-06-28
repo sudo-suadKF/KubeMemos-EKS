@@ -88,11 +88,6 @@ variable "ecr-policy-arn" {
   type        = string
 }
 
-variable "aws-account-id" {
-  description = "Contains AWS account id"
-  type        = string
-}
-
 variable "cluster-log-types" {
   description = "Contains cluster log types"
   type        = list(string)

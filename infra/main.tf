@@ -89,6 +89,5 @@ module "rds" {
   source          = "./modules/rds"
   private-subs-id = module.vpc.private-subs-id
   rds-sg-id = module.sg.rds-sg-id
-  aws-account-id = var.aws-account-id
 }
 
