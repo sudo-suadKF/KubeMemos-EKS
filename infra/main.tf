@@ -46,7 +46,6 @@ module "eks" {
   min-size                   = var.min-size
   max-unavailable            = var.max-unavailable
   auth-mode                  = var.auth-mode
-  aws-account-id             = var.aws-account-id
   cluster-log-types          = var.cluster-log-types
   secrets                    = var.secrets
   kms-alias-eks-name         = var.kms-alias-eks-name
@@ -89,6 +88,5 @@ module "rds" {
   source          = "./modules/rds"
   private-subs-id = module.vpc.private-subs-id
   rds-sg-id = module.sg.rds-sg-id
-  aws-account-id = var.aws-account-id
 }
 
