@@ -22,6 +22,10 @@ resource "aws_secretsmanager_secret_version" "rds-credentials" {
     username            = "memos-user"
     password = random_password.rds-password.result
   })
+
+  lifecycle {
+    ignore_changes = [secret_string]
+  }
 }
 
 resource "aws_kms_key" "secrets-encrypt" {
