@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_eks_cluster" "my-eks-cluster" {
   name                      = var.eks-cluster-name
   role_arn                  = aws_iam_role.my-cluster-iam-role.arn
@@ -41,7 +43,7 @@ resource "aws_kms_key" "eks-encrypt" {
         Sid    = "Enable IAM User Permissions"
         Effect = "Allow"
         Principal = {
-          AWS = "arn:aws:iam::${var.aws-account-id}:root"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         },
         Action   = "kms:*"
         Resource = "*"

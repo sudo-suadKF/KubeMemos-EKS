@@ -46,7 +46,6 @@ module "eks" {
   min-size                   = var.min-size
   max-unavailable            = var.max-unavailable
   auth-mode                  = var.auth-mode
-  aws-account-id             = var.aws-account-id
   cluster-log-types          = var.cluster-log-types
   secrets                    = var.secrets
   kms-alias-eks-name         = var.kms-alias-eks-name
