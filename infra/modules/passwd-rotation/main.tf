@@ -16,8 +16,8 @@ resource "random_password" "rds-password" {
 resource "aws_secretsmanager_secret_version" "rds-credentials" {
   secret_id = data.aws_secretsmanager_secret.rds-credentials.id
   secret_string = jsonencode({
-    engine = ""
-    host = ""
+    engine = "postgres"
+    host = var.host-db
     username            = "memos-user"
     password = random_password.rds-password.result
     dbname = ""
