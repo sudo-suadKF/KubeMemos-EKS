@@ -7,3 +7,8 @@ variable "rds-sg-id" {
   description = "Contains rds sg ID"
   type        = string
 }
+
+variable "random-password" {
+  description = "Contains random password"
+  type = string
+}
