@@ -32,7 +32,7 @@ resource "aws_db_instance" "postgres-rds" {
   
   multi_az = true
 
-  db_name              = "postgresrds"
+  db_name              = "memosdb"
   username             = "" #referenced later
   password = "" #referenced later
 

@@ -20,8 +20,8 @@ resource "aws_secretsmanager_secret_version" "rds-credentials" {
     host = var.host-db
     username            = "memos-user"
     password = random_password.rds-password.result
-    dbname = ""
-    port = ""
+    dbname = "memosdb"
+    port = 5432
   })
 
   lifecycle {
