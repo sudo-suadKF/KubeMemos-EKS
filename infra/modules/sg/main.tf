@@ -18,6 +18,16 @@ resource "aws_security_group" "rds-sg" {
   }
 }
 
+resource "aws_security_group" "lambda-sg" {
+  name = "lambda-sg"
+  description = "SG for lambda"
+  vpc_id = var.vpc-id
+
+  tags = {
+    Name = "lambda-sg"
+  }
+}
+
 resource "aws_vpc_security_group_ingress_rule" "rds-sg-ingress" {
   description                  = "ingress rule for rds sg"
   security_group_id            = aws_security_group.rds-sg.id
@@ -32,6 +42,15 @@ resource "aws_vpc_security_group_egress_rule" "rds-sg-egress" {
   security_group_id = aws_security_group.rds-sg.id
   ip_protocol       = var.ip-protocol_-1
   cidr_ipv4         = var.internet-cidr
+}
+
+resource "aws_vpc_security_group_egress_rule" "lambda-to-rds" {
+  description = "PostgresSQl to database"
+  security_group_id = aws_security_group.lambda-sg
+  referenced_security_group_id = aws_security_group.rds-sg
+  ip_protocol = var.ip-protocol-tcp
+  from_port = 5432
+  to_port = 5432
 }
 
 # Nodes accepting traffic from cluster, port 443
