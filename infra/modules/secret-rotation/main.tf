@@ -41,8 +41,14 @@ resource "aws_secretsmanager_secret_rotation" "rds-credentials" {
 data "archive_file" "lambda" {
   type = "zip"
   source_file = "${path.module}/../../src/lambda_function.py"
-  output_path = "${path.module}/../../dist/lambda_function.zip"
+  output_path = "${path.module}/../../src/lambda_function.zip"
 }
 
+resource "aws_lambda_function" "rotation" {
+  filename = "${path.module}/../../src/lambda_function.zip"
+  function_name = "lambda-secret-rotation"
+  role = "lambda_function.lambda_handler"
+  runtime = "python3.14"
 
+}
 
