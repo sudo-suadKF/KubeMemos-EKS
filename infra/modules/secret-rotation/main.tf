@@ -55,7 +55,7 @@ resource "aws_lambda_function" "rotation" {
 
   vpc_config {
     subnet_ids = var.private-subs-id
-    security_group_ids = ""
+    security_group_ids = [var.lambda-sg-id]
   }
 }
 
