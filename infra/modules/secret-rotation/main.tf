@@ -45,10 +45,13 @@ data "archive_file" "lambda" {
 }
 
 resource "aws_lambda_function" "rotation" {
-  filename = "${path.module}/../../src/lambda_function.zip"
+  filename = data.archive_file.lambda.output_path
   function_name = "lambda-secret-rotation"
-  role = "lambda_function.lambda_handler"
+  role = ""
+  handler = "lambda_function.lambda_handler"
   runtime = "python3.14"
+  source_code_hash = data.archive_file.lambda.output_base64sha256
+  timeout = 30
 
 }
 
