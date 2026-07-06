@@ -53,5 +53,9 @@ resource "aws_lambda_function" "rotation" {
   source_code_hash = data.archive_file.lambda.output_base64sha256
   timeout = 30
 
+  vpc_config {
+    subnet_ids = var.private-subs-id
+    security_group_ids = ""
+  }
 }
 
