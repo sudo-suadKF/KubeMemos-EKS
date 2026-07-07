@@ -58,6 +58,13 @@ resource "aws_lambda_function" "rotation" {
     security_group_ids = [var.lambda-sg-id]
   }
 
+  logging_config {
+    application_log_level = "INFO"
+    log_format = "JSON"
+    log_group = ""
+    system_log_level = "INFO"
+  }
+
   environment {
     variables = {
       SECRETS_MANAGER_ENDPOINT = "https://secretsmanager.eu-west-2.amazonaws.com"

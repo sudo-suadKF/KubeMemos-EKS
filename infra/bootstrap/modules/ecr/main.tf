@@ -21,7 +21,6 @@ resource "aws_kms_key" "ecr-encrypt" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Id      = "key-default-1"
     Statement = [
       {
         Sid    = "Enable IAM User Permissions"
@@ -36,7 +35,7 @@ resource "aws_kms_key" "ecr-encrypt" {
         Sid    = "Allow use of the key"
         Effect = "Allow"
         Principal = {
-          Service = "eks.amazonaws.com"
+          Service = "ecr.amazonaws.com"
         },
         Action = [
           "kms:DescribeKey",
