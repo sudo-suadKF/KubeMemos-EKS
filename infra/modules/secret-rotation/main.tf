@@ -65,7 +65,6 @@ resource "aws_lambda_function" "rotation" {
   logging_config {
     application_log_level = "INFO"
     log_format = "JSON"
-    log_group = aws_cloudwatch_log_group.lambda-logs.name
     system_log_level = "INFO"
   }
 
@@ -74,11 +73,6 @@ resource "aws_lambda_function" "rotation" {
       SECRETS_MANAGER_ENDPOINT = "https://secretsmanager.eu-west-2.amazonaws.com"
     }
   }
-}
-
-resource "aws_cloudwatch_log_group" "lambda-logs" {
-  name = "lambda-logs"
-  retention_in_days = 30
 }
 
 resource "aws_iam_role" "lambda" {
@@ -93,5 +87,58 @@ resource "aws_iam_role" "lambda" {
         Service = "lambda.amazonaws.com"
       }
     }]
+  })
+}
+
+resource "aws_iam_role_policy" "lambda" {
+  name = "rotation-lambda-policy"
+  role = aws_iam_role.lambda.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "secretsmanager:DescribeSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:PutSecretValue",
+          "secretsmanager:UpdateSecretVersionStage"
+        ]
+        Resource = data.aws_secretsmanager_secret.rds-credentials.arn
+      },
+      {
+        Effect   = "Allow"
+        Action   = "secretsmanager:GetRandomPassword"
+        Resource = "*"
+      },
+       {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey",
+          "kms:DescribeKey"
+        ]
+        Resource = data.aws_kms_key.by_alias.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ]
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:CreateNetworkInterface",
+          "ec2:DeleteNetworkInterface",
+          "ec2:DescribeNetworkInterfaces"
+        ]
+        Resource = "*"
+      }
+    ]
   })
 }
