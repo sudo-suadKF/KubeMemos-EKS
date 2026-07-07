@@ -2,6 +2,10 @@ data "aws_secretsmanager_secret" "rds-credentials" {
   name = "production/rds/credentials"
 }
 
+data "aws_kms_key" "by_alias" {
+  key_id = "alias/secrets-manager"
+}
+
 resource "random_password" "rds-password" {
   length           = 32
   special          = true
