@@ -37,6 +37,15 @@ resource "aws_vpc_security_group_ingress_rule" "rds-sg-ingress" {
   to_port                      = 5432
 }
 
+resource "aws_vpc_security_group_ingress_rule" "rds-to-lambda" {
+  description = "PostgreSQL from lambda"
+  security_group_id = aws_security_group.rds-sg.id
+  referenced_security_group_id = aws_security_group.lambda-sg.id
+  ip_protocol = var.ip-protocol-tcp
+  from_port = 5432
+  to_port = 5432
+}
+
 resource "aws_vpc_security_group_egress_rule" "rds-sg-egress" {
   description       = "egress for rds sg"
   security_group_id = aws_security_group.rds-sg.id
@@ -46,8 +55,8 @@ resource "aws_vpc_security_group_egress_rule" "rds-sg-egress" {
 
 resource "aws_vpc_security_group_egress_rule" "lambda-to-rds" {
   description = "PostgresSQl to database"
-  security_group_id = aws_security_group.lambda-sg
-  referenced_security_group_id = aws_security_group.rds-sg
+  security_group_id = aws_security_group.lambda-sg.id
+  referenced_security_group_id = aws_security_group.rds-sg.id
   ip_protocol = var.ip-protocol-tcp
   from_port = 5432
   to_port = 5432
@@ -55,7 +64,7 @@ resource "aws_vpc_security_group_egress_rule" "lambda-to-rds" {
 
 resource "aws_vpc_security_group_egress_rule" "lambda-to-secrets-manager" {
   description = "HTTPS to Secrets Manager endpoint"
-  security_group_id = aws_security_group.lambda-sg
+  security_group_id = aws_security_group.lambda-sg.id
   referenced_security_group_id = ""
   ip_protocol = var.ip-protocol-tcp
   from_port = 443
