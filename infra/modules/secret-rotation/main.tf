@@ -57,5 +57,11 @@ resource "aws_lambda_function" "rotation" {
     subnet_ids = var.private-subs-id
     security_group_ids = [var.lambda-sg-id]
   }
+
+  environment {
+    variables = {
+      SECRETS_MANAGER_ENDPOINT = "https://secretsmanager.eu-west-2.amazonaws.com"
+    }
+  }
 }
 
