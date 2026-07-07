@@ -51,7 +51,7 @@ data "archive_file" "lambda" {
 resource "aws_lambda_function" "rotation" {
   filename = data.archive_file.lambda.output_path
   function_name = "lambda-secret-rotation"
-  role = ""
+  role = aws_iam_role.lambda
   handler = "lambda_function.lambda_handler"
   runtime = "python3.14"
   source_code_hash = data.archive_file.lambda.output_base64sha256
@@ -65,7 +65,7 @@ resource "aws_lambda_function" "rotation" {
   logging_config {
     application_log_level = "INFO"
     log_format = "JSON"
-    log_group = aws_cloudwatch_log_group.lambda-logs
+    log_group = aws_cloudwatch_log_group.lambda-logs.name
     system_log_level = "INFO"
   }
 
@@ -81,3 +81,17 @@ resource "aws_cloudwatch_log_group" "lambda-logs" {
   retention_in_days = 30
 }
 
+resource "aws_iam_role" "lambda" {
+  name = "rds-rotation-lambda-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+}
