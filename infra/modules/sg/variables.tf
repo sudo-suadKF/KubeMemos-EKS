@@ -82,3 +82,8 @@ variable "ip-protocol-udp" {
   description = "UDP protocol"
   type        = string
 }
+
+variable "vpc-cidr" {
+  description = "VPC's cidr block"
+  type = string
+}
