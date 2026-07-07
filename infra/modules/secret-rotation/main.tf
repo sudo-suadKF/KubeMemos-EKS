@@ -61,7 +61,7 @@ resource "aws_lambda_function" "rotation" {
   logging_config {
     application_log_level = "INFO"
     log_format = "JSON"
-    log_group = ""
+    log_group = aws_cloudwatch_log_group.lambda-logs
     system_log_level = "INFO"
   }
 
@@ -70,5 +70,10 @@ resource "aws_lambda_function" "rotation" {
       SECRETS_MANAGER_ENDPOINT = "https://secretsmanager.eu-west-2.amazonaws.com"
     }
   }
+}
+
+resource "aws_cloudwatch_log_group" "lambda-logs" {
+  name = "lambda-logs"
+  retention_in_days = 30
 }
 
