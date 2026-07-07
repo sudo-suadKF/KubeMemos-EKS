@@ -35,7 +35,7 @@ resource "aws_secretsmanager_secret_version" "rds-credentials" {
 
 resource "aws_secretsmanager_secret_rotation" "rds-credentials" {
   secret_id = data.aws_secretsmanager_secret.rds-credentials.id
-  rotation_lambda_arn = ""
+  rotation_lambda_arn = aws_lambda_function.rotation.arn
   
   rotation_rules {
     automatically_after_days = 30
@@ -51,7 +51,7 @@ data "archive_file" "lambda" {
 resource "aws_lambda_function" "rotation" {
   filename = data.archive_file.lambda.output_path
   function_name = "lambda-secret-rotation"
-  role = aws_iam_role.lambda
+  role = aws_iam_role.lambda.arn
   handler = "lambda_function.lambda_handler"
   runtime = "python3.14"
   source_code_hash = data.archive_file.lambda.output_base64sha256
