@@ -75,7 +75,7 @@ resource "aws_vpc_security_group_egress_rule" "lambda-to-rds" {
 resource "aws_vpc_security_group_egress_rule" "lambda-to-secrets-manager" {
   description = "HTTPS to Secrets Manager endpoint"
   security_group_id = aws_security_group.lambda-sg.id
-  referenced_security_group_id = ""
+  referenced_security_group_id = aws_security_group.vpc-endpoints-sg.id
   ip_protocol = var.ip-protocol-tcp
   from_port = 443
   to_port = 443
@@ -83,7 +83,7 @@ resource "aws_vpc_security_group_egress_rule" "lambda-to-secrets-manager" {
 
 resource "aws_vpc_security_group_ingress_rule" "endpoint-ingress" {
   description = "HTTPS traffic from VPC"
-  security_group_id = aws_security_group.vpc-endpoints-sg
+  security_group_id = aws_security_group.vpc-endpoints-sg.id
   cidr_ipv4 = var.vpc-cidr
   ip_protocol = var.ip-protocol-tcp
   from_port = 443
