@@ -137,7 +137,10 @@ resource "aws_iam_role_policy" "lambda" {
         Action = [
           "ec2:CreateNetworkInterface",
           "ec2:DeleteNetworkInterface",
-          "ec2:DescribeNetworkInterfaces"
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeSubnets",
+          "ec2:AssignPrivateIpAddresses",
+          "ec2:UnassignPrivateIpAddresses"
         ]
         Resource = "*"
       }
