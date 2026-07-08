@@ -73,6 +73,8 @@ resource "aws_lambda_function" "rotation" {
       SECRETS_MANAGER_ENDPOINT = "https://secretsmanager.eu-west-2.amazonaws.com"
     }
   }
+
+  depends_on = [ aws_iam_role.lambda, aws_iam_role_policy.lambda ]
 }
 
 resource "aws_iam_role" "lambda" {
