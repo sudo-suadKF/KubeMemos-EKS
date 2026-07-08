@@ -144,3 +144,11 @@ resource "aws_iam_role_policy" "lambda" {
     ]
   })
 }
+
+resource "aws_lambda_permission" "secretsmanager" {
+  statement_id = "AllowSecretsManagerInvoke"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.rotation.function_name
+  principal = "secretsmanager.amazonaws.com"
+  source_arn = data.aws_secretsmanager_secret.rds-credentials.arn
+}
