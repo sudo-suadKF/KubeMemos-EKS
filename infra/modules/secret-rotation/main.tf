@@ -68,7 +68,7 @@ resource "aws_lambda_function" "rotation" {
     }
   }
 
-  depends_on = [ aws_iam_role.lambda, aws_iam_role_policy.lambda, data.archive_file.lambda ]
+  depends_on = [ aws_iam_role.lambda, aws_iam_role_policy.lambda ]
 }
 
 resource "aws_iam_role" "lambda" {
