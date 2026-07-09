@@ -90,3 +90,10 @@ module "rds" {
   rds-sg-id = module.sg.rds-sg-id
 }
 
+module "secret-rotation" {
+  source = "./modules/secret-rotation"
+  private-subs-id = module.vpc.private-subs-id
+  host-db = module.rds.host-db
+  lambda-sg-id = module.sg.lambda-sg-id
+}
+
