@@ -92,7 +92,7 @@ resource "aws_vpc_security_group_ingress_rule" "endpoint-ingress" {
 
 resource "aws_vpc_security_group_egress_rule" "endpoint-egress" {
   description = "VPC endpoints egress rule"
-  security_group_id = aws_security_group.vpc-endpoints-sg
+  security_group_id = aws_security_group.vpc-endpoints-sg.id
   cidr_ipv4 = var.internet-cidr
   ip_protocol = var.ip-protocol_-1
   from_port = 0
