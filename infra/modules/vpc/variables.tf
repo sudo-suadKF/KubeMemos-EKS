@@ -117,3 +117,8 @@ variable "private-sub3-tags" {
   description = "Contains private sub3s tag"
   type        = string
 }
+
+variable "vpc-endpoints-sg-id" {
+  description = "Contains VPC endpoints SG's id"
+  type = string
+}
