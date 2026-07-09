@@ -82,7 +82,6 @@ module "pod-ids" {
   external-dns               = var.external-dns
   iam-role-pod-id-dns-name = var.iam-role-pod-id-dns-name
   my-hosted-zone-name        = var.my-hosted-zone-name
-  rds-secret-arn = module.rds.rds-secret-arn
   iam-role-pod-id-dns-tags = var.iam-role-pod-id-dns-tags
 }
 
