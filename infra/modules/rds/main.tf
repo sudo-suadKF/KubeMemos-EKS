@@ -33,7 +33,7 @@ resource "aws_db_instance" "postgres-rds" {
   multi_az = true
 
   db_name              = "memosdb"
-  username             = "memos-user"
+  username             = "memosuser"
   password = var.random-password
 
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade", "iam-db-auth-error"]
