@@ -2,6 +2,10 @@ data "aws_secretsmanager_secret" "rds-credentials" {
   name = "production/rds/credentials"
 }
 
+data "aws_kms_key" "by_alias" {
+  key_id = "alias/secrets-manager"
+}
+
 data "aws_route53_zone" "my-hosted-zone" {
   name         = var.my-hosted-zone-name
   private_zone = false
@@ -105,7 +109,17 @@ resource "aws_iam_policy" "external-secrets" {
         "secretsmanager:ListSecretVersionIds"
       ]
       Resource = data.aws_secretsmanager_secret.rds-credentials.arn
-    }]
+    },
+    {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey",
+          "kms:DescribeKey"
+        ]
+        Resource = data.aws_kms_key.by_alias.arn
+      }
+    ]
   })
 }
 
