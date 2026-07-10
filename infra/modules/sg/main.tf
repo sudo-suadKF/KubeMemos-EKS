@@ -95,8 +95,6 @@ resource "aws_vpc_security_group_egress_rule" "endpoint-egress" {
   security_group_id = aws_security_group.vpc-endpoints-sg.id
   cidr_ipv4 = var.internet-cidr
   ip_protocol = var.ip-protocol_-1
-  from_port = 0
-  to_port = 0
 }
 
 # Nodes accepting traffic from cluster, port 443
