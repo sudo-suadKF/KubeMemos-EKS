@@ -9,7 +9,7 @@ data "aws_kms_key" "by_alias" {
 resource "random_password" "rds-password" {
   length           = 32
   special          = true
-  override_special = "!#$%^&*()-_=+[]{}|:,.<>?"
+  override_special = "!#$^&*()-_=+[]{}|:,.<>?"
   # Avoid characters that cause issues in connection strings
   min_lower   = 4
   min_upper   = 4
