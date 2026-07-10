@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/sudo-suadKF/KubeMemos-EKS
-    targetRevision: test-db-connect
+    targetRevision: passwd-rotation
     path: kubernetes/my-chart
   destination:
     server: https://kubernetes.default.svc
