@@ -2,13 +2,19 @@
 
 set -e
 
-rm -rf ../infra/build
-mkdir -p ../infra/build
+rm -rf ../infra/build/package
+mkdir -p ../infra/build/package
 
 pip3 install --no-cache-dir -r ../infra/src/requirements.txt -t ../infra/build/package
+cp ../infra/src/lambda_function.py ../infra/build
 
-cp ../infra/src/lambda_function.py ../infra/build/package
+cd ../infra/build/package
+zip -r ../lambda.zip .
 
-zip -r ../infra/build/lambda.zip ../infra/build/package
+cd ..
+zip lambda.zip lambda_function.py
 
+zipinfo -1 lambda.zip
+
+echo ""
 echo "Done! Lambda zip created."
