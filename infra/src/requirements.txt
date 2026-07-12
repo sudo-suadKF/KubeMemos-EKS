@@ -1,1 +1,1 @@
-PyGreSQL==6.1.0
+PyGreSQL==6.2.3
