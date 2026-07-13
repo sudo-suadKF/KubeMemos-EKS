@@ -23,6 +23,7 @@ zip -r ../lambda.zip .
 cd ..
 zip lambda.zip lambda_function.py
 
+echo ""
 zipinfo -1 lambda.zip
 
 echo ""
