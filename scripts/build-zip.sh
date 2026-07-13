@@ -11,7 +11,7 @@ mkdir -p ../infra/build/package
 pip3 install --no-cache-dir -r ../infra/src/requirements.txt -t ../infra/build/package
 cp ../infra/src/lambda_function.py ../infra/build
 
-ldd "$PG_MODULE" | awk '/=>/ {print $3} /^\// {print $1}' \
+ldd "$PG_MODULE" | awk '/=>/ {print $3}' \
 | while read lib; do
     echo "Copying $(basename "$lib")"
     cp -L "$lib" "$PACKAGE_DIR"
