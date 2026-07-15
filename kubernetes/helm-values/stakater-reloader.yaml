@@ -1,5 +1,14 @@
 reloader:
+  enabeleHA: true
+  reloadOnCreate: true
+  syncAfterRestart: true
+  reloadStrategy: annotations
+  readOnlyRootFileSystem: true
+  watchGlobally: true
+  podMonitor:
+    enabled: true
   deployment:
+    replicas: 2
     resources:
       requests:
         cpu: 10m
@@ -7,12 +16,3 @@ reloader:
       limits:
         cpu: 150m
         memory: 512Mi
-
-reloader.enableHA: true
-reloader.deployment.replicas: 2
-reloader.reloadOnCreate: true
-reloader.syncAfterRestart: true
-reloader.reloadStrategy: annotations
-reloader.readOnlyRootFileSystem: true
-reloader.watchGlobally: true
-reloader.podMonitor.enabled: true
