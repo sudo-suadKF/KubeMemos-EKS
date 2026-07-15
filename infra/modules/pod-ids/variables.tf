@@ -22,8 +22,3 @@ variable "iam-role-pod-id-dns-tags" {
   description = "Tag for iam role po identity"
   type        = string
 }
-
-variable "rds-secret-arn" {
-  description = "RDS secret ARN"
-  type = string
-}

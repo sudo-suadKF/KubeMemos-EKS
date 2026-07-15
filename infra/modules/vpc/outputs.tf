@@ -9,3 +9,7 @@ output "private-subs-id" {
 output "vpc-id" {
   value = aws_vpc.my-vpc.id
 }
+
+output "vpc-cidr" {
+  value = aws_vpc.my-vpc.cidr_block
+}

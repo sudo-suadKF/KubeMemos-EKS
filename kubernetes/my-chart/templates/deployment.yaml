@@ -4,6 +4,7 @@ metadata:
   name: {{ .Values.deployment.name }}-deployment
   annotations:
     secret.reloader.stakater.com/reload: "memos-dsn"
+    reloader.stakater.com/search: "true"
   labels:
     app: {{ .Values.deployment.name }}
 spec:

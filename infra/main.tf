@@ -24,6 +24,7 @@ module "vpc" {
   az1                 = var.az1
   az2                 = var.az2
   az3                 = var.az3
+  vpc-endpoints-sg-id = module.sg.vpc-endpoints-sg-id
 }
 
 module "eks" {
@@ -72,6 +73,7 @@ module "sg" {
   port-DNS                                 = var.port-DNS
   port-10250                               = var.port-10250
   port-HTTPS                               = var.port-HTTPS
+  vpc-cidr = module.vpc.vpc-cidr
 }
 
 module "pod-ids" {
@@ -80,7 +82,6 @@ module "pod-ids" {
   external-dns               = var.external-dns
   iam-role-pod-id-dns-name = var.iam-role-pod-id-dns-name
   my-hosted-zone-name        = var.my-hosted-zone-name
-  rds-secret-arn = module.rds.rds-secret-arn
   iam-role-pod-id-dns-tags = var.iam-role-pod-id-dns-tags
 }
 
@@ -88,5 +89,13 @@ module "rds" {
   source          = "./modules/rds"
   private-subs-id = module.vpc.private-subs-id
   rds-sg-id = module.sg.rds-sg-id
+  random-password = module.secret-rotation.random-password
+}
+
+module "secret-rotation" {
+  source = "./modules/secret-rotation"
+  private-subs-id = module.vpc.private-subs-id
+  host-db = module.rds.host-db
+  lambda-sg-id = module.sg.lambda-sg-id
 }
 

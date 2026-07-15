@@ -37,7 +37,6 @@ resource "aws_kms_key" "eks-encrypt" {
 
   policy = jsonencode({
     Version = "2012-10-17"
-    Id      = "key-default-1"
     Statement = [
       {
         Sid    = "Enable IAM User Permissions"

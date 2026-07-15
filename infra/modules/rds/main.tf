@@ -32,9 +32,9 @@ resource "aws_db_instance" "postgres-rds" {
   
   multi_az = true
 
-  db_name              = "postgresrds"
-  username             = "" #referenced later
-  password = "" #referenced later
+  db_name              = "memosdb"
+  username             = "memosuser"
+  password = var.random-password
 
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade", "iam-db-auth-error"]
   monitoring_interval = 60
@@ -45,6 +45,10 @@ resource "aws_db_instance" "postgres-rds" {
 
   parameter_group_name = aws_db_parameter_group.postgres-parameter-group.name
   skip_final_snapshot  = true
+
+  lifecycle {
+    ignore_changes = [password]
+  }
 }
 
 resource "aws_db_parameter_group" "postgres-parameter-group" {

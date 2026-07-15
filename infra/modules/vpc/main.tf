@@ -97,3 +97,17 @@ resource "aws_route_table_association" "private-rt-to-private-subnets" {
   subnet_id      = each.value.id
   route_table_id = aws_route_table.private-rt.id
 }
+
+resource "aws_vpc_endpoint" "secretsmanager" {
+  vpc_id = aws_vpc.my-vpc.id
+  service_name = "com.amazonaws.eu-west-2.secretsmanager"
+  vpc_endpoint_type = "Interface"
+  security_group_ids = [var.vpc-endpoints-sg-id]
+  subnet_ids = [for subnet in aws_subnet.private_subnets : subnet.id]
+  private_dns_enabled = true
+
+  tags = {
+    Name = "secretsmanager-endpoint"
+  }
+
+}

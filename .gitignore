@@ -4,3 +4,4 @@
 **/terraform.tfstate.backup
 **/.infracost/
 .pre-commit-trivy-cache
+/infra/build
