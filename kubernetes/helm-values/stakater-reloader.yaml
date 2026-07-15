@@ -9,6 +9,8 @@ reloader:
     enabled: true
     labels:
       release: prometheus-grafana
+  logLevel: debug
+  logFormat: json
   deployment:
     replicas: 2
     resources:
