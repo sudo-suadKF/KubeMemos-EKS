@@ -53,4 +53,17 @@ locals {
       }
     }
   }
+
+  interface_endpoints = {
+    ec2 = "com.amazonaws.eu-west-2.ec2"
+    ecr-api = "com.amazonaws.eu-west-2.ecr.api"
+    ecr-dkr = "com.amazonaws.eu-west-2.ecr.dkr"
+    elb = "com.amazonaws.eu-west-2.elasticloadbalancing"
+    eks = "com.amazonaws.eu-west-2.eks"
+    eks-auth = "com.amazonaws.eu-west-2.eks-auth"
+    route53 = "com.amazonaws.eu-west-2.route53"
+    logs = "com.amazonaws.eu-west-2.logs"
+    kms = "com.amazonaws.eu-west-2.kms"
+    secretsmanager = "com.amazonaws.eu-west-2.secretsmanager"
+  }
 }
