@@ -103,7 +103,7 @@ resource "aws_iam_role_policy" "terraform" {
 
 resource "aws_iam_role_policy" "cicd-guardrails" {
   name = "cicd-guardrails"
-  role = aws_iam_role.github-actions
+  role = aws_iam_role.github-actions.id
 
   policy = jsonencode({
     Version = "2012-10-17"
