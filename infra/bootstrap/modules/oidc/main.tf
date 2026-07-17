@@ -91,7 +91,7 @@ resource "aws_iam_role_policy" "terraform" {
           "lambda:*",
           "acm:*",
           "elasticloadbalancing:*",
-          "ecs",
+          "ecs:*",
         ]
         Resource = "*"
       },
