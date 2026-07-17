@@ -100,3 +100,31 @@ resource "aws_iam_role_policy" "terraform" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "cicd-guardrails" {
+  name = "cicd-guardrails"
+  role = aws_iam_role.github-actions
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Deny"
+        Action = [
+          "iam:CreateUser",
+          "iam:CreateAccessKey",
+          "organizations:*",
+          "account:*",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Deny"
+        Action = [
+          "iam:UpdateAssumeRolePolicy",
+        ]
+        Resource = aws_iam_role.github-actions.arn
+      }
+    ]
+  })
+}
