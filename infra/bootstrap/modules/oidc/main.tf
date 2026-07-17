@@ -32,3 +32,32 @@ resource "aws_iam_role" "github-actions" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "ecr" {
+  name = "ecr-access-policy"
+  role = aws_iam_role.github-actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = ["ecr:GetAuthorizationToken"]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload"
+        ]
+        Resource = var.ecr-repo-arn
+      }
+    ]
+  })
+}
