@@ -16,3 +16,9 @@ module "s3" {
 module "secret" {
   source = "./modules/secret"
 }
+
+module "oidc" {
+  source = "./modules/oidc"
+  ecr-repo-arn = module.ecr.ecr-repo-arn
+  s3-bucket-arn = module.s3.s3-bucket-arn
+}
