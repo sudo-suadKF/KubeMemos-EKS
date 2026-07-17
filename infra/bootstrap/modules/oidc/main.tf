@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_iam_openid_connect_provider" "github-actions" {
   url = "https://token.actions.githubusercontent.com"
   client_id_list = ["sts.amazonaws.com"]
@@ -25,7 +27,10 @@ resource "aws_iam_role" "github-actions" {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:sudo-suadKF/KubeMemos-EKS:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = [
+                "repo:sudo-suadKF/KubeMemos-EKS:ref:refs/heads/main",
+                "repo:sudo-suadKF/SentinelStack-Gatus:ref:refs/heads/main",
+            ]
           }
         }
       }
@@ -56,7 +61,10 @@ resource "aws_iam_role_policy" "ecr" {
           "ecr:UploadLayerPart",
           "ecr:CompleteLayerUpload"
         ]
-        Resource = var.ecr-repo-arn
+        Resource = [
+            var.ecr-repo-arn,
+            "arn:aws:ecr:eu-west-2:${data.aws_caller_identity.current.account_id}:repository/gatus-ecs-project",
+        ]
       }
     ]
   })
@@ -81,6 +89,8 @@ resource "aws_iam_role_policy" "terraform" {
           "logs:*",
           "route53:*",
           "lambda:*",
+          "acm:*",
+          "elasticloadbalancing:*",
         ]
         Resource = "*"
       },
@@ -95,6 +105,8 @@ resource "aws_iam_role_policy" "terraform" {
         Resource = [
           var.s3-bucket-arn,
           "${var.s3-bucket-arn}/*",
+          "arn:aws:s3:::terraform-state-gatus-ecs-project",
+          "arn:aws:s3:::terraform-state-gatus-ecs-project/*"
         ]
       }
     ]
