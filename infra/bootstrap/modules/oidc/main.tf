@@ -61,3 +61,42 @@ resource "aws_iam_role_policy" "ecr" {
     ]
   })
 }
+
+resource "aws_iam_role_policy" "terraform" {
+  name = "terraform-permission-policy"
+  role = aws_iam_role.github-actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:*",
+          "rds:*",
+          "eks:*",
+          "iam:*",
+          "secretsmanager:*",
+          "kms:*",
+          "logs:*",
+          "route53:*",
+          "lambda:*",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket",
+        ]
+        Resource = [
+          var.s3-bucket-arn,
+          "${var.s3-bucket-arn}/*",
+        ]
+      }
+    ]
+  })
+}
