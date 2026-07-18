@@ -11,6 +11,7 @@ module "s3" {
   s3-bucket-sse-algorithm     = var.s3-bucket-sse-algorithm
   s3-bucket-tag               = var.s3-bucket-tag
   s3-bucket-versioning-status = var.s3-bucket-versioning-status
+  oidc-role-arn = module.oidc.oidc-role-arn
 }
 
 module "secret" {
