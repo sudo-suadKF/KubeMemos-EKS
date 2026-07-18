@@ -95,3 +95,8 @@ resource "aws_kms_key" "s3-tf-state" {
     ]
   })
 }
+
+resource "aws_kms_alias" "tf-state" {
+  name = "alias/tf-state"
+  target_key_id = aws_kms_key.s3-tf-state.key_id
+}
