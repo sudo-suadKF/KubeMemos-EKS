@@ -149,3 +149,19 @@ resource "aws_lambda_permission" "secretsmanager" {
   principal = "secretsmanager.amazonaws.com"
   source_arn = data.aws_secretsmanager_secret.rds-credentials.arn
 }
+
+resource "null_resource" "initial-rotation" {
+  depends_on = [
+    aws_lambda_function.rotation,
+    aws_lambda_permission.secretsmanager,
+    aws_secretsmanager_secret_rotation.rds-credentials,
+    aws_secretsmanager_secret_version.rds-credentials
+  ]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      aws secretsmanager rotate-secret \
+        --secret-id ${data.aws_secretsmanager_secret.rds-credentials.id}
+    EOT
+  }
+}
