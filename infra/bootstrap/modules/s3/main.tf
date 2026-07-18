@@ -101,6 +101,24 @@ resource "aws_kms_key" "s3-tf-state" {
         Resource = "*"
       },
       {
+        Sid    = "AllowTerraformAccess"
+        Effect = "Allow"
+        Principal = {
+          AWS = [
+            var.oidc-role-arn,
+            "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/SudoSuad"
+          ]
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+      },
+      {
          Sid    = "Allow S3 Service"
         Effect = "Allow"
         Principal = {

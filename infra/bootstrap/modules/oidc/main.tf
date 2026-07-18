@@ -118,8 +118,10 @@ resource "aws_iam_role_policy" "terraform" {
       {
         Effect = "Allow"
         Action = [
+          "kms:Encrypt",
           "kms:Decrypt",
-          "kms:GenerateDataKey",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
           "kms:DescribeKey"
         ]
         Resource = var.s3-kms-key-arn

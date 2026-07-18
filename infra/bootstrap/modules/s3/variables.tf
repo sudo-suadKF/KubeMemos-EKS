@@ -22,3 +22,7 @@ variable "s3-bucket-sse-algorithm" {
   description = "Contains sse algorithm's value"
   type        = string
 }
+
+variable "oidc-role-arn" {
+  description = "OIDC role's ARN value"
+}
