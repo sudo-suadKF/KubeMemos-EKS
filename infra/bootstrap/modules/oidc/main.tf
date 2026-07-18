@@ -114,7 +114,16 @@ resource "aws_iam_role_policy" "terraform" {
           var.s3-bucket-arn,
           "arn:aws:s3:::terraform-state-gatus-ecs-project"
         ]
-      }
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey",
+          "kms:DescribeKey"
+        ]
+        Resource = var.s3-kms-key-arn
+      },
     ]
   })
 }
