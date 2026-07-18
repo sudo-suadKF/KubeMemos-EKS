@@ -37,5 +37,5 @@ variable "s3-bucket-versioning-status" {
 variable "s3-bucket-sse-algorithm" {
   description = "Contains sse algorithm's value"
   type        = string
-  default     = "AES256"
+  default     = "aws:kms"
 }
