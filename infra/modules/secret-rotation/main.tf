@@ -150,7 +150,7 @@ resource "aws_lambda_permission" "secretsmanager" {
   source_arn = data.aws_secretsmanager_secret.rds-credentials.arn
 }
 
-resource "null_resource" "initial-rotation" {
+resource "terraform_data" "initial-rotation" {
   depends_on = [
     aws_lambda_function.rotation,
     aws_lambda_permission.secretsmanager,
