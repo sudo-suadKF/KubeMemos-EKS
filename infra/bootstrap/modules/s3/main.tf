@@ -45,6 +45,43 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse-s3" {
   }
 }
 
+resource "aws_s3_bucket_policy" "encryption" {
+  bucket = aws_s3_bucket.eks-bootstrap.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyNonSSLAccess"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.eks-bootstrap.arn,
+          "${aws_s3_bucket.eks-bootstrap.arn}/*"
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      },
+      {
+        Sid       = "DenyIncorrectEncryption"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:PutObject"
+        Resource  = "${aws_s3_bucket.eks-bootstrap.arn}/*"
+        Condition = {
+          StringNotEquals = {
+            "s3:x-amz-server-side-encryption-aws-kms-key-id" = aws_kms_key.s3-tf-state.arn
+          }
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_kms_key" "s3-tf-state" {
   description = "KMS key for TF state file encryption"
   enable_key_rotation = true
