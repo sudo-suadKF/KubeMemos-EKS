@@ -1,7 +1,7 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_openid_connect_provider" "github-actions" {
-  url = "https://token.actions.githubusercontent.com"
+  url            = "https://token.actions.githubusercontent.com"
   client_id_list = ["sts.amazonaws.com"]
 
   tags = {
@@ -10,7 +10,7 @@ resource "aws_iam_openid_connect_provider" "github-actions" {
 }
 
 resource "aws_iam_role" "github-actions" {
-  name = "github-actions-oidc-role"
+  name                 = "github-actions-oidc-role"
   max_session_duration = 3600
 
   assume_role_policy = jsonencode({
@@ -28,8 +28,8 @@ resource "aws_iam_role" "github-actions" {
           }
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
-                "repo:sudo-suadKF/KubeMemos-EKS:ref:refs/heads/main",
-                "repo:sudo-suadKF/SentinelStack-Gatus:ref:refs/heads/main",
+              "repo:sudo-suadKF/KubeMemos-EKS:ref:refs/heads/main",
+              "repo:sudo-suadKF/SentinelStack-Gatus:ref:refs/heads/main",
             ]
           }
         }
@@ -46,8 +46,8 @@ resource "aws_iam_role_policy" "ecr" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect = "Allow"
-        Action = ["ecr:GetAuthorizationToken"]
+        Effect   = "Allow"
+        Action   = ["ecr:GetAuthorizationToken"]
         Resource = "*"
       },
       {
@@ -62,8 +62,8 @@ resource "aws_iam_role_policy" "ecr" {
           "ecr:CompleteLayerUpload"
         ]
         Resource = [
-            var.ecr-repo-arn,
-            "arn:aws:ecr:eu-west-2:${data.aws_caller_identity.current.account_id}:repository/gatus-ecs-project",
+          var.ecr-repo-arn,
+          "arn:aws:ecr:eu-west-2:${data.aws_caller_identity.current.account_id}:repository/gatus-ecs-project",
         ]
       }
     ]
@@ -101,15 +101,31 @@ resource "aws_iam_role_policy" "terraform" {
           "s3:GetObject",
           "s3:PutObject",
           "s3:DeleteObject",
-          "s3:ListBucket",
         ]
         Resource = [
-          var.s3-bucket-arn,
           "${var.s3-bucket-arn}/*",
-          "arn:aws:s3:::terraform-state-gatus-ecs-project",
           "arn:aws:s3:::terraform-state-gatus-ecs-project/*"
         ]
-      }
+      },
+      {
+        Effect : "Allow"
+        Action : ["s3:ListBucket"]
+        Resource : [
+          var.s3-bucket-arn,
+          "arn:aws:s3:::terraform-state-gatus-ecs-project"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = var.s3-kms-key-arn
+      },
     ]
   })
 }

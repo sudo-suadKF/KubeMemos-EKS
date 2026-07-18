@@ -111,8 +111,10 @@ resource "aws_iam_role_policy" "lambda" {
        {
         Effect = "Allow"
         Action = [
+          "kms:Encrypt",
           "kms:Decrypt",
-          "kms:GenerateDataKey",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
           "kms:DescribeKey"
         ]
         Resource = data.aws_kms_key.by_alias.arn

@@ -12,6 +12,8 @@ terraform {
     use_lockfile = true
     region       = "eu-west-2"
     encrypt      = true
+    kms_key_id = "alias/tf-state"
+    insecure = false
   }
 }
 
