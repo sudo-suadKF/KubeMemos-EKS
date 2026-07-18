@@ -52,6 +52,6 @@ resource "aws_kms_key" "ecr-encrypt" {
 }
 
 resource "aws_kms_alias" "ecr" {
-  name          = "alias/ecr"
+  name          = var.ecr-kms-alias
   target_key_id = aws_kms_key.ecr-encrypt.id
 }

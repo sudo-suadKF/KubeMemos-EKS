@@ -38,7 +38,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse-s3" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = var.s3-bucket-sse-algorithm
+      sse_algorithm     = var.s3-bucket-sse-algorithm
       kms_master_key_id = aws_kms_key.s3-tf-state.arn
     }
     bucket_key_enabled = true
@@ -83,9 +83,9 @@ resource "aws_s3_bucket_policy" "encryption" {
 }
 
 resource "aws_kms_key" "s3-tf-state" {
-  description = "KMS key for TF state file encryption"
+  description         = "KMS key for TF state file encryption"
   enable_key_rotation = true
-  multi_region = false
+  multi_region        = false
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -119,7 +119,7 @@ resource "aws_kms_key" "s3-tf-state" {
         Resource = "*"
       },
       {
-         Sid    = "Allow S3 Service"
+        Sid    = "Allow S3 Service"
         Effect = "Allow"
         Principal = {
           Service = "s3.amazonaws.com"
@@ -139,6 +139,6 @@ resource "aws_kms_key" "s3-tf-state" {
 }
 
 resource "aws_kms_alias" "tf-state" {
-  name = "alias/tf-state"
+  name          = "alias/tf-state"
   target_key_id = aws_kms_key.s3-tf-state.key_id
 }

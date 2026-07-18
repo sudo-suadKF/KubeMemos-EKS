@@ -10,6 +10,18 @@ variable "ecr-repo-tag-mutability" {
   default     = "IMMUTABLE"
 }
 
+variable "type-kms" {
+  description = "Encryption type KMS"
+  type        = string
+  default     = "KMS"
+}
+
+variable "ecr-kms-alias" {
+  description = "Alias KMS for ECR"
+  type        = string
+  default     = "alias/ecr"
+}
+
 variable "s3-bucket-name" {
   description = "Contains s3 bucket's name"
   type        = string
