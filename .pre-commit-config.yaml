@@ -1,7 +1,4 @@
 repos:
-  # --------------------
-  # Code hygiene
-  # --------------------
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -16,20 +13,14 @@ repos:
       - id: check-toml
       - id: check-shebang-scripts-are-executable
 
-  # --------------------
-  # Dockerfile lint
-  # --------------------
   - repo: https://github.com/hadolint/hadolint
     rev: v2.14.0
     hooks:
       - id: hadolint
         files: ^memos/Dockerfile$
 
-  # --------------------
-  # Dockerfile security
-  # --------------------
   - repo: https://github.com/mxab/pre-commit-trivy.git
-    rev: v0.17.0
+    rev: v0.18.0
     hooks:
       - id: trivyconfig-docker
         pass_filenames: false
@@ -41,12 +32,8 @@ repos:
           - --severity
           - MEDIUM,HIGH,CRITICAL
 
-
-  # --------------------
-  # Terraform core + security
-  # --------------------
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.105.0
+    rev: v1.108.0
     hooks:
       - id: terraform_fmt
         args:
@@ -60,3 +47,8 @@ repos:
 
       - id: terraform_tflint
         pass_filenames: false
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
