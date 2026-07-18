@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_s3_bucket" "eks-bootstrap" {
   bucket = var.s3-bucket-name
 
@@ -39,4 +41,57 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse-s3" {
       sse_algorithm = var.s3-bucket-sse-algorithm
     }
   }
+}
+
+resource "aws_kms_key" "s3-tf-state" {
+  description = "KMS key for TF state file encryption"
+  enable_key_rotation = true
+  multi_region = false
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Id      = "terraform-state-key-policy"
+    Statement = [
+      {
+        Sid    = "EnableRootAccountAccess"
+        Effect = "Allow"
+        Principal = {
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+        }
+        Action   = "kms:*"
+        Resource = "*"
+      },
+      {
+        Sid    = "AllowTerraformAccess"
+        Effect = "Allow"
+        Principal = {
+          AWS = var.oidc-role-arn
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+      },
+      {
+         Sid    = "Allow S3 Service"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Action = [
+          "kms:DescribeKey",
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey",
+          "kms:GenerateDataKeyWithoutPlaintext"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
 }
