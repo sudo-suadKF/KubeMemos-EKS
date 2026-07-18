@@ -5,3 +5,4 @@
 **/.infracost/
 .pre-commit-trivy-cache
 /infra/build
+.secrets.baseline

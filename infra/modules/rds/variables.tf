@@ -11,4 +11,5 @@ variable "rds-sg-id" {
 variable "random-password" {
   description = "Contains random password"
   type = string
+  sensitive = true
 }
