@@ -4,6 +4,7 @@ module "ecr" {
   ecr-repo-tag-mutability = var.ecr-repo-tag-mutability
   ecr-kms-alias           = var.ecr-kms-alias
   type-kms                = var.type-kms
+  ecr-kms-description = var.ecr-kms-description
 }
 
 module "s3" {
