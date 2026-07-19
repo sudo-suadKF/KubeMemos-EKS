@@ -111,3 +111,21 @@ variable "cicd-iam-name" {
   type        = string
   default     = "cicd-guardrails"
 }
+
+variable "secret-name" {
+  description = "Secret name"
+  type        = string
+  default     = "production/rds/credentials"
+}
+
+variable "secret-kms-description" {
+  description = "Secret's kms key description"
+  type        = string
+  default     = "KMS key for Secret"
+}
+
+variable "secret-alias" {
+  description = "Secret KMS key's alias"
+  type        = string
+  default     = "alias/secrets-manager"
+}
