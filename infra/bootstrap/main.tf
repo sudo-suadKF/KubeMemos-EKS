@@ -15,6 +15,8 @@ module "s3" {
   s3-bucket-tag               = var.s3-bucket-tag
   s3-bucket-versioning-status = var.s3-bucket-versioning-status
   oidc-role-arn               = module.oidc.oidc-role-arn
+  tf-state-alias              = var.tf-state-alias
+  tf-state-kms-description    = var.tf-state-kms-description
 }
 
 module "secret" {

@@ -83,7 +83,7 @@ resource "aws_s3_bucket_policy" "encryption" {
 }
 
 resource "aws_kms_key" "s3-tf-state" {
-  description         = "KMS key for TF state file encryption"
+  description         = var.tf-state-kms-description
   enable_key_rotation = true
   multi_region        = false
 
@@ -139,6 +139,6 @@ resource "aws_kms_key" "s3-tf-state" {
 }
 
 resource "aws_kms_alias" "tf-state" {
-  name          = "alias/tf-state"
+  name          = var.tf-state-alias
   target_key_id = aws_kms_key.s3-tf-state.key_id
 }

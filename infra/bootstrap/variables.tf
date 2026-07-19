@@ -58,6 +58,18 @@ variable "s3-bucket-sse-algorithm" {
   default     = "aws:kms"
 }
 
+variable "tf-state-kms-description" {
+  description = "TF state KMS description"
+  type        = string
+  default     = "KMS key for TF state file encryption"
+}
+
+variable "tf-state-alias" {
+  description = "TF state's KMS alias"
+  type        = string
+  default     = "alias/tf-state"
+}
+
 variable "github-url" {
   description = "URL for github to connect with OIDC"
   type        = string
