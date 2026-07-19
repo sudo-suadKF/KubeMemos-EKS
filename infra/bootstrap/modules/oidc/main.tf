@@ -1,16 +1,16 @@
 data "aws_caller_identity" "current" {}
 
 resource "aws_iam_openid_connect_provider" "github-actions" {
-  url            = "https://token.actions.githubusercontent.com"
-  client_id_list = ["sts.amazonaws.com"]
+  url            = var.github-url
+  client_id_list = [var.list-sts]
 
   tags = {
-    Name = "github-actions-oidc"
+    Name = var.oidc-tag
   }
 }
 
 resource "aws_iam_role" "github-actions" {
-  name                 = "github-actions-oidc-role"
+  name                 = var.oidc-iam-name
   max_session_duration = 3600
 
   assume_role_policy = jsonencode({
@@ -39,7 +39,7 @@ resource "aws_iam_role" "github-actions" {
 }
 
 resource "aws_iam_role_policy" "ecr" {
-  name = "ecr-access-policy"
+  name = var.ecr-iam-name
   role = aws_iam_role.github-actions.id
 
   policy = jsonencode({
@@ -71,7 +71,7 @@ resource "aws_iam_role_policy" "ecr" {
 }
 
 resource "aws_iam_role_policy" "terraform" {
-  name = "terraform-permission-policy"
+  name = var.tf-iam-name
   role = aws_iam_role.github-actions.id
 
   policy = jsonencode({
@@ -131,7 +131,7 @@ resource "aws_iam_role_policy" "terraform" {
 }
 
 resource "aws_iam_role_policy" "cicd-guardrails" {
-  name = "cicd-guardrails"
+  name = var.cicd-iam-name
   role = aws_iam_role.github-actions.id
 
   policy = jsonencode({

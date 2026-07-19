@@ -54,12 +54,42 @@ variable "s3-bucket-sse-algorithm" {
 
 variable "github-url" {
   description = "URL for github to connect with OIDC"
-  type        = string
-  default     = "https://token.actions.githubusercontent.com"
+  type = string
+  default = "https://token.actions.githubusercontent.com"
 }
 
 variable "list-sts" {
   description = "Client id list"
-  type        = string
-  default     = "sts.amazonaws.com"
+  type = string
+  default = "sts.amazonaws.com"
+}
+
+variable "oidc-tag" {
+  description = "Tag for OIDC"
+  type = string
+  default = "github-actions-oidc"
+}
+
+variable "oidc-iam-name" {
+  description = "OIDC IAM name"
+  type = string
+  default = "github-actions-oidc-role"
+}
+
+variable "ecr-iam-name" {
+  description = "ECR IAM name"
+  type = string
+  default = "ecr-access-policy"
+}
+
+variable "tf-iam-name" {
+  description = "TF IAM name"
+  type = string
+  default = "terraform-permission-policy"
+}
+
+variable "cicd-iam-name" {
+  description = "CI/CD guardrails iam name"
+  type = string
+  default = "cicd-guardrails"
 }
