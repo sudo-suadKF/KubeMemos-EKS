@@ -20,5 +20,5 @@ variable "ecr-kms-alias" {
 
 variable "ecr-kms-description" {
   description = "ECR's KMS description"
-  type = string
+  type        = string
 }
