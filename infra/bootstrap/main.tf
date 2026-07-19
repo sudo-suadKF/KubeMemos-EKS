@@ -25,11 +25,11 @@ module "oidc" {
   ecr-repo-arn   = module.ecr.ecr-repo-arn
   s3-bucket-arn  = module.s3.s3-bucket-arn
   s3-kms-key-arn = module.s3.s3-kms-key-arn
-  oidc-iam-name = var.oidc-iam-name
-  oidc-tag = var.oidc-tag
-  github-url = var.github-url
-  list-sts = var.list-sts
-  ecr-iam-name = var.ecr-iam-name
-  cicd-iam-name = var.cicd-iam-name
-  tf-iam-name = var.tf-iam-name
+  oidc-iam-name  = var.oidc-iam-name
+  oidc-tag       = var.oidc-tag
+  github-url     = var.github-url
+  list-sts       = var.list-sts
+  ecr-iam-name   = var.ecr-iam-name
+  cicd-iam-name  = var.cicd-iam-name
+  tf-iam-name    = var.tf-iam-name
 }
