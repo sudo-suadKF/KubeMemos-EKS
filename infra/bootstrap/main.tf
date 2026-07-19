@@ -20,7 +20,10 @@ module "s3" {
 }
 
 module "secret" {
-  source = "./modules/secret"
+  source                 = "./modules/secret"
+  secret-alias           = var.secret-alias
+  secret-kms-description = var.secret-kms-description
+  secret-name            = var.secret-name
 }
 
 module "oidc" {
