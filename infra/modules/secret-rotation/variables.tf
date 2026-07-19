@@ -1,14 +1,14 @@
 variable "host-db" {
   description = "RDS DB host"
-  type = string
+  type        = string
 }
 
 variable "private-subs-id" {
   description = "Private subnets IDs"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "lambda-sg-id" {
   description = "ID for Lambda SG"
-  type = string
+  type        = string
 }

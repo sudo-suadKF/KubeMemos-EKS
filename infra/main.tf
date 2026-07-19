@@ -73,29 +73,29 @@ module "sg" {
   port-DNS                                 = var.port-DNS
   port-10250                               = var.port-10250
   port-HTTPS                               = var.port-HTTPS
-  vpc-cidr = module.vpc.vpc-cidr
+  vpc-cidr                                 = module.vpc.vpc-cidr
 }
 
 module "pod-ids" {
-  source                     = "./modules/pod-ids"
-  eks-cluster-name           = module.eks.eks-cluster-name
-  external-dns               = var.external-dns
+  source                   = "./modules/pod-ids"
+  eks-cluster-name         = module.eks.eks-cluster-name
+  external-dns             = var.external-dns
   iam-role-pod-id-dns-name = var.iam-role-pod-id-dns-name
-  my-hosted-zone-name        = var.my-hosted-zone-name
+  my-hosted-zone-name      = var.my-hosted-zone-name
   iam-role-pod-id-dns-tags = var.iam-role-pod-id-dns-tags
 }
 
 module "rds" {
   source          = "./modules/rds"
   private-subs-id = module.vpc.private-subs-id
-  rds-sg-id = module.sg.rds-sg-id
+  rds-sg-id       = module.sg.rds-sg-id
   random-password = module.secret-rotation.random-password
 }
 
 module "secret-rotation" {
-  source = "./modules/secret-rotation"
+  source          = "./modules/secret-rotation"
   private-subs-id = module.vpc.private-subs-id
-  host-db = module.rds.host-db
-  lambda-sg-id = module.sg.lambda-sg-id
+  host-db         = module.rds.host-db
+  lambda-sg-id    = module.sg.lambda-sg-id
 }
 

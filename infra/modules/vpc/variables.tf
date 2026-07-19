@@ -120,5 +120,5 @@ variable "private-sub3-tags" {
 
 variable "vpc-endpoints-sg-id" {
   description = "Contains VPC endpoints SG's id"
-  type = string
+  type        = string
 }

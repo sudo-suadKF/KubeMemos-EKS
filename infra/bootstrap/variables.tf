@@ -51,3 +51,15 @@ variable "s3-bucket-sse-algorithm" {
   type        = string
   default     = "aws:kms"
 }
+
+variable "github-url" {
+  description = "URL for github to connect with OIDC"
+  type        = string
+  default     = "https://token.actions.githubusercontent.com"
+}
+
+variable "list-sts" {
+  description = "Client id list"
+  type        = string
+  default     = "sts.amazonaws.com"
+}

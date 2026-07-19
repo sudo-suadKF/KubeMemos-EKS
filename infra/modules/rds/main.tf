@@ -11,37 +11,37 @@ resource "aws_db_subnet_group" "rds-private-subnets" {
 }
 
 resource "aws_db_instance" "postgres-rds" {
-  identifier           = "production-rds"
-  db_subnet_group_name = aws_db_subnet_group.rds-private-subnets.name
-  vpc_security_group_ids = [ var.rds-sg-id ]
-  publicly_accessible = false
-  port = 5432
+  identifier             = "production-rds"
+  db_subnet_group_name   = aws_db_subnet_group.rds-private-subnets.name
+  vpc_security_group_ids = [var.rds-sg-id]
+  publicly_accessible    = false
+  port                   = 5432
 
-  engine               = "postgres"
-  engine_version       = "18"
-  instance_class       = "db.t3.micro"
+  engine                      = "postgres"
+  engine_version              = "18"
+  instance_class              = "db.t3.micro"
   allow_major_version_upgrade = false
-  auto_minor_version_upgrade = true
+  auto_minor_version_upgrade  = true
 
-  storage_type = "gp3"
-  allocated_storage    = 20
+  storage_type          = "gp3"
+  allocated_storage     = 20
   max_allocated_storage = 50
 
   storage_encrypted = true
-  kms_key_id = aws_kms_key.rds-kms.arn
-  
+  kms_key_id        = aws_kms_key.rds-kms.arn
+
   multi_az = true
 
-  db_name              = "memosdb"
-  username             = "memosuser"
+  db_name  = "memosdb"
+  username = "memosuser"
   password = var.random-password
 
-  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade", "iam-db-auth-error"]
-  monitoring_interval = 60
-  monitoring_role_arn = aws_iam_role.rds-monitoring-role.arn
-  performance_insights_enabled = true
+  enabled_cloudwatch_logs_exports       = ["postgresql", "upgrade", "iam-db-auth-error"]
+  monitoring_interval                   = 60
+  monitoring_role_arn                   = aws_iam_role.rds-monitoring-role.arn
+  performance_insights_enabled          = true
   performance_insights_retention_period = 7
-  performance_insights_kms_key_id = aws_kms_key.rds-kms.arn
+  performance_insights_kms_key_id       = aws_kms_key.rds-kms.arn
 
   parameter_group_name = aws_db_parameter_group.postgres-parameter-group.name
   skip_final_snapshot  = true
@@ -54,50 +54,50 @@ resource "aws_db_instance" "postgres-rds" {
 resource "aws_db_parameter_group" "postgres-parameter-group" {
   description = "memos-postgres-parameter-group"
   name_prefix = "memos-postgres18"
-  family = "postgres18"
+  family      = "postgres18"
 
   parameter {
-    name = "rds.force_ssl"
-    value = "1"
+    name         = "rds.force_ssl"
+    value        = "1"
     apply_method = "immediate"
   }
 
   parameter {
-    name = "log_connections"
-    value = "all"
+    name         = "log_connections"
+    value        = "all"
     apply_method = "immediate"
   }
 
   parameter {
-    name = "log_disconnections"
-    value = "1"
-    apply_method = "immediate"
-    }
-
-  parameter {
-    name = "log_statement"
-    value = "ddl"
+    name         = "log_disconnections"
+    value        = "1"
     apply_method = "immediate"
   }
 
   parameter {
-    name = "log_min_duration_statement"
-    value = "1000"
+    name         = "log_statement"
+    value        = "ddl"
     apply_method = "immediate"
   }
 
   parameter {
-    name = "password_encryption"
-    value = "scram-sha-256"
+    name         = "log_min_duration_statement"
+    value        = "1000"
     apply_method = "immediate"
   }
 
   parameter {
-    name = "max_connections"
-    value = "200"
+    name         = "password_encryption"
+    value        = "scram-sha-256"
+    apply_method = "immediate"
+  }
+
+  parameter {
+    name         = "max_connections"
+    value        = "200"
     apply_method = "pending-reboot"
   }
-    
+
 
   lifecycle {
     create_before_destroy = true
@@ -161,10 +161,10 @@ resource "aws_iam_role" "rds-monitoring-role" {
         }
       }
     ]
-  }) 
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "rds-monitoring-policy" {
-  role = aws_iam_role.rds-monitoring-role.name
+  role       = aws_iam_role.rds-monitoring-role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
 }

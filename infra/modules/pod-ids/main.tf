@@ -109,8 +109,8 @@ resource "aws_iam_policy" "external-secrets" {
         "secretsmanager:ListSecretVersionIds"
       ]
       Resource = data.aws_secretsmanager_secret.rds-credentials.arn
-    },
-    {
+      },
+      {
         Effect = "Allow"
         Action = [
           "kms:Decrypt",
