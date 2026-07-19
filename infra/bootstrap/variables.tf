@@ -22,6 +22,12 @@ variable "ecr-kms-alias" {
   default     = "alias/ecr"
 }
 
+variable "ecr-kms-description" {
+  description = "ECR's KMS description"
+  type = string
+  default = "KMS key for ECR encryption"
+}
+
 variable "s3-bucket-name" {
   description = "Contains s3 bucket's name"
   type        = string

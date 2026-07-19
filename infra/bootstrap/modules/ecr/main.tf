@@ -9,13 +9,13 @@ resource "aws_ecr_repository" "eks-docker-image" {
   }
 
   encryption_configuration {
-    encryption_type = "KMS"
+    encryption_type = var.type-kms
     kms_key         = aws_kms_key.ecr-encrypt.arn
   }
 }
 
 resource "aws_kms_key" "ecr-encrypt" {
-  description             = "KMS key for ECR encryption"
+  description             = var.ecr-kms-description
   enable_key_rotation     = true
   deletion_window_in_days = 7
 
