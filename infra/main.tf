@@ -77,12 +77,18 @@ module "sg" {
 }
 
 module "pod-ids" {
-  source                   = "./modules/pod-ids"
-  eks-cluster-name         = module.eks.eks-cluster-name
-  external-dns             = var.external-dns
-  iam-role-pod-id-dns-name = var.iam-role-pod-id-dns-name
-  my-hosted-zone-name      = var.my-hosted-zone-name
-  iam-role-pod-id-dns-tags = var.iam-role-pod-id-dns-tags
+  source                      = "./modules/pod-ids"
+  eks-cluster-name            = module.eks.eks-cluster-name
+  external-dns                = var.external-dns
+  iam-role-pod-id-dns-name    = var.iam-role-pod-id-dns-name
+  my-hosted-zone-name         = var.my-hosted-zone-name
+  iam-role-pod-id-dns-tags    = var.iam-role-pod-id-dns-tags
+  external-secret-pod-id-name = var.external-secret-pod-id-name
+  external-secret-pod-id-tag  = var.external-secret-pod-id-tag
+  external-secret-policy-name = var.external-secret-policy-name
+  external-secrets            = var.external-secrets
+  secret-alias                = var.secret-alias
+  secret-name                 = var.secret-name
 }
 
 module "rds" {

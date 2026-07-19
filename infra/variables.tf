@@ -372,3 +372,39 @@ variable "iam-role-pod-id-dns-tags" {
   type        = string
   default     = "Pod Identity ExternalDNS"
 }
+
+variable "secret-name" {
+  description = "Secret name"
+  type        = string
+  default     = "production/rds/credentials"
+}
+
+variable "secret-alias" {
+  description = "Alias for secrets manager kms key"
+  type        = string
+  default     = "alias/secrets-manager"
+}
+
+variable "external-secret-pod-id-name" {
+  description = "External secret's pod id name"
+  type        = string
+  default     = "eks-pod-id-role-secrets"
+}
+
+variable "external-secret-pod-id-tag" {
+  description = "External secret's pod id tag"
+  type        = string
+  default     = "Pod ID ExternalSecrets"
+}
+
+variable "external-secret-policy-name" {
+  description = "External secret's policy name"
+  type        = string
+  default     = "external-secrets-policy"
+}
+
+variable "external-secrets" {
+  description = "Name external secret"
+  type        = string
+  default     = "external-secrets"
+}

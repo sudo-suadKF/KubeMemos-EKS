@@ -1,9 +1,9 @@
 data "aws_secretsmanager_secret" "rds-credentials" {
-  name = "production/rds/credentials"
+  name = var.secret-name
 }
 
 data "aws_kms_key" "by_alias" {
-  key_id = "alias/secrets-manager"
+  key_id = var.secret-alias
 }
 
 data "aws_route53_zone" "my-hosted-zone" {
@@ -13,6 +13,7 @@ data "aws_route53_zone" "my-hosted-zone" {
 
 resource "aws_iam_role" "pod-id-external-dns" {
   name = var.iam-role-pod-id-dns-name
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -74,7 +75,8 @@ resource "aws_eks_pod_identity_association" "external-dns" {
 }
 
 resource "aws_iam_role" "pod-id-external-secrets" {
-  name = "eks-pod-id-role-secrets"
+  name = var.external-secret-pod-id-name
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -91,12 +93,12 @@ resource "aws_iam_role" "pod-id-external-secrets" {
   })
 
   tags = {
-    Name = "Pod ID ExternalSecrets"
+    Name = var.external-secret-pod-id-tag
   }
 }
 
 resource "aws_iam_policy" "external-secrets" {
-  name = "external-secrets"
+  name = var.external-secret-policy-name
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -130,7 +132,7 @@ resource "aws_iam_role_policy_attachment" "attach-pod-id-secrets" {
 
 resource "aws_eks_pod_identity_association" "external-secrets" {
   cluster_name    = var.eks-cluster-name
-  namespace       = "external-secrets"
-  service_account = "external-secrets"
+  namespace       = var.external-secrets
+  service_account = var.external-secrets
   role_arn        = aws_iam_role.pod-id-external-secrets.arn
 }
