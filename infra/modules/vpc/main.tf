@@ -103,7 +103,7 @@ resource "aws_vpc_endpoint" "interface" {
 
   vpc_id              = aws_vpc.my-vpc.id
   service_name        = each.value
-  vpc_endpoint_type   = "Interface"
+  vpc_endpoint_type   = var.interface-endpoint-type
   security_group_ids  = [var.vpc-endpoints-sg-id]
   subnet_ids          = [for subnet in aws_subnet.private_subnets : subnet.id]
   private_dns_enabled = true
@@ -116,11 +116,11 @@ resource "aws_vpc_endpoint" "interface" {
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.my-vpc.id
-  service_name      = "com.amazonaws.eu-west-2.s3"
-  vpc_endpoint_type = "Gateway"
+  service_name      = var.s3-service-name
+  vpc_endpoint_type = var.gateway-endpoint-type
   route_table_ids   = [aws_route_table.private-rt.id]
 
   tags = {
-    Name = "s3-endpoint"
+    Name = var.s3-endpoint-tag
   }
 }

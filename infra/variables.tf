@@ -630,3 +630,27 @@ variable "vpc-endpoints-sg-tag" {
   type        = string
   default     = "vpc-endpoints-sg"
 }
+
+variable "interface-endpoint-type" {
+  description = "Interface endpoint type"
+  type        = string
+  default     = "Interface"
+}
+
+variable "s3-service-name" {
+  description = "S3 service name for gateway endpoint"
+  type        = string
+  default     = "com.amazonaws.eu-west-2.s3"
+}
+
+variable "gateway-endpoint-type" {
+  description = "Gateway endpoint type"
+  type        = string
+  default     = "Gateway"
+}
+
+variable "s3-endpoint-tag" {
+  description = "Tag for s3 endpoint"
+  type        = string
+  default     = "s3-endpoint"
+}

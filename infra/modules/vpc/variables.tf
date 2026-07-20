@@ -122,3 +122,23 @@ variable "vpc-endpoints-sg-id" {
   description = "Contains VPC endpoints SG's id"
   type        = string
 }
+
+variable "interface-endpoint-type" {
+  description = "Interface endpoint type"
+  type        = string
+}
+
+variable "s3-service-name" {
+  description = "S3 service name for gateway endpoint"
+  type        = string
+}
+
+variable "gateway-endpoint-type" {
+  description = "Gateway endpoint type"
+  type        = string
+}
+
+variable "s3-endpoint-tag" {
+  description = "Tag for s3 endpoint"
+  type        = string
+}
