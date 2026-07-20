@@ -61,7 +61,6 @@ locals {
     elb            = "com.amazonaws.eu-west-2.elasticloadbalancing"
     eks            = "com.amazonaws.eu-west-2.eks"
     eks-auth       = "com.amazonaws.eu-west-2.eks-auth"
-    route53        = "com.amazonaws.route53"
     logs           = "com.amazonaws.eu-west-2.logs"
     kms            = "com.amazonaws.eu-west-2.kms"
     secretsmanager = "com.amazonaws.eu-west-2.secretsmanager"
