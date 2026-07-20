@@ -1,13 +1,3 @@
-resource "aws_security_group" "node-sg" {
-  name        = var.node-sg-name
-  description = var.node-sg-description
-  vpc_id      = var.vpc-id
-
-  tags = {
-    Name = var.node-sg-tags
-  }
-}
-
 resource "aws_security_group" "rds-sg" {
   name        = "rds-sg"
   description = "sg for rds db instance"
@@ -96,6 +86,16 @@ resource "aws_vpc_security_group_egress_rule" "endpoint-egress" {
   cidr_ipv4         = var.internet-cidr
   ip_protocol       = var.ip-protocol_-1
 }
+
+# resource "aws_security_group" "node-sg" {
+#   name        = var.node-sg-name
+#   description = var.node-sg-description
+#   vpc_id      = var.vpc-id
+
+#   tags = {
+#     Name = var.node-sg-tags
+#   }
+# }
 
 # Nodes accepting traffic from cluster, port 443
 

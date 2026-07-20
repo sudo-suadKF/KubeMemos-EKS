@@ -74,6 +74,15 @@ module "sg" {
   port-10250                               = var.port-10250
   port-HTTPS                               = var.port-HTTPS
   vpc-cidr                                 = module.vpc.vpc-cidr
+  rds-sg-description                       = var.rds-sg-description
+  rds-sg-name                              = var.rds-sg-name
+  rds-sg-tag                               = var.rds-sg-tag
+  lambda-sg-description                    = var.lambda-sg-description
+  lambda-sg-name                           = var.lambda-sg-name
+  lambda-sg-tag                            = var.lambda-sg-tag
+  vpc-endpoints-sg-description             = var.vpc-endpoints-sg-description
+  vpc-endpoints-sg-name                    = var.vpc-endpoints-sg-name
+  vpc-endpoints-sg-tag                     = var.vpc-endpoints-sg-tag
 }
 
 module "pod-ids" {

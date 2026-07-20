@@ -577,3 +577,56 @@ variable "lambda-permission-principal" {
   default     = "secretsmanager.amazonaws.com"
 }
 
+variable "rds-sg-name" {
+  description = "Name of SG RDS"
+  type        = string
+  default     = "rds-sg"
+}
+
+variable "rds-sg-description" {
+  description = "Description of rds sg"
+  type        = string
+  default     = "sg for rds db instance"
+}
+
+variable "rds-sg-tag" {
+  description = "Tag of rds sg"
+  type        = string
+  default     = "rds-sg"
+}
+
+variable "lambda-sg-name" {
+  description = "Name of SG lambda"
+  type        = string
+  default     = "lambda-sg"
+}
+
+variable "lambda-sg-description" {
+  description = "Description of lambda sg"
+  type        = string
+  default     = "sg for lambda"
+}
+
+variable "lambda-sg-tag" {
+  description = "Tag of lambda sg"
+  type        = string
+  default     = "lambda-sg"
+}
+
+variable "vpc-endpoints-sg-name" {
+  description = "Name of SG vpc-endpoints"
+  type        = string
+  default     = "vpc-endpoints-sg"
+}
+
+variable "vpc-endpoints-sg-description" {
+  description = "Description of vpc-endpoints sg"
+  type        = string
+  default     = "sg for vpc-endpoints"
+}
+
+variable "vpc-endpoints-sg-tag" {
+  description = "Tag of vpc-endpoints sg"
+  type        = string
+  default     = "vpc-endpoints-sg"
+}
