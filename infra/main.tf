@@ -92,10 +92,25 @@ module "pod-ids" {
 }
 
 module "rds" {
-  source          = "./modules/rds"
-  private-subs-id = module.vpc.private-subs-id
-  rds-sg-id       = module.sg.rds-sg-id
-  random-password = module.secret-rotation.random-password
+  source                      = "./modules/rds"
+  private-subs-id             = module.vpc.private-subs-id
+  rds-sg-id                   = module.sg.rds-sg-id
+  random-password             = module.secret-rotation.random-password
+  db-identifier               = var.db-identifier
+  db-name                     = var.db-name
+  db-param-group-description  = var.db-param-group-description
+  db-param-group-family       = var.db-param-group-family
+  db-param-group-name-prefix  = var.db-param-group-name-prefix
+  db-subnet-group-description = var.db-subnet-group-description
+  db-subnet-group-name        = var.db-subnet-group-name
+  db-subnet-group-tag         = var.db-subnet-group-tag
+  db-username                 = var.db-username
+  rd-kms-alias-name           = var.rd-kms-alias-name
+  rds-kms-description         = var.rds-kms-description
+  rds-monitoring-iam-name     = var.rds-monitoring-iam-name
+  postgres-engine             = var.postgres-engine
+  instance-class              = var.instance-class
+  storage-type                = var.storage-type
 }
 
 module "secret-rotation" {

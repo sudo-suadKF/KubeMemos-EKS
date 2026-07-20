@@ -408,3 +408,94 @@ variable "external-secrets" {
   type        = string
   default     = "external-secrets"
 }
+
+variable "db-subnet-group-name" {
+  description = "Name for db subnet group"
+  type        = string
+  default     = "rds-private-subnets"
+}
+
+variable "db-subnet-group-description" {
+  description = "DB Subnet group description"
+  type        = string
+  default     = "Subnet group for rds"
+}
+
+variable "db-subnet-group-tag" {
+  description = "Tag for db subnet group"
+  type        = string
+  default     = "rds-private-subnets"
+}
+
+variable "db-identifier" {
+  description = "DB instance identifier"
+  type        = string
+  default     = "production-rds"
+}
+
+variable "postgres-engine" {
+  description = "Postgres engine"
+  type        = string
+  default     = "postgres"
+}
+
+variable "instance-class" {
+  description = "Instance class"
+  type        = string
+  default     = "db.t3.micro"
+}
+
+variable "storage-type" {
+  description = "Storage type for db"
+  type        = string
+  default     = "gp3"
+}
+
+variable "db-name" {
+  description = "DB name"
+  type        = string
+  default     = "memosdb"
+}
+
+variable "db-username" {
+  description = "Username for DB"
+  type        = string
+  default     = "memosuser"
+}
+
+variable "db-param-group-description" {
+  description = "Description of db parameter group"
+  type        = string
+  default     = "memos-postgres-parameter-group"
+}
+
+variable "db-param-group-name-prefix" {
+  description = "Name prefix for db parameter group"
+  type        = string
+  default     = "memos-postgres18"
+}
+
+variable "db-param-group-family" {
+  description = "Family for db parameter group"
+  type        = string
+  default     = "postgres18"
+}
+
+variable "rds-kms-description" {
+  description = "Description of KMS key for RDS"
+  type        = string
+  default     = "KMS key for RDS database encryption"
+}
+
+variable "rd-kms-alias-name" {
+  description = "kms alias name for rds"
+  type        = string
+  default     = "alias/memos-rds"
+}
+
+variable "rds-monitoring-iam-name" {
+  description = "Name for rds monitoring IAM role"
+  type        = string
+  default     = "rds-monitoring"
+}
+
