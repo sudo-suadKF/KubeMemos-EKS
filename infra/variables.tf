@@ -499,3 +499,81 @@ variable "rds-monitoring-iam-name" {
   default     = "rds-monitoring"
 }
 
+variable "secret-name" {
+  description = "Secret name"
+  type        = string
+  default     = "production/rds/credentials"
+}
+
+variable "secret-alias" {
+  description = "Secret KMS key's alias"
+  type        = string
+  default     = "alias/secrets-manager"
+}
+
+variable "lambda-function-name" {
+  description = "Name of the lambda function"
+  type        = string
+  default     = "lambda-secret-rotation"
+}
+
+variable "lambda-function-handler" {
+  description = "Name of the lambda handler"
+  type        = string
+  default     = "lambda_function.lambda_handler"
+}
+
+variable "lambda-function-runtime" {
+  description = "Runtime for lambda function"
+  type        = string
+  default     = "python3.14"
+}
+
+variable "log-level" {
+  description = "level of log"
+  type        = string
+  default     = "INFO"
+}
+
+variable "log-format" {
+  description = "Log format"
+  type        = string
+  default     = "JSON"
+}
+
+variable "secrets-manager-endpoint-url" {
+  description = "Secrets manager endpoint's URL"
+  type        = string
+  default     = "https://secretsmanager.eu-west-2.amazonaws.com"
+}
+
+variable "lambda-iam-name" {
+  description = "lambdas iam role name"
+  type        = string
+  default     = "lambda-secret-rotation-role"
+}
+
+variable "lambda-policy-name" {
+  description = "lambdas iam policy name"
+  type        = string
+  default     = "lambda-rotation-policy"
+}
+
+variable "lambda-permission-statement" {
+  description = "Lambda permission statement id"
+  type        = string
+  default     = "AllowSecretsManagerInvoke"
+}
+
+variable "lambda-permission-action" {
+  description = "Lambda permission action"
+  type        = string
+  default     = "lambda:InvokeFunction"
+}
+
+variable "lambda-permission-principal" {
+  description = "Lambda permission principal"
+  type        = string
+  default     = "secretsmanager.amazonaws.com"
+}
+

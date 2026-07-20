@@ -114,9 +114,22 @@ module "rds" {
 }
 
 module "secret-rotation" {
-  source          = "./modules/secret-rotation"
-  private-subs-id = module.vpc.private-subs-id
-  host-db         = module.rds.host-db
-  lambda-sg-id    = module.sg.lambda-sg-id
+  source                       = "./modules/secret-rotation"
+  private-subs-id              = module.vpc.private-subs-id
+  host-db                      = module.rds.host-db
+  lambda-sg-id                 = module.sg.lambda-sg-id
+  secret-alias                 = var.secret-alias
+  secret-name                  = var.secret-name
+  lambda-function-handler      = var.lambda-function-handler
+  lambda-function-name         = var.lambda-function-name
+  lambda-function-runtime      = var.lambda-function-runtime
+  lambda-iam-name              = var.lambda-iam-name
+  lambda-permission-action     = var.lambda-permission-action
+  lambda-permission-principal  = var.lambda-permission-principal
+  lambda-permission-statement  = var.lambda-permission-statement
+  lambda-policy-name           = var.lambda-policy-name
+  log-format                   = var.log-format
+  log-level                    = var.log-level
+  secrets-manager-endpoint-url = var.secrets-manager-endpoint-url
 }
 
