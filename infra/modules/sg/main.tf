@@ -1,13 +1,3 @@
-resource "aws_security_group" "node-sg" {
-  name        = var.node-sg-name
-  description = var.node-sg-description
-  vpc_id      = var.vpc-id
-
-  tags = {
-    Name = var.node-sg-tags
-  }
-}
-
 resource "aws_security_group" "rds-sg" {
   name        = "rds-sg"
   description = "sg for rds db instance"
@@ -19,9 +9,9 @@ resource "aws_security_group" "rds-sg" {
 }
 
 resource "aws_security_group" "lambda-sg" {
-  name = "lambda-sg"
+  name        = "lambda-sg"
   description = "sg for lambda"
-  vpc_id = var.vpc-id
+  vpc_id      = var.vpc-id
 
   tags = {
     Name = "lambda-sg"
@@ -29,9 +19,9 @@ resource "aws_security_group" "lambda-sg" {
 }
 
 resource "aws_security_group" "vpc-endpoints-sg" {
-  name = "vpc-endpoints-sg"
+  name        = "vpc-endpoints-sg"
   description = "sg for vpc endpoints"
-  vpc_id = var.vpc-id
+  vpc_id      = var.vpc-id
 
   tags = {
     Name = "vpc-endpoints-sg"
@@ -48,12 +38,12 @@ resource "aws_vpc_security_group_ingress_rule" "rds-sg-ingress" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "rds-to-lambda" {
-  description = "PostgreSQL from lambda"
-  security_group_id = aws_security_group.rds-sg.id
+  description                  = "PostgreSQL from lambda"
+  security_group_id            = aws_security_group.rds-sg.id
   referenced_security_group_id = aws_security_group.lambda-sg.id
-  ip_protocol = var.ip-protocol-tcp
-  from_port = 5432
-  to_port = 5432
+  ip_protocol                  = var.ip-protocol-tcp
+  from_port                    = 5432
+  to_port                      = 5432
 }
 
 resource "aws_vpc_security_group_egress_rule" "rds-sg-egress" {
@@ -64,38 +54,48 @@ resource "aws_vpc_security_group_egress_rule" "rds-sg-egress" {
 }
 
 resource "aws_vpc_security_group_egress_rule" "lambda-to-rds" {
-  description = "PostgresSQl to database"
-  security_group_id = aws_security_group.lambda-sg.id
+  description                  = "PostgresSQl to database"
+  security_group_id            = aws_security_group.lambda-sg.id
   referenced_security_group_id = aws_security_group.rds-sg.id
-  ip_protocol = var.ip-protocol-tcp
-  from_port = 5432
-  to_port = 5432
+  ip_protocol                  = var.ip-protocol-tcp
+  from_port                    = 5432
+  to_port                      = 5432
 }
 
 resource "aws_vpc_security_group_egress_rule" "lambda-to-secrets-manager" {
-  description = "HTTPS to Secrets Manager endpoint"
-  security_group_id = aws_security_group.lambda-sg.id
+  description                  = "HTTPS to Secrets Manager endpoint"
+  security_group_id            = aws_security_group.lambda-sg.id
   referenced_security_group_id = aws_security_group.vpc-endpoints-sg.id
-  ip_protocol = var.ip-protocol-tcp
-  from_port = 443
-  to_port = 443
+  ip_protocol                  = var.ip-protocol-tcp
+  from_port                    = 443
+  to_port                      = 443
 }
 
 resource "aws_vpc_security_group_ingress_rule" "endpoint-ingress" {
-  description = "HTTPS traffic from VPC"
+  description       = "HTTPS traffic from VPC"
   security_group_id = aws_security_group.vpc-endpoints-sg.id
-  cidr_ipv4 = var.vpc-cidr
-  ip_protocol = var.ip-protocol-tcp
-  from_port = 443
-  to_port = 443
+  cidr_ipv4         = var.vpc-cidr
+  ip_protocol       = var.ip-protocol-tcp
+  from_port         = 443
+  to_port           = 443
 }
 
 resource "aws_vpc_security_group_egress_rule" "endpoint-egress" {
-  description = "VPC endpoints egress rule"
+  description       = "VPC endpoints egress rule"
   security_group_id = aws_security_group.vpc-endpoints-sg.id
-  cidr_ipv4 = var.internet-cidr
-  ip_protocol = var.ip-protocol_-1
+  cidr_ipv4         = var.internet-cidr
+  ip_protocol       = var.ip-protocol_-1
 }
+
+# resource "aws_security_group" "node-sg" {
+#   name        = var.node-sg-name
+#   description = var.node-sg-description
+#   vpc_id      = var.vpc-id
+
+#   tags = {
+#     Name = var.node-sg-tags
+#   }
+# }
 
 # Nodes accepting traffic from cluster, port 443
 

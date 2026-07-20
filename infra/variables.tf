@@ -372,3 +372,285 @@ variable "iam-role-pod-id-dns-tags" {
   type        = string
   default     = "Pod Identity ExternalDNS"
 }
+
+variable "secret-name" {
+  description = "Secret name"
+  type        = string
+  default     = "production/rds/credentials"
+}
+
+variable "secret-alias" {
+  description = "Alias for secrets manager kms key"
+  type        = string
+  default     = "alias/secrets-manager"
+}
+
+variable "external-secret-pod-id-name" {
+  description = "External secret's pod id name"
+  type        = string
+  default     = "eks-pod-id-role-secrets"
+}
+
+variable "external-secret-pod-id-tag" {
+  description = "External secret's pod id tag"
+  type        = string
+  default     = "Pod ID ExternalSecrets"
+}
+
+variable "external-secret-policy-name" {
+  description = "External secret's policy name"
+  type        = string
+  default     = "external-secrets-policy"
+}
+
+variable "external-secrets" {
+  description = "Name external secret"
+  type        = string
+  default     = "external-secrets"
+}
+
+variable "db-subnet-group-name" {
+  description = "Name for db subnet group"
+  type        = string
+  default     = "rds-private-subnets"
+}
+
+variable "db-subnet-group-description" {
+  description = "DB Subnet group description"
+  type        = string
+  default     = "Subnet group for rds"
+}
+
+variable "db-subnet-group-tag" {
+  description = "Tag for db subnet group"
+  type        = string
+  default     = "rds-private-subnets"
+}
+
+variable "db-identifier" {
+  description = "DB instance identifier"
+  type        = string
+  default     = "production-rds"
+}
+
+variable "postgres-engine" {
+  description = "Postgres engine"
+  type        = string
+  default     = "postgres"
+}
+
+variable "instance-class" {
+  description = "Instance class"
+  type        = string
+  default     = "db.t3.micro"
+}
+
+variable "storage-type" {
+  description = "Storage type for db"
+  type        = string
+  default     = "gp3"
+}
+
+variable "db-name" {
+  description = "DB name"
+  type        = string
+  default     = "memosdb"
+}
+
+variable "db-username" {
+  description = "Username for DB"
+  type        = string
+  default     = "memosuser"
+}
+
+variable "db-param-group-description" {
+  description = "Description of db parameter group"
+  type        = string
+  default     = "memos-postgres-parameter-group"
+}
+
+variable "db-param-group-name-prefix" {
+  description = "Name prefix for db parameter group"
+  type        = string
+  default     = "memos-postgres18"
+}
+
+variable "db-param-group-family" {
+  description = "Family for db parameter group"
+  type        = string
+  default     = "postgres18"
+}
+
+variable "rds-kms-description" {
+  description = "Description of KMS key for RDS"
+  type        = string
+  default     = "KMS key for RDS database encryption"
+}
+
+variable "rd-kms-alias-name" {
+  description = "kms alias name for rds"
+  type        = string
+  default     = "alias/memos-rds"
+}
+
+variable "rds-monitoring-iam-name" {
+  description = "Name for rds monitoring IAM role"
+  type        = string
+  default     = "rds-monitoring"
+}
+
+variable "secret-name" {
+  description = "Secret name"
+  type        = string
+  default     = "production/rds/credentials"
+}
+
+variable "secret-alias" {
+  description = "Secret KMS key's alias"
+  type        = string
+  default     = "alias/secrets-manager"
+}
+
+variable "lambda-function-name" {
+  description = "Name of the lambda function"
+  type        = string
+  default     = "lambda-secret-rotation"
+}
+
+variable "lambda-function-handler" {
+  description = "Name of the lambda handler"
+  type        = string
+  default     = "lambda_function.lambda_handler"
+}
+
+variable "lambda-function-runtime" {
+  description = "Runtime for lambda function"
+  type        = string
+  default     = "python3.14"
+}
+
+variable "log-level" {
+  description = "level of log"
+  type        = string
+  default     = "INFO"
+}
+
+variable "log-format" {
+  description = "Log format"
+  type        = string
+  default     = "JSON"
+}
+
+variable "secrets-manager-endpoint-url" {
+  description = "Secrets manager endpoint's URL"
+  type        = string
+  default     = "https://secretsmanager.eu-west-2.amazonaws.com"
+}
+
+variable "lambda-iam-name" {
+  description = "lambdas iam role name"
+  type        = string
+  default     = "lambda-secret-rotation-role"
+}
+
+variable "lambda-policy-name" {
+  description = "lambdas iam policy name"
+  type        = string
+  default     = "lambda-rotation-policy"
+}
+
+variable "lambda-permission-statement" {
+  description = "Lambda permission statement id"
+  type        = string
+  default     = "AllowSecretsManagerInvoke"
+}
+
+variable "lambda-permission-action" {
+  description = "Lambda permission action"
+  type        = string
+  default     = "lambda:InvokeFunction"
+}
+
+variable "lambda-permission-principal" {
+  description = "Lambda permission principal"
+  type        = string
+  default     = "secretsmanager.amazonaws.com"
+}
+
+variable "rds-sg-name" {
+  description = "Name of SG RDS"
+  type        = string
+  default     = "rds-sg"
+}
+
+variable "rds-sg-description" {
+  description = "Description of rds sg"
+  type        = string
+  default     = "sg for rds db instance"
+}
+
+variable "rds-sg-tag" {
+  description = "Tag of rds sg"
+  type        = string
+  default     = "rds-sg"
+}
+
+variable "lambda-sg-name" {
+  description = "Name of SG lambda"
+  type        = string
+  default     = "lambda-sg"
+}
+
+variable "lambda-sg-description" {
+  description = "Description of lambda sg"
+  type        = string
+  default     = "sg for lambda"
+}
+
+variable "lambda-sg-tag" {
+  description = "Tag of lambda sg"
+  type        = string
+  default     = "lambda-sg"
+}
+
+variable "vpc-endpoints-sg-name" {
+  description = "Name of SG vpc-endpoints"
+  type        = string
+  default     = "vpc-endpoints-sg"
+}
+
+variable "vpc-endpoints-sg-description" {
+  description = "Description of vpc-endpoints sg"
+  type        = string
+  default     = "sg for vpc-endpoints"
+}
+
+variable "vpc-endpoints-sg-tag" {
+  description = "Tag of vpc-endpoints sg"
+  type        = string
+  default     = "vpc-endpoints-sg"
+}
+
+variable "interface-endpoint-type" {
+  description = "Interface endpoint type"
+  type        = string
+  default     = "Interface"
+}
+
+variable "s3-service-name" {
+  description = "S3 service name for gateway endpoint"
+  type        = string
+  default     = "com.amazonaws.eu-west-2.s3"
+}
+
+variable "gateway-endpoint-type" {
+  description = "Gateway endpoint type"
+  type        = string
+  default     = "Gateway"
+}
+
+variable "s3-endpoint-tag" {
+  description = "Tag for s3 endpoint"
+  type        = string
+  default     = "s3-endpoint"
+}

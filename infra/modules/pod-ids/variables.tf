@@ -22,3 +22,33 @@ variable "iam-role-pod-id-dns-tags" {
   description = "Tag for iam role po identity"
   type        = string
 }
+
+variable "secret-name" {
+  description = "Secret name"
+  type        = string
+}
+
+variable "secret-alias" {
+  description = "Alias for secrets manager kms key"
+  type        = string
+}
+
+variable "external-secret-pod-id-name" {
+  description = "External secret's pod id name"
+  type        = string
+}
+
+variable "external-secret-pod-id-tag" {
+  description = "External secret's pod id tag"
+  type        = string
+}
+
+variable "external-secret-policy-name" {
+  description = "External secret's policy name"
+  type        = string
+}
+
+variable "external-secrets" {
+  description = "Name external secret"
+  type        = string
+}

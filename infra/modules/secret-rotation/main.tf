@@ -1,9 +1,9 @@
 data "aws_secretsmanager_secret" "rds-credentials" {
-  name = "production/rds/credentials"
+  name = var.secret-name
 }
 
 data "aws_kms_key" "by_alias" {
-  key_id = "alias/secrets-manager"
+  key_id = var.secret-alias
 }
 
 resource "random_password" "rds-password" {
@@ -19,13 +19,14 @@ resource "random_password" "rds-password" {
 
 resource "aws_secretsmanager_secret_version" "rds-credentials" {
   secret_id = data.aws_secretsmanager_secret.rds-credentials.id
+
   secret_string = jsonencode({
-    engine = "postgres"
-    host = var.host-db
-    username            = "memosuser"
+    engine   = var.postgres-engine
+    host     = var.host-db
+    username = var.db-username
     password = random_password.rds-password.result
-    dbname = "memosdb"
-    port = 5432
+    dbname   = var.db-name
+    port     = 5432
   })
 
   lifecycle {
@@ -34,45 +35,50 @@ resource "aws_secretsmanager_secret_version" "rds-credentials" {
 }
 
 resource "aws_secretsmanager_secret_rotation" "rds-credentials" {
-  secret_id = data.aws_secretsmanager_secret.rds-credentials.id
+  secret_id           = data.aws_secretsmanager_secret.rds-credentials.id
   rotation_lambda_arn = aws_lambda_function.rotation.arn
-  
+
   rotation_rules {
     automatically_after_days = 30
   }
 }
 
 resource "aws_lambda_function" "rotation" {
-  filename = "${path.module}/../../build/lambda.zip"
-  function_name = "lambda-secret-rotation"
-  role = aws_iam_role.lambda.arn
-  handler = "lambda_function.lambda_handler"
-  runtime = "python3.14"
-  source_code_hash = filebase64sha256("${path.module}/../../build/lambda.zip")
-  timeout = 30
+  filename                       = "${path.module}/../../build/lambda.zip"
+  function_name                  = var.lambda-function-name
+  role                           = aws_iam_role.lambda.arn
+  handler                        = var.lambda-function-handler
+  runtime                        = var.lambda-function-runtime
+  source_code_hash               = filebase64sha256("${path.module}/../../build/lambda.zip")
+  timeout                        = 30
+  reserved_concurrent_executions = 100
 
   vpc_config {
-    subnet_ids = var.private-subs-id
+    subnet_ids         = var.private-subs-id
     security_group_ids = [var.lambda-sg-id]
   }
 
   logging_config {
-    application_log_level = "INFO"
-    log_format = "JSON"
-    system_log_level = "INFO"
+    application_log_level = var.log-level
+    log_format            = var.log-format
+    system_log_level      = var.log-level
+  }
+
+  tracing_config {
+    mode = "Active"
   }
 
   environment {
     variables = {
-      SECRETS_MANAGER_ENDPOINT = "https://secretsmanager.eu-west-2.amazonaws.com"
+      SECRETS_MANAGER_ENDPOINT = var.secrets-manager-endpoint-url
     }
   }
 
-  depends_on = [ aws_iam_role.lambda, aws_iam_role_policy.lambda ]
+  depends_on = [aws_iam_role.lambda, aws_iam_role_policy.lambda]
 }
 
 resource "aws_iam_role" "lambda" {
-  name = "rds-rotation-lambda-role"
+  name = var.lambda-iam-name
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -87,7 +93,7 @@ resource "aws_iam_role" "lambda" {
 }
 
 resource "aws_iam_role_policy" "lambda" {
-  name = "rotation-lambda-policy"
+  name = var.lambda-policy-name
   role = aws_iam_role.lambda.id
 
   policy = jsonencode({
@@ -108,7 +114,7 @@ resource "aws_iam_role_policy" "lambda" {
         Action   = "secretsmanager:GetRandomPassword"
         Resource = "*"
       },
-       {
+      {
         Effect = "Allow"
         Action = [
           "kms:Encrypt",
@@ -145,11 +151,11 @@ resource "aws_iam_role_policy" "lambda" {
 }
 
 resource "aws_lambda_permission" "secretsmanager" {
-  statement_id = "AllowSecretsManagerInvoke"
-  action = "lambda:InvokeFunction"
+  statement_id  = var.lambda-permission-statement
+  action        = var.lambda-permission-action
   function_name = aws_lambda_function.rotation.function_name
-  principal = "secretsmanager.amazonaws.com"
-  source_arn = data.aws_secretsmanager_secret.rds-credentials.arn
+  principal     = var.lambda-permission-principal
+  source_arn    = data.aws_secretsmanager_secret.rds-credentials.arn
 }
 
 resource "terraform_data" "initial-rotation" {

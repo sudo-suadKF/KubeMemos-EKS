@@ -1,30 +1,34 @@
 module "vpc" {
-  source              = "./modules/vpc"
-  vpc-cidr-block      = var.vpc-cidr-block
-  vpc-tags            = var.vpc-tags
-  private-rt-tags     = var.private-rt-tags
-  private-sub1-cidr   = var.private-sub1-cidr
-  private-sub1-tags   = var.private-sub1-tags
-  private-sub2-cidr   = var.private-sub2-cidr
-  private-sub2-tags   = var.private-sub2-tags
-  private-sub3-cidr   = var.private-sub3-cidr
-  private-sub3-tags   = var.private-sub3-tags
-  public-rt-tags      = var.public-rt-tags
-  public-sub1-cidr    = var.public-sub1-cidr
-  public-sub1-tags    = var.public-sub1-tags
-  public-sub2-cidr    = var.public-sub2-cidr
-  public-sub2-tags    = var.public-sub2-tags
-  public-sub3-cidr    = var.public-sub3-cidr
-  public-sub3-tags    = var.public-sub3-tags
-  igw-tags            = var.igw-tags
-  internet-cidr       = var.internet-cidr
-  nat-gw-connectivity = var.nat-gw-connectivity
-  nat-gw-mode         = var.nat-gw-mode
-  nat-gw-tags         = var.nat-gw-tags
-  az1                 = var.az1
-  az2                 = var.az2
-  az3                 = var.az3
-  vpc-endpoints-sg-id = module.sg.vpc-endpoints-sg-id
+  source                  = "./modules/vpc"
+  vpc-cidr-block          = var.vpc-cidr-block
+  vpc-tags                = var.vpc-tags
+  private-rt-tags         = var.private-rt-tags
+  private-sub1-cidr       = var.private-sub1-cidr
+  private-sub1-tags       = var.private-sub1-tags
+  private-sub2-cidr       = var.private-sub2-cidr
+  private-sub2-tags       = var.private-sub2-tags
+  private-sub3-cidr       = var.private-sub3-cidr
+  private-sub3-tags       = var.private-sub3-tags
+  public-rt-tags          = var.public-rt-tags
+  public-sub1-cidr        = var.public-sub1-cidr
+  public-sub1-tags        = var.public-sub1-tags
+  public-sub2-cidr        = var.public-sub2-cidr
+  public-sub2-tags        = var.public-sub2-tags
+  public-sub3-cidr        = var.public-sub3-cidr
+  public-sub3-tags        = var.public-sub3-tags
+  igw-tags                = var.igw-tags
+  internet-cidr           = var.internet-cidr
+  nat-gw-connectivity     = var.nat-gw-connectivity
+  nat-gw-mode             = var.nat-gw-mode
+  nat-gw-tags             = var.nat-gw-tags
+  az1                     = var.az1
+  az2                     = var.az2
+  az3                     = var.az3
+  vpc-endpoints-sg-id     = module.sg.vpc-endpoints-sg-id
+  s3-endpoint-tag         = var.s3-endpoint-tag
+  s3-service-name         = var.s3-service-name
+  interface-endpoint-type = var.interface-endpoint-type
+  gateway-endpoint-type   = var.gateway-endpoint-type
 }
 
 module "eks" {
@@ -73,29 +77,72 @@ module "sg" {
   port-DNS                                 = var.port-DNS
   port-10250                               = var.port-10250
   port-HTTPS                               = var.port-HTTPS
-  vpc-cidr = module.vpc.vpc-cidr
+  vpc-cidr                                 = module.vpc.vpc-cidr
+  rds-sg-description                       = var.rds-sg-description
+  rds-sg-name                              = var.rds-sg-name
+  rds-sg-tag                               = var.rds-sg-tag
+  lambda-sg-description                    = var.lambda-sg-description
+  lambda-sg-name                           = var.lambda-sg-name
+  lambda-sg-tag                            = var.lambda-sg-tag
+  vpc-endpoints-sg-description             = var.vpc-endpoints-sg-description
+  vpc-endpoints-sg-name                    = var.vpc-endpoints-sg-name
+  vpc-endpoints-sg-tag                     = var.vpc-endpoints-sg-tag
 }
 
 module "pod-ids" {
-  source                     = "./modules/pod-ids"
-  eks-cluster-name           = module.eks.eks-cluster-name
-  external-dns               = var.external-dns
-  iam-role-pod-id-dns-name = var.iam-role-pod-id-dns-name
-  my-hosted-zone-name        = var.my-hosted-zone-name
-  iam-role-pod-id-dns-tags = var.iam-role-pod-id-dns-tags
+  source                      = "./modules/pod-ids"
+  eks-cluster-name            = module.eks.eks-cluster-name
+  external-dns                = var.external-dns
+  iam-role-pod-id-dns-name    = var.iam-role-pod-id-dns-name
+  my-hosted-zone-name         = var.my-hosted-zone-name
+  iam-role-pod-id-dns-tags    = var.iam-role-pod-id-dns-tags
+  external-secret-pod-id-name = var.external-secret-pod-id-name
+  external-secret-pod-id-tag  = var.external-secret-pod-id-tag
+  external-secret-policy-name = var.external-secret-policy-name
+  external-secrets            = var.external-secrets
+  secret-alias                = var.secret-alias
+  secret-name                 = var.secret-name
 }
 
 module "rds" {
-  source          = "./modules/rds"
-  private-subs-id = module.vpc.private-subs-id
-  rds-sg-id = module.sg.rds-sg-id
-  random-password = module.secret-rotation.random-password
+  source                      = "./modules/rds"
+  private-subs-id             = module.vpc.private-subs-id
+  rds-sg-id                   = module.sg.rds-sg-id
+  random-password             = module.secret-rotation.random-password
+  db-identifier               = var.db-identifier
+  db-name                     = var.db-name
+  db-param-group-description  = var.db-param-group-description
+  db-param-group-family       = var.db-param-group-family
+  db-param-group-name-prefix  = var.db-param-group-name-prefix
+  db-subnet-group-description = var.db-subnet-group-description
+  db-subnet-group-name        = var.db-subnet-group-name
+  db-subnet-group-tag         = var.db-subnet-group-tag
+  db-username                 = var.db-username
+  rd-kms-alias-name           = var.rd-kms-alias-name
+  rds-kms-description         = var.rds-kms-description
+  rds-monitoring-iam-name     = var.rds-monitoring-iam-name
+  postgres-engine             = var.postgres-engine
+  instance-class              = var.instance-class
+  storage-type                = var.storage-type
 }
 
 module "secret-rotation" {
-  source = "./modules/secret-rotation"
-  private-subs-id = module.vpc.private-subs-id
-  host-db = module.rds.host-db
-  lambda-sg-id = module.sg.lambda-sg-id
+  source                       = "./modules/secret-rotation"
+  private-subs-id              = module.vpc.private-subs-id
+  host-db                      = module.rds.host-db
+  lambda-sg-id                 = module.sg.lambda-sg-id
+  secret-alias                 = var.secret-alias
+  secret-name                  = var.secret-name
+  lambda-function-handler      = var.lambda-function-handler
+  lambda-function-name         = var.lambda-function-name
+  lambda-function-runtime      = var.lambda-function-runtime
+  lambda-iam-name              = var.lambda-iam-name
+  lambda-permission-action     = var.lambda-permission-action
+  lambda-permission-principal  = var.lambda-permission-principal
+  lambda-permission-statement  = var.lambda-permission-statement
+  lambda-policy-name           = var.lambda-policy-name
+  log-format                   = var.log-format
+  log-level                    = var.log-level
+  secrets-manager-endpoint-url = var.secrets-manager-endpoint-url
 }
 

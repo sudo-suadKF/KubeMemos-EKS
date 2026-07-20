@@ -2,6 +2,9 @@ module "ecr" {
   source                  = "./modules/ecr"
   ecr-repo-name           = var.ecr-repo-name
   ecr-repo-tag-mutability = var.ecr-repo-tag-mutability
+  ecr-kms-alias           = var.ecr-kms-alias
+  type-kms                = var.type-kms
+  ecr-kms-description     = var.ecr-kms-description
 }
 
 module "s3" {
@@ -11,16 +14,28 @@ module "s3" {
   s3-bucket-sse-algorithm     = var.s3-bucket-sse-algorithm
   s3-bucket-tag               = var.s3-bucket-tag
   s3-bucket-versioning-status = var.s3-bucket-versioning-status
-  oidc-role-arn = module.oidc.oidc-role-arn
+  oidc-role-arn               = module.oidc.oidc-role-arn
+  tf-state-alias              = var.tf-state-alias
+  tf-state-kms-description    = var.tf-state-kms-description
 }
 
 module "secret" {
-  source = "./modules/secret"
+  source                 = "./modules/secret"
+  secret-alias           = var.secret-alias
+  secret-kms-description = var.secret-kms-description
+  secret-name            = var.secret-name
 }
 
 module "oidc" {
-  source = "./modules/oidc"
-  ecr-repo-arn = module.ecr.ecr-repo-arn
-  s3-bucket-arn = module.s3.s3-bucket-arn
+  source         = "./modules/oidc"
+  ecr-repo-arn   = module.ecr.ecr-repo-arn
+  s3-bucket-arn  = module.s3.s3-bucket-arn
   s3-kms-key-arn = module.s3.s3-kms-key-arn
+  oidc-iam-name  = var.oidc-iam-name
+  oidc-tag       = var.oidc-tag
+  github-url     = var.github-url
+  list-sts       = var.list-sts
+  ecr-iam-name   = var.ecr-iam-name
+  cicd-iam-name  = var.cicd-iam-name
+  tf-iam-name    = var.tf-iam-name
 }
