@@ -373,13 +373,13 @@ variable "iam-role-pod-id-dns-tags" {
   default     = "Pod Identity ExternalDNS"
 }
 
-variable "secret-name" {
+variable "secrets-name" {
   description = "Secret name"
   type        = string
   default     = "production/rds/credentials"
 }
 
-variable "secret-alias" {
+variable "secrets-alias" {
   description = "Alias for secrets manager kms key"
   type        = string
   default     = "alias/secrets-manager"

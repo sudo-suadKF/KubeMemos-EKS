@@ -1,9 +1,9 @@
 data "aws_secretsmanager_secret" "rds-credentials" {
-  name = var.secret-name
+  name = var.secrets-name
 }
 
 data "aws_kms_key" "by_alias" {
-  key_id = var.secret-alias
+  key_id = var.secrets-alias
 }
 
 resource "random_password" "rds-password" {

@@ -13,12 +13,12 @@ variable "lambda-sg-id" {
   type        = string
 }
 
-variable "secret-name" {
+variable "secrets-name" {
   description = "Secret name"
   type        = string
 }
 
-variable "secret-alias" {
+variable "secrets-alias" {
   description = "Secret KMS key's alias"
   type        = string
 }
