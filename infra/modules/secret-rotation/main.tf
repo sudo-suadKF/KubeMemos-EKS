@@ -166,9 +166,6 @@ resource "terraform_data" "initial-rotation" {
   ]
 
   provisioner "local-exec" {
-    command = <<-EOT
-      aws secretsmanager rotate-secret \
-        --secret-id ${data.aws_secretsmanager_secret.rds-credentials.id}
-    EOT
+    command = "aws secretsmanager rotate-secret --secret-id ${data.aws_secretsmanager_secret.rds-credentials.id} --region eu-west-2"
   }
 }
