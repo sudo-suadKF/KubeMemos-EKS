@@ -24,8 +24,8 @@ spec:
         duration: 5s
         factor: 2
         maxDuration: 3m
-  # ignoreDifferences:
-  #   - group: apps
-  #     kind: Deployment
-  #     jsonPointers:
-  #       - /spec/template/metadata/annotations/reloader.stakater.com~1last-reloaded-from
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/metadata/annotations/reloader.stakater.com~1last-reloaded-from
