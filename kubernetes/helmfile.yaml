@@ -78,5 +78,8 @@ releases:
     chart: stakater-reloader/reloader
     namespace: stakater-reloader
     createNamespace: true
+    disableValidation: true
     values:
       - helm-values/stakater-reloader.yaml
+    needs:
+      - monitoring/prometheus-grafana

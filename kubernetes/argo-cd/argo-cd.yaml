@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/sudo-suadKF/KubeMemos-EKS
-    targetRevision: passwd-rotation
+    targetRevision: argo-reloader
     path: kubernetes/my-chart
   destination:
     server: https://kubernetes.default.svc
@@ -24,3 +24,8 @@ spec:
         duration: 5s
         factor: 2
         maxDuration: 3m
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/metadata/annotations/reloader.stakater.com~1last-reloaded-from

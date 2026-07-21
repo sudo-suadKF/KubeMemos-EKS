@@ -131,8 +131,8 @@ module "secret-rotation" {
   private-subs-id              = module.vpc.private-subs-id
   host-db                      = module.rds.host-db
   lambda-sg-id                 = module.sg.lambda-sg-id
-  secret-alias                 = var.secret-alias
-  secret-name                  = var.secret-name
+  secrets-alias                = var.secrets-alias
+  secrets-name                 = var.secrets-name
   lambda-function-handler      = var.lambda-function-handler
   lambda-function-name         = var.lambda-function-name
   lambda-function-runtime      = var.lambda-function-runtime
@@ -145,4 +145,3 @@ module "secret-rotation" {
   log-level                    = var.log-level
   secrets-manager-endpoint-url = var.secrets-manager-endpoint-url
 }
-
