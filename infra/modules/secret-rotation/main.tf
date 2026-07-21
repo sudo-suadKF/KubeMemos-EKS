@@ -166,6 +166,11 @@ resource "terraform_data" "initial-rotation" {
   ]
 
   provisioner "local-exec" {
-    command = "aws secretsmanager rotate-secret --secret-id ${data.aws_secretsmanager_secret.rds-credentials.id} --region eu-west-2"
+    command = <<EOF
+      aws secretsmanager rotate-secret \
+       --secret-id ${data.aws_secretsmanager_secret.rds-credentials.id} \
+       --region eu-west-2 \
+       >/dev/null && echo "Initial secret rotation completed."
+    EOF
   }
 }
