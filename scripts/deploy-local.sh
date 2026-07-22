@@ -38,6 +38,11 @@ echo ""
 echo "Cluster issuer applied and waiting for TLS certificates to become ready..."
 echo ""
 
-kubectl wait --for=condition=ready certificate --all --all-namespaces
+until kubectl wait --for=condition=ready certificate --all --all-namespaces
+do
+  echo "Certificates are not ready yet..."
+  sleep 30
+done
+
 echo ""
 echo "TLS certificates are ready and the setup is done..."
