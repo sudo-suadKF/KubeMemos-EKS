@@ -23,7 +23,7 @@ echo ""
 kubectl delete application memos-app -n argo-cd
 kubectl delete middleware -n argo-cd redirectscheme
 kubectl delete ingress -n argo-cd argo-cd-ingress-https
-kubectl delete ingress -n monitoring argo-cd-ingress-http
+kubectl delete ingress -n argo-cd argo-cd-ingress-http
 echo ""
 echo "ArgoCD for production deleted..."
 echo ""
