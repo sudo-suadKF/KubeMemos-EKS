@@ -3,9 +3,6 @@
 set -euo pipefail
 
 WORKING_DIR="$HOME/eks-project/kubernetes"
-MONITORING_DIR="$WORKING_DIR/monitoring"
-GRAFANA_DIR="$MONITORING_DIR/grafana"
-PROMETHEUS_DIR="$MONITORING_DIR/prometheus"
 
 cd "$WORKING_DIR"
 
