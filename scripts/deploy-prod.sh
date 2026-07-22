@@ -6,6 +6,7 @@ WORKING_DIR="$HOME/eks-project/kubernetes"
 MONITORING_DIR="$WORKING_DIR/monitoring"
 GRAFANA_DIR="$MONITORING_DIR/grafana"
 PROMETHEUS_DIR="$MONITORING_DIR/prometheus"
+ARGO_CD_DIR="$WORKING_DIR/argo-cd"
 
 REGION="eu-west-2"
 CLUSTER_NAME="my-eks-cluster"
@@ -20,9 +21,12 @@ echo ""
 echo "Helmfile applied..."
 echo ""
 
-helm upgrade --install local-app ./my-chart
+kubectl apply -f "$ARGO_CD_DIR/argo-cd.yaml"
+kubectl apply -f "$ARGO_CD_DIR/ingress-http.yaml"
+kubectl apply -f "$ARGO_CD_DIR/ingress-https.yaml"
+kubectl apply -f "$ARGO_CD_DIR/middleware.yaml"
 echo ""
-echo "Application installed with helm..."
+echo "ArgoCD applied for production..."
 echo ""
 
 kubectl apply -f "$GRAFANA_DIR/ingress-http.yaml"
