@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.deployment.name }}
-        image: {{ .Values.deployment.image }}:{{ .Values.deployment.tag }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         env:
           - name: MEMOS_DRIVER
             value: "postgres"
