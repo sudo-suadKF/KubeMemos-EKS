@@ -7,7 +7,7 @@ WORKDIR /web
 COPY web/package.json web/package-lock.json* ./
 
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci
+npm ci
 
 COPY web/ .
 
@@ -26,16 +26,16 @@ WORKDIR /app
 COPY go.mod go.sum ./
 
 RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go mod downloadgo mod download
+--mount=type=cache,target=/root/.cache/go-build \
+go mod downloadgo mod download
 
 COPY . .
 
 COPY --from=frontend /server/router/frontend/dist ./server/router/frontend/dist
 
 RUN --mount=type=cache,target=/go/pkg/mod \
-    --mount=type=cache,target=/root/.cache/go-build \
-    go build -trimpath -ldflags="-s -w" -o memos ./cmd/memos
+--mount=type=cache,target=/root/.cache/go-build \
+go build -trimpath -ldflags="-s -w" -o memos ./cmd/memos
 
 FROM scratch
 
