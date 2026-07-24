@@ -2,14 +2,13 @@
 
 set -e
 
-PACKAGE_DIR="../infra/build/package"
+PACKAGE_DIR="../infra/src/package"
 PG_MODULE="$PACKAGE_DIR/pg/_pg.cpython-314-x86_64-linux-gnu.so"
 
-rm -rf ../infra/build/package
-mkdir -p ../infra/build/package
+rm -rf ../infra/src/package
+mkdir -p ../infra/src/package
 
-pip3 install --no-cache-dir -r ../infra/src/requirements.txt -t ../infra/build/package
-cp ../infra/src/lambda_function.py ../infra/build
+pip3 install --no-cache-dir -r ../infra/src/requirements.txt -t ../infra/src/package
 
 ldd "$PG_MODULE" | awk '/=>/ {print $3}' \
 | while read lib; do
@@ -17,7 +16,7 @@ ldd "$PG_MODULE" | awk '/=>/ {print $3}' \
     cp -L "$lib" "$PACKAGE_DIR"
 done
 
-cd ../infra/build/package
+cd ../infra/src/package
 zip -r ../lambda.zip .
 
 cd ..
