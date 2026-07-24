@@ -44,12 +44,12 @@ resource "aws_secretsmanager_secret_rotation" "rds-credentials" {
 }
 
 resource "aws_lambda_function" "rotation" {
-  filename         = "${path.module}/../../src/lambda.zip"
+  filename         = "${path.module}/../../../src/lambda.zip"
   function_name    = var.lambda-function-name
   role             = aws_iam_role.lambda.arn
   handler          = var.lambda-function-handler
   runtime          = var.lambda-function-runtime
-  source_code_hash = filebase64sha256("${path.module}/../../src/lambda.zip")
+  source_code_hash = filebase64sha256("${path.module}/../../../src/lambda.zip")
   timeout          = 30
 
   vpc_config {

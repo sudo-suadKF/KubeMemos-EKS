@@ -1,0 +1,22 @@
+name: Terraform + K8s
+
+on:
+  push:
+    branches: [main]
+    paths:
+      -  'infra/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'infra/**'
+
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
