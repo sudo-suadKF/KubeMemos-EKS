@@ -17,6 +17,223 @@ concurrency:
 permissions:
   id-token: write
   contents: read
+  pull-requests: write
 
 env:
   AWS_REGION: eu-west-2
+  TF_VERSION: 1.7.0
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    defaults:
+      run:
+        working-directory: ./infra
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Format Terraform
+        run: terraform fmt -check -recursive
+        continue-on-error: true
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+
+      - name: Validate Terraform
+        run: terraform validate -no-color
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: latest
+
+      - name: Lint Terraform
+        run: |
+          tflint --init
+          tflint --format compact --recursive
+
+      - name: Upload TFLint Results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: infra/tflint.sarif
+          wait-for-processing: true
+
+
+
+  config-scan:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Scan IaC Configuration
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: 'infra/'
+          format: 'sarif'
+          output: 'trivy-iac-results.sarif'
+          severity: 'MEDIUM;HIGH;CRITICAL'
+
+      - name: Upload Trivy IaC Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-iac-results.sarif'
+          category: 'trivy-iac-scan'
+          wait-for-processing: true
+
+  checkov-scan:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Checkov IaC Scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: infra/
+          framework: terraform
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
+          soft_fail: false
+          skip_check: CKV_AWS_39,CKV_AWS_339,CKV_AWS_38,CKV_AWS_355,CKV_AWS_288,CKV_AWS_286,CKV_AWS_287,CKV_AWS_289,CKV_AWS_290,CKV_AWS_293,CKV_AWS_173,CKV_AWS_116,CKV_AWS_272,CKV_AWS_37,CKV_AWS_115
+
+      - name: Upload Checkov IaC Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: results.sarif
+          category: checkov-iac-scan
+          wait-for-processing: true
+
+  fs-scan:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Lambda Dependencies Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: 'src/'
+          format: 'sarif'
+          output: 'trivy-fs-results.sarif'
+          severity: 'MEDIUM;HIGH;CRITICAL'
+
+      - name: Upload Trivy Lambda Dependency Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-fs-results.sarif'
+          category: 'trivy-dependency-scan'
+          wait-for-processing: true
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Secrets Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'repo'
+          scan-ref: 'infra/'
+          scanners: 'secret'
+          format: 'sarif'
+          output: 'trivy-secret-results.sarif'
+
+      - name: Upload Trivy Secrets Scan
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-secret-results.sarif'
+          category: 'trivy-secret-scan'
+          wait-for-processing: true
+
+  plan:
+    runs-on: ubuntu-latest
+    needs: [config-scan, checkov-scan, fs-scan, secret-scan]
+    if: github.event_name == 'pull_request' && needs.*.result == 'success'
+    defaults:
+      run:
+        working-directory: ./infra
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Initialize Terraform
+        id: init
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -input=false -no-color -out=tfplan
+          terraform show -no-color tfplan > tf-plan.txt
+
+      - name: Upload Plan
+        uses: actions/upload-artifact@v7
+        with:
+          name: terraform-plan-${{ github.sha }}
+          path: |
+            ./infra/tfplan
+            ./infra/tf-plan.txt
+          retention-days: 5
+
+      - name: PR Comment with Plan
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+              const fs = require('fs');
+              const plan = fs.readFileSync('tf-plan.txt', 'utf8');
+              const output = `#### Terraform Plan Results
+
+              | Step | Status |
+              |------|--------|
+              | Init | ${{ steps.init.outcome }} |
+              | Validate | ${{ n }} |
+              | Plan | ${{ steps.plan.outcome }} |
+
+              <details><summary>Show Plan</summary>
+
+              ~~~
+              ${plan}
+              ~~~
+
+              </details>
+
+              *Pushed by: @${{ github.actor }}*`;
+
+              await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+              });
