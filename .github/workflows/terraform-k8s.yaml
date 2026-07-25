@@ -70,8 +70,6 @@ jobs:
           sarif_file: infra/tflint.sarif
           wait-for-processing: true
 
-
-
   config-scan:
     runs-on: ubuntu-latest
     needs: lint
@@ -190,6 +188,10 @@ jobs:
         id: init
         run: terraform init -input=false
 
+      - name: Validate Terraform
+        id: validate
+        run: terraform validate -no-color
+
       - name: Terraform Plan
         id: plan
         run: |
@@ -218,7 +220,7 @@ jobs:
               | Step | Status |
               |------|--------|
               | Init | ${{ steps.init.outcome }} |
-              | Validate | ${{ n }} |
+              | Validate | ${{ steps.validate.outcome }} |
               | Plan | ${{ steps.plan.outcome }} |
 
               <details><summary>Show Plan</summary>
