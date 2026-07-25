@@ -222,6 +222,10 @@ jobs:
               | Init | ${{ steps.init.outcome }} |
               | Validate | ${{ steps.validate.outcome }} |
               | Plan | ${{ steps.plan.outcome }} |
+              | Config Scan | ${{ needs.config-scan.result }} |
+              | Checkov Scan | ${{ needs.checkov-scan.result }} |
+              | FS Scan | ${{ needs.fs-scan.result }} |
+              | Secret Scan | ${{ needs.secret-scan.result }} |
 
               <details><summary>Show Plan</summary>
 
