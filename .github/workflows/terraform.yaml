@@ -270,7 +270,7 @@ jobs:
     name: Apply Terraform Code
     runs-on: ubuntu-latest
     needs: plan
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.plan.result == 'success'
     defaults:
       run:
         working-directory: ${{ env.TF_DIR }}
