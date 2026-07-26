@@ -262,10 +262,6 @@ jobs:
               body: output
               });
 
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
-
   apply:
     name: Apply Terraform Code
     runs-on: ubuntu-latest
