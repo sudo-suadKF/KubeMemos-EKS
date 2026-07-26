@@ -25,6 +25,7 @@ variable "s3-bucket-sse-algorithm" {
 
 variable "oidc-role-arn" {
   description = "OIDC role's ARN value"
+  type        = string
 }
 
 variable "tf-state-kms-description" {
