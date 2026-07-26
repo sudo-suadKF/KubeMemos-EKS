@@ -253,3 +253,37 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+
+  apply:
+    name: Apply Terraform Code
+    runs-on: ubuntu-latest
+    needs: plan
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: ./infra
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+
+      - name: Download Plan
+        uses: actions/download-artifact@v8
+        with:
+          name: terraform-plan-${{ github.sha }}
+          path: ./infra
+
+      - name: Apply Terraform
+        run: terraform apply -input=false -auto-approve tfplan
