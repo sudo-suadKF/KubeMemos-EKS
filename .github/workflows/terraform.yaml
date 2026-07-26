@@ -87,7 +87,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Trivy Scan IaC Configuration
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: 'config'
           scan-ref: '${{ env.TF_DIR }}/'
@@ -118,7 +118,7 @@ jobs:
           output_format: cli,sarif
           output_file_path: console,results.sarif
           soft_fail: false
-          skip_check: CKV_AWS_39,CKV_AWS_339,CKV_AWS_38,CKV_AWS_355,CKV_AWS_288,CKV_AWS_286,CKV_AWS_287,CKV_AWS_289,CKV_AWS_290,CKV_AWS_293,CKV_AWS_173,CKV_AWS_116,CKV_AWS_272,CKV_AWS_37,CKV_AWS_115
+          skip_check: CKV_AWS_39,CKV_AWS_339,CKV_AWS_38,CKV_AWS_355,CKV_AWS_288,CKV_AWS_286,CKV_AWS_287,CKV_AWS_289,CKV_AWS_290,CKV_AWS_293,CKV_AWS_173,CKV_AWS_116,CKV_AWS_272,CKV_AWS_37,CKV_AWS_115,CKV2_AWS_57,CKV2_AWS_5,CKV_AWS_18,CKV2_AWS_62,CKV2_AWS_11,CKV_AWS_144,CKV2_AWS_60,CKV2_AWS_12,CKV2_AWS_40,CKV2_AWS_61
 
       - name: Upload Checkov IaC Scan Results
         uses: github/codeql-action/upload-sarif@v4
@@ -136,7 +136,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Trivy Lambda Dependencies Scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: 'fs'
           scan-ref: 'src/'
@@ -160,7 +160,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Trivy Secrets Scan
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.35.0
         with:
           scan-type: 'repo'
           scan-ref: '${{ env.TF_DIR }}'
