@@ -180,7 +180,11 @@ jobs:
     name: Plan Terraform Code
     runs-on: ubuntu-latest
     needs: [config-scan, checkov-scan, fs-scan, secret-scan]
-    if: needs.*.result == 'success'
+    if: |
+      needs.config-scan.result == 'success' &&
+      needs.checkov-scan.result == 'success' &&
+      needs.fs-scan.result == 'success' &&
+      needs.secret-scan.result == 'success'
     defaults:
       run:
         working-directory: ${{ env.TF_DIR }}
