@@ -343,12 +343,6 @@ variable "ip-protocol-udp" {
   default     = "udp"
 }
 
-variable "delete-window" {
-  description = "Days to delete"
-  type        = number
-  default     = 7
-}
-
 variable "my-hosted-zone-name" {
   description = "Hosted zone name"
   type        = string
