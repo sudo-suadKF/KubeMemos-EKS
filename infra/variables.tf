@@ -265,12 +265,6 @@ variable "ip-protocol-tcp" {
   default     = "tcp"
 }
 
-variable "port-HTTPS" {
-  description = "Port number of HTTPS"
-  type        = number
-  default     = 443
-}
-
 variable "ip-protocol_-1" {
   description = "Ip protocol -1, all traffic"
   type        = string
