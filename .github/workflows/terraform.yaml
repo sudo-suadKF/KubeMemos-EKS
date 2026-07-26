@@ -9,6 +9,13 @@ on:
     branches: [main]
     paths:
       - 'infra/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Type 'Apply' to apply the infrastructure"
+        required: true
+        type: string
+        default: ''
 
 concurrency:
   group: terraform-${{ github.ref }}
