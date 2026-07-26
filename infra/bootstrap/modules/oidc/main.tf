@@ -28,7 +28,7 @@ resource "aws_iam_role" "github-actions" {
           }
           StringLike = {
             "token.actions.githubusercontent.com:sub" = [
-              "repo:sudo-suadKF/KubeMemos-EKS:ref:refs/heads/main",
+              "repo:sudo-suadKF/KubeMemos-EKS:*",
               "repo:sudo-suadKF/SentinelStack-Gatus:ref:refs/heads/main",
             ]
           }
