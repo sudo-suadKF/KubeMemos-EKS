@@ -18,11 +18,6 @@ variable "ip-protocol-tcp" {
   type        = string
 }
 
-variable "port-HTTPS" {
-  description = "Port number of HTTPS"
-  type        = number
-}
-
 variable "ip-protocol_-1" {
   description = "Ip protocol -1, all traffic"
   type        = string
@@ -131,4 +126,9 @@ variable "vpc-endpoints-sg-tag" {
 # variable "egress-rule-node-description" {
 #   description = "Description of ingress rule of node to node UDP"
 #   type        = string
+# }
+
+# variable "port-HTTPS" {
+#   description = "Port number of HTTPS"
+#   type        = number
 # }

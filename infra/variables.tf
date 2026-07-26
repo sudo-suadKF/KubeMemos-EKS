@@ -648,3 +648,8 @@ variable "s3-endpoint-tag" {
 #   type        = string
 #   default     = "udp"
 # }
+
+# variable "port-HTTPS" {
+#   description = "Port number of HTTPS"
+#   type        = number
+# }

@@ -75,7 +75,7 @@ module "sg" {
   ip-protocol_-1 = var.ip-protocol_-1
   # port-DNS                                 = var.port-DNS
   # port-10250                               = var.port-10250
-  port-HTTPS                   = var.port-HTTPS
+  # port-HTTPS                   = var.port-HTTPS
   vpc-cidr                     = module.vpc.vpc-cidr
   rds-sg-description           = var.rds-sg-description
   rds-sg-name                  = var.rds-sg-name
