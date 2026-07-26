@@ -1,4 +1,4 @@
-name: Terraform + K8s
+name: Terraform
 
 on:
   push:
