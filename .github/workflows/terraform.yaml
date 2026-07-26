@@ -209,7 +209,7 @@ jobs:
       - name: Upload Plan
         uses: actions/upload-artifact@v7
         with:
-          name: terraform-plan-${{ github.sha }}
+          name: terraform-plan
           path: |
             ${{ env.TF_DIR }}/tfplan
             ${{ env.TF_DIR }}/tf-plan.txt
@@ -283,7 +283,7 @@ jobs:
       - name: Download Plan
         uses: actions/download-artifact@v8
         with:
-          name: terraform-plan-${{ github.sha }}
+          name: terraform-plan
           path: ${{ env.TF_DIR }}
 
       - name: Apply Terraform
