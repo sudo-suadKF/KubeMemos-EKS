@@ -304,6 +304,14 @@ jobs:
       run:
         working-directory: ${{ env.TF_DIR }}
     steps:
+      - name: Check Correct Input
+        run: |
+                if [ "${{ github.event.inputs.action }}" != "Apply" ]; then
+                echo "Apply cancelled"
+                exit 1
+                fi
+        working-directory: .
+
       - uses: actions/checkout@v6
 
       - name: Configure AWS credentials
