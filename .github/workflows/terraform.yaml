@@ -232,7 +232,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
               const fs = require('fs');
-              const plan = fs.readFileSync('tf-plan.txt', 'utf8');
+              const plan = fs.readFileSync('${{ env.TF_DIR }}/tf-plan.txt', 'utf8');
               const output = `#### Terraform Plan Results
 
               | Step | Status |
