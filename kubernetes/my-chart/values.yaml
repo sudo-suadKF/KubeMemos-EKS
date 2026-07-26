@@ -7,16 +7,12 @@ replicaCount: 1
 
 deployment:
   name: memos
-  image: "541064517911.dkr.ecr.eu-west-2.amazonaws.com/kube-memo-eks"
-  tag: "latest"
 
 # This sets the container image more information can be found here: https://kubernetes.io/docs/concepts/containers/images/
 image:
-  repository: nginx
-  # This sets the pull policy for images.
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  repository: "541064517911.dkr.ecr.eu-west-2.amazonaws.com/kube-memo-eks"
+  pullPolicy: Always
+  tag: "latest"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []

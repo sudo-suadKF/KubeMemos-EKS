@@ -1,30 +1,30 @@
 resource "aws_security_group" "rds-sg" {
-  name        = "rds-sg"
-  description = "sg for rds db instance"
+  name        = var.rds-sg-name
+  description = var.rds-sg-description
   vpc_id      = var.vpc-id
 
   tags = {
-    Name = "rds-sg"
+    Name = var.rds-sg-tag
   }
 }
 
 resource "aws_security_group" "lambda-sg" {
-  name        = "lambda-sg"
-  description = "sg for lambda"
+  name        = var.lambda-sg-name
+  description = var.lambda-sg-description
   vpc_id      = var.vpc-id
 
   tags = {
-    Name = "lambda-sg"
+    Name = var.lambda-sg-tag
   }
 }
 
 resource "aws_security_group" "vpc-endpoints-sg" {
-  name        = "vpc-endpoints-sg"
-  description = "sg for vpc endpoints"
+  name        = var.vpc-endpoints-sg-name
+  description = var.vpc-endpoints-sg-description
   vpc_id      = var.vpc-id
 
   tags = {
-    Name = "vpc-endpoints-sg"
+    Name = var.vpc-endpoints-sg-tag
   }
 }
 

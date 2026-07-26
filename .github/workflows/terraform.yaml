@@ -1,0 +1,339 @@
+name: Terraform
+
+on:
+  push:
+    branches: [main]
+    paths:
+      -  'infra/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'infra/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Type 'Apply' to apply the infrastructure"
+        required: true
+        type: string
+        default: ''
+
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+env:
+  AWS_REGION: eu-west-2
+  TF_VERSION: 1.15.8
+  TF_DIR: ./infra
+
+jobs:
+  lint:
+    name: Linting Terraform Code
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    defaults:
+      run:
+        working-directory: ${{ env.TF_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Format Terraform
+        run: terraform fmt -check -recursive
+        continue-on-error: true
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+
+      - name: Validate Terraform
+        run: terraform validate -no-color
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v6
+        with:
+          tflint_version: latest
+
+      - name: Lint Terraform
+        run: |
+          tflint --init
+          tflint --format sarif --recursive > tflint.sarif
+
+      - name: Upload TFLint Results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ env.TF_DIR }}/tflint.sarif
+          wait-for-processing: true
+
+  config-scan:
+    name: Scanning Config
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Scan IaC Configuration
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: 'config'
+          scan-ref: '${{ env.TF_DIR }}/'
+          format: 'sarif'
+          output: 'trivy-iac-results.sarif'
+          severity: 'MEDIUM;HIGH;CRITICAL'
+
+      - name: Upload Trivy IaC Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-iac-results.sarif'
+          category: 'trivy-iac-scan'
+          wait-for-processing: true
+
+  checkov-scan:
+    name: Scanning IaC Vulnerabilities
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Checkov IaC Scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: ${{ env.TF_DIR }}
+          framework: terraform
+          output_format: cli,sarif
+          output_file_path: console,results.sarif
+          soft_fail: false
+          skip_check: CKV_AWS_39,CKV_AWS_339,CKV_AWS_38,CKV_AWS_355,CKV_AWS_288,CKV_AWS_286,CKV_AWS_287,CKV_AWS_289,CKV_AWS_290,CKV_AWS_293,CKV_AWS_173,CKV_AWS_116,CKV_AWS_272,CKV_AWS_37,CKV_AWS_115,CKV2_AWS_57,CKV2_AWS_5,CKV_AWS_18,CKV2_AWS_62,CKV2_AWS_11,CKV_AWS_144,CKV2_AWS_60,CKV2_AWS_12,CKV2_AWS_40,CKV2_AWS_61
+
+      - name: Upload Checkov IaC Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: results.sarif
+          category: checkov-iac-scan
+          wait-for-processing: true
+
+  fs-scan:
+    name: Scanning Dependencies
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Lambda Dependencies Scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: 'fs'
+          scan-ref: 'src/'
+          format: 'sarif'
+          output: 'trivy-fs-results.sarif'
+          severity: 'MEDIUM;HIGH;CRITICAL'
+
+      - name: Upload Trivy Lambda Dependency Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-fs-results.sarif'
+          category: 'trivy-dependency-scan'
+          wait-for-processing: true
+
+  secret-scan:
+    name: Scanning Secrets
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Secrets Scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: 'repo'
+          scan-ref: '${{ env.TF_DIR }}'
+          scanners: 'secret'
+          format: 'sarif'
+          output: 'trivy-secret-results.sarif'
+
+      - name: Upload Trivy Secrets Scan
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-secret-results.sarif'
+          category: 'trivy-secret-scan'
+          wait-for-processing: true
+
+  plan:
+    name: Plan Terraform Code
+    runs-on: ubuntu-latest
+    needs: [config-scan, checkov-scan, fs-scan, secret-scan]
+    if: |
+      needs.config-scan.result == 'success' &&
+      needs.checkov-scan.result == 'success' &&
+      needs.fs-scan.result == 'success' &&
+      needs.secret-scan.result == 'success'
+    defaults:
+      run:
+        working-directory: ${{ env.TF_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Initialize Terraform
+        id: init
+        run: terraform init -input=false
+
+      - name: Validate Terraform
+        id: validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -input=false -no-color -out=tfplan
+          terraform show -no-color tfplan > tf-plan.txt
+        continue-on-error: true
+
+      - name: Upload Plan
+        uses: actions/upload-artifact@v7
+        with:
+          name: terraform-plan
+          path: |
+            ${{ env.TF_DIR }}/tfplan
+            ${{ env.TF_DIR }}/tf-plan.txt
+          retention-days: 5
+
+      - name: PR Comment with Plan
+        uses: actions/github-script@v9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+              const fs = require('fs');
+              const plan = fs.readFileSync('${{ env.TF_DIR }}/tf-plan.txt', 'utf8');
+              const output = `#### Terraform Plan Results
+
+              | Step | Status |
+              |------|--------|
+              | Init | ${{ steps.init.outcome }} |
+              | Validate | ${{ steps.validate.outcome }} |
+              | Plan | ${{ steps.plan.outcome }} |
+              | Config Scan | ${{ needs.config-scan.result }} |
+              | Checkov Scan | ${{ needs.checkov-scan.result }} |
+              | FS Scan | ${{ needs.fs-scan.result }} |
+              | Secret Scan | ${{ needs.secret-scan.result }} |
+
+              <details><summary>Show Plan</summary>
+
+              ~~~
+              ${plan}
+              ~~~
+
+              </details>
+
+              *Pushed by: @${{ github.actor }}*`;
+
+              await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+              });
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+  apply:
+    name: Apply Terraform Code
+    runs-on: ubuntu-latest
+    needs: plan
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    defaults:
+      run:
+        working-directory: ${{ env.TF_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+
+      - name: Download Plan
+        uses: actions/download-artifact@v8
+        with:
+          name: terraform-plan
+          path: ${{ env.TF_DIR }}
+
+      - name: Apply Terraform
+        run: terraform apply -input=false -auto-approve tfplan
+
+  manual-apply:
+    name: Manually Apply Terraform Code
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Apply'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.TF_DIR }}
+    steps:
+      - name: Check Correct Input
+        run: |
+                if [ "${{ github.event.inputs.action }}" != "Apply" ]; then
+                echo "Apply cancelled"
+                exit 1
+                fi
+        working-directory: .
+
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Initialize Terraform
+        run: terraform init -input=false
+
+      - name: Validate Terraform
+        run: terraform validate
+
+      - name: Apply Terraform
+        run: terraform apply -input=false -auto-approve

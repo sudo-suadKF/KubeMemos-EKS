@@ -4,6 +4,6 @@
 **/terraform.tfstate.backup
 **/.infracost/
 .pre-commit-trivy-cache
-src/
+/src/package
 .secrets.baseline
 
