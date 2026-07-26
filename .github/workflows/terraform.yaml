@@ -298,7 +298,7 @@ jobs:
 
   manual-apply:
     name: Manually Apply Terraform Code
-    if: github.event.inputs.action == 'Apply'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Apply'
     runs-on: ubuntu-latest
     defaults:
       run:
