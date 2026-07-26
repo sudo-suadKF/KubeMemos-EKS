@@ -274,12 +274,13 @@ jobs:
               });
 
       - name: PR Comment with Cost
+        if: github.event_name == 'pull_request'
         run: |
            infracost comment github \
            --path /tmp/infracost.json \
            --repo ${{ github.repository }} \
-           --pull-request ${{ github.event.pull_request.number }}
-           --github-token ${{ secrets.GITHUB_TOKEN }}
+           --pull-request ${{ github.event.pull_request.number }} \
+           --github-token ${{ secrets.GITHUB_TOKEN }} \
            --behavior update
 
       - name: Terraform Plan Status
