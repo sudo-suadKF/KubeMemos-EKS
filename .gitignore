@@ -6,3 +6,4 @@
 .pre-commit-trivy-cache
 /src/package
 .secrets.baseline
+
