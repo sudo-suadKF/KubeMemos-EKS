@@ -79,15 +79,15 @@ jobs:
           fi
 
       - name: Exit Pipeline
-        if: steps.check.outputs.exists == 'false'
+        if: steps.check.outputs.exists == 'true'
         run: exit 1
 
       - name: Apply Helmfile
-        if: steps.check.outputs.exists == 'true'
+        if: steps.check.outputs.exists == 'false'
         run: helmfile apply
 
       - name: Apply ArgoCD
-        if: steps.check.outputs.exists == 'true'
+        if: steps.check.outputs.exists == 'false'
         run: |
           kubectl apply -f ${{ env.ARGO_CD_DIR}}/argo-cd.yaml
           kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-http.yaml"
@@ -95,7 +95,7 @@ jobs:
           kubectl apply -f ${{ env.ARGO_CD_DIR}}/middleware.yaml"
 
       - name: Apply Monitoring
-        if: steps.check.outputs.exists == 'true'
+        if: steps.check.outputs.exists == 'false'
         run: |
           kubectl apply -f ${{ env.GRAFANA_DIR }}/ingress-http.yaml
           kubectl apply -f ${{ env.GRAFANA_DIR }}/ingress-https.yaml
@@ -104,11 +104,11 @@ jobs:
           kubectl apply -f ${{ env.MONITORING_DIR }}/middleware.yaml
 
       - name: Apply Cluster Issuer
-        if: steps.check.outputs.exists == 'true'
+        if: steps.check.outputs.exists == 'false'
         run: kubectl apply -f cluster-issuer.yaml
 
       - name: Wait until TLS certificates are ready
-        if: steps.check.outputs.exists == 'true'
+        if: steps.check.outputs.exists == 'false'
         run: |
           until kubectl wait --for=condition=ready certificate --all --all-namespaces
           do
