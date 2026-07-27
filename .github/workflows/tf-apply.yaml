@@ -357,4 +357,4 @@ jobs:
         run: terraform validate
 
       - name: Apply Terraform
-        run: terraform apply -input=false -auto-approve tfplan
+        run: terraform apply -input=false -auto-approve
