@@ -17,8 +17,8 @@ env:
   GRAFANA_DIR: ./monitoring/grafana
 
 jobs:
-  deploy:
-    name: Deploy K8s
+  check:
+    name: Check if Production Exists
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -50,3 +50,23 @@ jobs:
           curl -LO https://github.com/helmfile/helmfile/releases/download/v1.5.5/helmfile_1.5.5_linux_amd64.tar.gz
           tar xzf helmfile_1.5.5_linux_amd64.tar.gz
           sudo mv helmfile /usr/local/bin/
+
+      - name: Update Kubeconfig
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
+
+      - name: Check if Production Exists
+        id: check
+        run: |
+          if kubectl get ns production; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Apply Helmfile
+        if: steps.check.outputs.exists == 'true'
+        run: helmfile apply
+
+      - name: Exit Pipeline
+        if: steps.check.outputs.exists == 'false'
+        run: exit 1
