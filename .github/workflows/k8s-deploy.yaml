@@ -91,3 +91,12 @@ jobs:
       - name: Apply Cluster Issuer
         if: steps.check.outputs.exists == 'true'
         run: kubectl apply -f cluster-issuer.yaml
+
+      - name: Wait until TLS certificates are ready
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          until kubectl wait --for=condition=ready certificate --all --all-namespaces
+          do
+            echo "Certificates are not ready yet..."
+            sleep 30
+          done
