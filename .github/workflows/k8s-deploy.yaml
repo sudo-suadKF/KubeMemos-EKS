@@ -25,7 +25,7 @@ env:
 jobs:
   deploy:
     name: Deploy K8s
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Apply'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Deploy'
     runs-on: ubuntu-latest
     defaults:
       run:
