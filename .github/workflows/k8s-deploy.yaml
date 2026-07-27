@@ -1,0 +1,43 @@
+name: K8s
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
+  CLUSTER_NAME: my-eks-cluster
+  K8s_DIR: ./kubernetes
+  ARGO_CD_DIR: ./argo-cd
+  MONITORING_DIR: ./monitoring
+  PROMETHEUS_DIR: ./monitoring/prometheus
+  GRAFANA_DIR: ./monitoring/grafana
+
+jobs:
+  deploy:
+    name: Deploy K8s
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.K8s_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set Up Kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: 'latest'
+
+      - name: Set Up Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: 'latest'
