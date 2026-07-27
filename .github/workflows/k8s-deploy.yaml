@@ -17,8 +17,8 @@ env:
   GRAFANA_DIR: ./monitoring/grafana
 
 jobs:
-  check:
-    name: Check if Production Exists
+  deploy:
+    name: Deploy K8s
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -63,10 +63,18 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Exit Pipeline
+        if: steps.check.outputs.exists == 'false'
+        run: exit 1
+
       - name: Apply Helmfile
         if: steps.check.outputs.exists == 'true'
         run: helmfile apply
 
-      - name: Exit Pipeline
-        if: steps.check.outputs.exists == 'false'
-        run: exit 1
+      - name: Apply ArgoCD
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/argo-cd.yaml
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-http.yaml"
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-https.yaml"
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/middleware.yaml"
