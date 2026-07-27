@@ -2,6 +2,12 @@ name: K8s-deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      action:
+        description: "Type 'Apply' to deploy K8s resources"
+        required: true
+        type: string
+        default: ''
 
 permissions:
   id-token: write
@@ -19,11 +25,20 @@ env:
 jobs:
   deploy:
     name: Deploy K8s
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Apply'
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: ${{ env.K8s_DIR }}
     steps:
+      - name: Check Correct Input
+        run: |
+          if [ "${{ github.event.inputs.action }}" != "Apply" ]; then
+            echo "Apply cancelled"
+            exit 1
+          fi
+        working-directory: .
+
       - uses: actions/checkout@v6
 
       - name: Configure AWS credentials
