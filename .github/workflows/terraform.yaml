@@ -224,7 +224,7 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
       - name: Generate Cost Estimate
-        run: infracost breakdown --path infra/tf-plan.json --format json --out-file /tmp/infracost.json
+        run: infracost breakdown --path tf-plan.json --format json --out-file /tmp/infracost.json
 
       - name: Upload Plan
         uses: actions/upload-artifact@v7
