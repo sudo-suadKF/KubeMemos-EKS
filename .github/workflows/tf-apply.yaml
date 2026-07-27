@@ -1,4 +1,4 @@
-name: Terraform
+name: Terraform Apply
 
 on:
   push:
@@ -331,10 +331,10 @@ jobs:
     steps:
       - name: Check Correct Input
         run: |
-                if [ "${{ github.event.inputs.action }}" != "Apply" ]; then
-                echo "Apply cancelled"
-                exit 1
-                fi
+          if [ "${{ github.event.inputs.action }}" != "Apply" ]; then
+            echo "Apply cancelled"
+            exit 1
+          fi
         working-directory: .
 
       - uses: actions/checkout@v6
