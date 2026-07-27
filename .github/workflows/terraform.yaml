@@ -215,7 +215,16 @@ jobs:
         run: |
           terraform plan -input=false -no-color -out=tfplan
           terraform show -no-color tfplan > tf-plan.txt
+          terraform show -no-color -json tfplan > tf-plan.json
         continue-on-error: true
+
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      - name: Generate Cost Estimate
+        run: infracost breakdown --path tf-plan.json --format json --out-file /tmp/infracost.json
 
       - name: Upload Plan
         uses: actions/upload-artifact@v7
@@ -224,6 +233,7 @@ jobs:
           path: |
             ${{ env.TF_DIR }}/tfplan
             ${{ env.TF_DIR }}/tf-plan.txt
+            ${{ env.TF_DIR }}/tf-plan.json
           retention-days: 5
 
       - name: PR Comment with Plan
@@ -262,6 +272,16 @@ jobs:
               repo: context.repo.repo,
               body: output
               });
+
+      - name: PR Comment with Cost
+        if: github.event_name == 'pull_request'
+        run: |
+           infracost comment github \
+           --path /tmp/infracost.json \
+           --repo ${{ github.repository }} \
+           --pull-request ${{ github.event.pull_request.number }} \
+           --github-token ${{ secrets.GITHUB_TOKEN }} \
+           --behavior update
 
       - name: Terraform Plan Status
         if: github.event_name == 'pull_request' && steps.plan.outcome == 'failure'
