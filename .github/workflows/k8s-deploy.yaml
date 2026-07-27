@@ -78,3 +78,12 @@ jobs:
           kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-http.yaml"
           kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-https.yaml"
           kubectl apply -f ${{ env.ARGO_CD_DIR}}/middleware.yaml"
+
+      - name: Apply Monitoring
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          kubectl apply -f ${{ env.GRAFANA_DIR }}/ingress-http.yaml
+          kubectl apply -f ${{ env.GRAFANA_DIR }}/ingress-https.yaml
+          kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-http.yaml
+          kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-https.yaml
+          kubectl apply -f ${{ env.MONITORING_DIR }}/middleware.yaml
