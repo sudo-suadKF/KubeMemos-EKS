@@ -98,5 +98,5 @@ jobs:
           until kubectl wait --for=condition=ready certificate --all --all-namespaces
           do
             echo "Certificates are not ready yet..."
-            sleep 30
+            sleep 20
           done
