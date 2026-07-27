@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "Type 'Apply' to deploy K8s resources"
+        description: "Type 'Deploy' to deploy K8s resources"
         required: true
         type: string
         default: ''
@@ -33,7 +33,7 @@ jobs:
     steps:
       - name: Check Correct Input
         run: |
-          if [ "${{ github.event.inputs.action }}" != "Apply" ]; then
+          if [ "${{ github.event.inputs.action }}" != "Deploy" ]; then
             echo "Apply cancelled"
             exit 1
           fi
