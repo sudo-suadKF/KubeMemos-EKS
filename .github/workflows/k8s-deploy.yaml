@@ -90,9 +90,9 @@ jobs:
         if: steps.check.outputs.exists == 'false'
         run: |
           kubectl apply -f ${{ env.ARGO_CD_DIR}}/argo-cd.yaml
-          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-http.yaml"
-          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-https.yaml"
-          kubectl apply -f ${{ env.ARGO_CD_DIR}}/middleware.yaml"
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-http.yaml
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-https.yaml
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/middleware.yaml
 
       - name: Apply Monitoring
         if: steps.check.outputs.exists == 'false'
