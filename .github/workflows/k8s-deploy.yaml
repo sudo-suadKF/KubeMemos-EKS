@@ -58,7 +58,7 @@ jobs:
           version: 'latest'
 
       - name: Set Up Helm-diff
-        run: helm plugin install https://github.com/databus23/helm-diff
+        run: helm plugin install https://github.com/databus23/helm-diff --verify=false
 
       - name: Set Up Helmfile
         run: |
