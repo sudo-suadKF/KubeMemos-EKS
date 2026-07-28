@@ -1,4 +1,4 @@
-name: K8s Deploy
+name: K8s Dispatch
 
 on:
   workflow_dispatch:
@@ -170,3 +170,44 @@ jobs:
         uses: azure/setup-helm@v5
         with:
           version: 'latest'
+
+      - name: Set Up Helm-diff
+        run: helm plugin install https://github.com/databus23/helm-diff --verify=false
+
+      - name: Set Up Helmfile
+        run: |
+          curl -LO https://github.com/helmfile/helmfile/releases/download/v1.5.5/helmfile_1.5.5_linux_amd64.tar.gz
+          tar xzf helmfile_1.5.5_linux_amd64.tar.gz
+          sudo mv helmfile /usr/local/bin/
+
+      - name: Update Kubeconfig
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
+
+      - name: Delete Cluster Issuer
+        run: kubectl delete clusterissuer letsencrypt-https -n certmanager
+
+      - name: Delete ArgoCD
+        run: |
+          kubectl delete application memos-app -n argo-cd
+          kubectl delete middleware -n argo-cd redirectscheme
+          kubectl delete ingress -n argo-cd argo-cd-ingress-https
+          kubectl delete ingress -n argo-cd argo-cd-ingress-http
+
+      - name: Delete Production
+        run: |
+          kubectl delete deploy memos-deployment -n production
+          kubectl delete svc memos-service -n production
+
+      - name: Delete Monitoring
+        run: |
+          kubectl delete middleware -n monitoring redirectscheme
+          kubectl delete ingress -n monitoring prometheus-ingress-https
+          kubectl delete ingress -n monitoring prometheus-ingress-http
+          kubectl delete ingress -n monitoring grafana-ingress-https
+          kubectl delete ingress -n monitoring grafana-ingress-http
+
+      - name: Delete Namespaces
+        run: kubectl delete ns external-dns external-secrets monitoring stakater-reloader traefik argo-cd cert-manager production
+
+      - name: Destroy Helmfile
+        run: helmfile destroy
