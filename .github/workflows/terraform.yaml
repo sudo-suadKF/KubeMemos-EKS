@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Terraform
 
 on:
   push:
@@ -12,10 +12,13 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "Type 'Apply' to apply the infrastructure"
+        description: "Choose 'Apply' or 'Destroy' the infrastructure"
         required: true
-        type: string
-        default: ''
+        type: choice
+        options:
+          - Apply
+          - Destroy
+        default: 'Apply'
 
 concurrency:
   group: terraform-${{ github.ref }}
@@ -322,9 +325,9 @@ jobs:
       - name: Apply Terraform
         run: terraform apply -input=false -auto-approve tfplan
 
-  manual-apply:
-    name: Manually Apply Terraform Code
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Apply'
+  dispatch:
+    name: Manually Apply or Destroy Terraform Infra
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -332,8 +335,8 @@ jobs:
     steps:
       - name: Check Correct Input
         run: |
-          if [ "${{ github.event.inputs.action }}" != "Apply" ]; then
-            echo "Apply cancelled"
+          if [ "${{ github.event.inputs.action }}" != "Apply" && "${{ github.event.inputs.action}}" != "Destroy" ]; then
+            echo "Dispatch Cancelled"
             exit 1
           fi
         working-directory: .
@@ -358,4 +361,9 @@ jobs:
         run: terraform validate
 
       - name: Apply Terraform
+        if: github.event.inputs.action == 'Apply'
         run: terraform apply -input=false -auto-approve
+
+      - name: Destroy Terraform
+        if: github.event.inputs.action == 'Destroy'
+        run: terraform destroy -input=false -auto-approve

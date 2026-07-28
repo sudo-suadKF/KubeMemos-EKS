@@ -1,13 +1,16 @@
-name: K8s Deploy
+name: K8s Dispatch
 
 on:
   workflow_dispatch:
     inputs:
       action:
-        description: "Type 'Deploy' to deploy K8s resources"
+        description: "Choose 'Deploy' or 'Undeploy' K8s"
         required: true
-        type: string
-        default: ''
+        type: choice
+        options:
+          - Deploy
+          - Undeploy
+        default: 'Deploy'
 
 permissions:
   id-token: write
@@ -34,7 +37,7 @@ jobs:
       - name: Check Correct Input
         run: |
           if [ "${{ github.event.inputs.action }}" != "Deploy" ]; then
-            echo "Apply cancelled"
+            echo "Deploy cancelled"
             exit 1
           fi
         working-directory: .
@@ -97,6 +100,13 @@ jobs:
         if: steps.check.outputs.exists == 'false'
         run: helmfile apply
 
+      - name: Wait for Cert Manager & Traefik are Available
+        run: |
+          kubectl wait --for=condition=Available deployment/cert-manager -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/cert-manager-webhook -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/cert-manager-cainjector -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/traefik -n traefik --timeout=180s
+
       - name: Apply Cluster Issuer
         if: steps.check.outputs.exists == 'false'
         run: kubectl apply -f cluster-issuer.yaml
@@ -126,3 +136,78 @@ jobs:
             echo "Certificates are not ready yet..."
             sleep 20
           done
+
+  Undeploy:
+    name: Undeploy K8s
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Undeploy'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.K8s_DIR }}
+    steps:
+      - name: Check Correct Input
+        run: |
+          if [ "${{ github.event.inputs.action }}" != "Undeploy" ]; then
+            echo "Undeploy cancelled"
+            exit 1
+          fi
+        working-directory: .
+
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set Up Kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: 'latest'
+
+      - name: Set Up Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: 'latest'
+
+      - name: Set Up Helm-diff
+        run: helm plugin install https://github.com/databus23/helm-diff --verify=false
+
+      - name: Set Up Helmfile
+        run: |
+          curl -LO https://github.com/helmfile/helmfile/releases/download/v1.5.5/helmfile_1.5.5_linux_amd64.tar.gz
+          tar xzf helmfile_1.5.5_linux_amd64.tar.gz
+          sudo mv helmfile /usr/local/bin/
+
+      - name: Update Kubeconfig
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
+
+      - name: Delete Cluster Issuer
+        run: kubectl delete clusterissuer letsencrypt-https -n certmanager
+
+      - name: Delete ArgoCD
+        run: |
+          kubectl delete application memos-app -n argo-cd
+          kubectl delete middleware -n argo-cd redirectscheme
+          kubectl delete ingress -n argo-cd argo-cd-ingress-https
+          kubectl delete ingress -n argo-cd argo-cd-ingress-http
+
+      - name: Delete Production
+        run: |
+          kubectl delete deploy memos-deployment -n production
+          kubectl delete svc memos-service -n production
+
+      - name: Delete Monitoring
+        run: |
+          kubectl delete middleware -n monitoring redirectscheme
+          kubectl delete ingress -n monitoring prometheus-ingress-https
+          kubectl delete ingress -n monitoring prometheus-ingress-http
+          kubectl delete ingress -n monitoring grafana-ingress-https
+          kubectl delete ingress -n monitoring grafana-ingress-http
+
+      - name: Delete Namespaces
+        run: kubectl delete ns external-dns external-secrets monitoring stakater-reloader traefik argo-cd cert-manager production
+
+      - name: Destroy Helmfile
+        run: helmfile destroy
