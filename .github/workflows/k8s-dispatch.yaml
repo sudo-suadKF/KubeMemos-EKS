@@ -183,6 +183,9 @@ jobs:
       - name: Update Kubeconfig
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
 
+      - name: Destroy Helmfile
+        run: helmfile destroy
+
       - name: Delete Cluster Issuer
         run: kubectl delete clusterissuer letsencrypt-https -n certmanager --ignore-not-found
 
@@ -216,6 +219,3 @@ jobs:
           kubectl delete ns argo-cd --ignore-not-found
           kubectl delete ns cert-manager --ignore-not-found
           kubectl delete ns production --ignore-not-found
-
-      - name: Destroy Helmfile
-        run: helmfile destroy
