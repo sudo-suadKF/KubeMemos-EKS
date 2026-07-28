@@ -1,4 +1,4 @@
-name: Terraform Apply
+name: Terraform
 
 on:
   push:
@@ -12,10 +12,13 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "Type 'Apply' to apply the infrastructure"
+        description: "Choose 'Apply' or 'Destroy' the infrastructure"
         required: true
-        type: string
-        default: ''
+        type: choice
+        options:
+          - Apply
+          - Destroy
+        default: 'Apply'
 
 concurrency:
   group: terraform-${{ github.ref }}
