@@ -63,9 +63,13 @@ jobs:
           path: |
             ~/.cache/helm
             ~/.config/helm
+            ~/.local/share/helm/plugins
           key: ${{ runner.os }}-helm-${{ hashFiles('helmfile.yaml', 'helm-values/*.yaml') }}
           restore-keys: |
             ${{ runner.os }}-helm-
+
+      - name: Set Up Helm-diff
+        run: helm plugin install https://github.com/databus23/helm-diff --verify=false
 
       - name: Set Up Helmfile
         run: |
