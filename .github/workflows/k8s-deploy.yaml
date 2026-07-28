@@ -63,7 +63,7 @@ jobs:
           path: |
             ~/.cache/helm
             ~/.config/helm
-          key: ${{ runner.os }}-helm-${{ hashFiles('**/helmfile*.yaml', 'helm-values/*.yaml') }}
+          key: ${{ runner.os }}-helm-${{ hashFiles('helmfile.yaml', 'helm-values/*.yaml') }}
           restore-keys: |
             ${{ runner.os }}-helm-
 
