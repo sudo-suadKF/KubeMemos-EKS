@@ -183,9 +183,6 @@ jobs:
       - name: Update Kubeconfig
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
 
-      - name: Destroy Helmfile
-        run: helmfile destroy
-
       - name: Delete Cluster Issuer
         run: kubectl delete clusterissuer letsencrypt-https -n certmanager --ignore-not-found
 
@@ -200,6 +197,12 @@ jobs:
         run: |
           kubectl delete deploy memos-deployment -n production --ignore-not-found
           kubectl delete svc memos-service -n production --ignore-not-found
+          kubectl delete clustersecretstore aws-secrets -n production --ignore-not-found
+          kubectl delete secret memos-dsn -n production --ignore-not-found
+          kubectl delete externalsecrets memos-dsn -n production --ignore-not-found
+          kubectl delete ingress memos-ingress-http -n production --ignore-not-found
+          kubectl delete ingress memos-ingress-https -n production --ignore-not-found
+          kubectl delete middleware redirectscheme -n production --ignore-not-found
 
       - name: Delete Monitoring
         run: |
@@ -219,3 +222,6 @@ jobs:
           kubectl delete ns argo-cd --ignore-not-found
           kubectl delete ns cert-manager --ignore-not-found
           kubectl delete ns production --ignore-not-found
+
+      - name: Destroy Helmfile
+        run: helmfile destroy
