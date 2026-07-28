@@ -97,6 +97,13 @@ jobs:
         if: steps.check.outputs.exists == 'false'
         run: helmfile apply
 
+      - name: Wait for Cert Manager & Traefik are Available
+        run: |
+          kubectl wait --for=condition=Available deployment/cert-manager -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/cert-manager-webhook -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/cert-manager-cainjector -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/traefik -n traefik --timeout=180s
+
       - name: Apply Cluster Issuer
         if: steps.check.outputs.exists == 'false'
         run: kubectl apply -f cluster-issuer.yaml
