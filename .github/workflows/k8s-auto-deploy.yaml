@@ -1,0 +1,121 @@
+name: Auto Deploy K8s
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-west-2
+  CLUSTER_NAME: my-eks-cluster
+  K8s_DIR: ./kubernetes
+  ARGO_CD_DIR: ./argo-cd
+  MONITORING_DIR: ./monitoring
+  PROMETHEUS_DIR: ./monitoring/prometheus
+  GRAFANA_DIR: ./monitoring/grafana
+
+jobs:
+  deploy:
+    name: Auto Deploy K8s
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.K8s_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set Up Kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: 'latest'
+
+      - name: Set Up Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: 'latest'
+
+      - name: Set Up Helm-diff
+        run: helm plugin install https://github.com/databus23/helm-diff --verify=false
+
+      - name: Cache Helm
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/helm
+            ~/.config/helm
+            ~/.local/share/helm/plugins
+          key: ${{ runner.os }}-helm-${{ hashFiles('helmfile.yaml', 'helm-values/*.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-helm-
+
+      - name: Set Up Helmfile
+        run: |
+          curl -LO https://github.com/helmfile/helmfile/releases/download/v1.5.5/helmfile_1.5.5_linux_amd64.tar.gz
+          tar xzf helmfile_1.5.5_linux_amd64.tar.gz
+          sudo mv helmfile /usr/local/bin/
+
+      - name: Update Kubeconfig
+        run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
+
+      - name: Check if Production Exists
+        id: check
+        run: |
+          if kubectl get ns production; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exit Pipeline
+        if: steps.check.outputs.exists == 'true'
+        run: exit 1
+
+      - name: Apply Helmfile
+        if: steps.check.outputs.exists == 'false'
+        run: helmfile apply
+
+      - name: Wait for Cert Manager & Traefik are Available
+        run: |
+          kubectl wait --for=condition=Available deployment/cert-manager -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/cert-manager-webhook -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/cert-manager-cainjector -n cert-manager --timeout=180s
+          kubectl wait --for=condition=Available deployment/traefik -n traefik --timeout=180s
+
+      - name: Apply Cluster Issuer
+        if: steps.check.outputs.exists == 'false'
+        run: kubectl apply -f cluster-issuer.yaml
+
+      - name: Apply ArgoCD
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/argo-cd.yaml
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-http.yaml
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/ingress-https.yaml
+          kubectl apply -f ${{ env.ARGO_CD_DIR}}/middleware.yaml
+
+      - name: Apply Monitoring
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          kubectl apply -f ${{ env.GRAFANA_DIR }}/ingress-http.yaml
+          kubectl apply -f ${{ env.GRAFANA_DIR }}/ingress-https.yaml
+          kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-http.yaml
+          kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-https.yaml
+          kubectl apply -f ${{ env.MONITORING_DIR }}/middleware.yaml
+
+      - name: Wait until TLS certificates are ready
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          until kubectl wait --for=condition=ready certificate --all --all-namespaces
+          do
+            echo "Certificates are not ready yet..."
+            sleep 20
+          done
