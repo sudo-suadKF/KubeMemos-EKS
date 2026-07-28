@@ -4,10 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "Type 'Deploy' to deploy K8s resources"
+        description: "Choose 'Deploy' or 'Undeploy' K8s"
         required: true
-        type: string
-        default: ''
+        type: choice
+        options:
+          - Deploy
+          - Undeploy
+        default: 'Deploy'
 
 permissions:
   id-token: write
@@ -34,7 +37,7 @@ jobs:
       - name: Check Correct Input
         run: |
           if [ "${{ github.event.inputs.action }}" != "Deploy" ]; then
-            echo "Apply cancelled"
+            echo "Deploy cancelled"
             exit 1
           fi
         working-directory: .
@@ -133,3 +136,37 @@ jobs:
             echo "Certificates are not ready yet..."
             sleep 20
           done
+
+  Undeploy:
+    name: Undeploy K8s
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'Undeploy'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.K8s_DIR }}
+    steps:
+      - name: Check Correct Input
+        run: |
+          if [ "${{ github.event.inputs.action }}" != "Undeploy" ]; then
+            echo "Undeploy cancelled"
+            exit 1
+          fi
+        working-directory: .
+
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set Up Kubectl
+        uses: azure/setup-kubectl@v5
+        with:
+          version: 'latest'
+
+      - name: Set Up Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: 'latest'
