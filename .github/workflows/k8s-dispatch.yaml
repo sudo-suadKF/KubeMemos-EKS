@@ -184,30 +184,38 @@ jobs:
         run: aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.CLUSTER_NAME }}
 
       - name: Delete Cluster Issuer
-        run: kubectl delete clusterissuer letsencrypt-https -n certmanager
+        run: kubectl delete clusterissuer letsencrypt-https -n certmanager --ignore-not-found
 
       - name: Delete ArgoCD
         run: |
-          kubectl delete application memos-app -n argo-cd
-          kubectl delete middleware -n argo-cd redirectscheme
-          kubectl delete ingress -n argo-cd argo-cd-ingress-https
-          kubectl delete ingress -n argo-cd argo-cd-ingress-http
+          kubectl delete application memos-app -n argo-cd --ignore-not-found
+          kubectl delete middleware -n argo-cd redirectscheme --ignore-not-found
+          kubectl delete ingress -n argo-cd argo-cd-ingress-https --ignore-not-found
+          kubectl delete ingress -n argo-cd argo-cd-ingress-http --ignore-not-found
 
       - name: Delete Production
         run: |
-          kubectl delete deploy memos-deployment -n production
-          kubectl delete svc memos-service -n production
+          kubectl delete deploy memos-deployment -n production --ignore-not-found
+          kubectl delete svc memos-service -n production --ignore-not-found
 
       - name: Delete Monitoring
         run: |
-          kubectl delete middleware -n monitoring redirectscheme
-          kubectl delete ingress -n monitoring prometheus-ingress-https
-          kubectl delete ingress -n monitoring prometheus-ingress-http
-          kubectl delete ingress -n monitoring grafana-ingress-https
-          kubectl delete ingress -n monitoring grafana-ingress-http
+          kubectl delete middleware -n monitoring redirectscheme --ignore-not-found
+          kubectl delete ingress -n monitoring prometheus-ingress-https --ignore-not-found
+          kubectl delete ingress -n monitoring prometheus-ingress-http --ignore-not-found
+          kubectl delete ingress -n monitoring grafana-ingress-https --ignore-not-found
+          kubectl delete ingress -n monitoring grafana-ingress-http --ignore-not-found
 
       - name: Delete Namespaces
-        run: kubectl delete ns external-dns external-secrets monitoring stakater-reloader traefik argo-cd cert-manager production
+        run: |
+          kubectl delete ns external-dns --ignore-not-found
+          kubectl delete ns external-secrets --ignore-not-found
+          kubectl delete ns monitoring --ignore-not-found
+          kubectl delete ns stakater-reloader --ignore-not-found
+          kubectl delete ns traefik --ignore-not-found
+          kubectl delete ns argo-cd --ignore-not-found
+          kubectl delete ns cert-manager --ignore-not-found
+          kubectl delete ns production --ignore-not-found
 
       - name: Destroy Helmfile
         run: helmfile destroy
