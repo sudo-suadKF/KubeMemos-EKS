@@ -93,6 +93,10 @@ jobs:
         if: steps.check.outputs.exists == 'false'
         run: helmfile apply
 
+      - name: Apply Cluster Issuer
+        if: steps.check.outputs.exists == 'false'
+        run: kubectl apply -f cluster-issuer.yaml
+
       - name: Apply ArgoCD
         if: steps.check.outputs.exists == 'false'
         run: |
@@ -109,10 +113,6 @@ jobs:
           kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-http.yaml
           kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-https.yaml
           kubectl apply -f ${{ env.MONITORING_DIR }}/middleware.yaml
-
-      - name: Apply Cluster Issuer
-        if: steps.check.outputs.exists == 'false'
-        run: kubectl apply -f cluster-issuer.yaml
 
       - name: Wait until TLS certificates are ready
         if: steps.check.outputs.exists == 'false'
