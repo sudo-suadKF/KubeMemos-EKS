@@ -60,6 +60,9 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Set Up Helm-diff
+        run: helm plugin install https://github.com/databus23/helm-diff --verify=false
+
       - name: Cache Helm
         uses: actions/cache@v4
         with:
@@ -70,9 +73,6 @@ jobs:
           key: ${{ runner.os }}-helm-${{ hashFiles('helmfile.yaml', 'helm-values/*.yaml') }}
           restore-keys: |
             ${{ runner.os }}-helm-
-
-      - name: Set Up Helm-diff
-        run: helm plugin install https://github.com/databus23/helm-diff --verify=false
 
       - name: Set Up Helmfile
         run: |
