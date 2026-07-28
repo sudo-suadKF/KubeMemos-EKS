@@ -23,6 +23,7 @@ repositories:
 releases:
   - name: traefik
     chart: traefik/traefik
+    version: 41.0.2
     namespace: traefik
     createNamespace: true
     values:
@@ -30,6 +31,7 @@ releases:
 
   - name: external-dns
     chart: external-dns/external-dns
+    version: 1.20.0
     namespace: external-dns
     createNamespace: true
     values:
@@ -39,6 +41,7 @@ releases:
 
   - name: cert-manager
     chart: cert-manager/cert-manager
+    version: v1.21.0
     namespace: cert-manager
     createNamespace: true
     values:
@@ -46,6 +49,7 @@ releases:
 
   - name: argo-cd
     chart: argo-cd/argo-cd
+    version: 10.2.1
     namespace: argo-cd
     createNamespace: true
     values:
@@ -59,6 +63,7 @@ releases:
 
   - name: prometheus-grafana
     chart: prometheus-grafana/kube-prometheus-stack
+    version: 87.19.1
     namespace: monitoring
     createNamespace: true
     disableValidation: true
@@ -69,6 +74,7 @@ releases:
 
   - name: external-secrets
     chart: external-secrets/external-secrets
+    version: 2.8.0
     namespace: external-secrets
     createNamespace: true
     values:
@@ -76,6 +82,7 @@ releases:
 
   - name: stakater-reloader
     chart: stakater-reloader/reloader
+    version: 2.2.14
     namespace: stakater-reloader
     createNamespace: true
     disableValidation: true
