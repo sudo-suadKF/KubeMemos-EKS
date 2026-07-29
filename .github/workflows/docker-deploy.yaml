@@ -21,6 +21,7 @@ env:
   AWS_REGION: eu-west-2
   CLUSTER_NAME: my-eks-cluster
   DOCKER_DIR: ./memos
+  ECR_REPOSITORY_NAME: kube-memo-eks
 
 permissions:
   id-token: write
@@ -77,3 +78,37 @@ jobs:
           sarif_file: 'trivy-secret-memos-results.sarif'
           category: 'trivy-secret-memos-scan'
           wait-for-processing: true
+
+  build-push:
+    name: Build & Push Dockerfile
+    needs: [lint, secret-scan]
+    runs-on: ubuntu-latest
+    if: needs.secret-scan.result == 'success' && needs.lint.result == 'success'
+    defaults:
+      run:
+        working-directory: ${{ env.DOCKER_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build with Cache
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
