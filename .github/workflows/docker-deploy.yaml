@@ -110,7 +110,7 @@ jobs:
       - name: Build Docker Image with Cache
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ${{ env.DOCKER_DIR }}
           push: false
           load: true
           tags: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
