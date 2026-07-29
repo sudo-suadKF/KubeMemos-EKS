@@ -48,7 +48,7 @@ jobs:
           failure-threshold: warning
           ignore: DL3018
           no-color: true
-          output-file: hadolint.sarif
+          output-file: ${{ env.DOCKER_DIR }}/hadolint.sarif
 
       - name: Upload Hadolint Results
         uses: github/codeql-action/upload-sarif@v4
