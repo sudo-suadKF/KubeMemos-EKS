@@ -136,15 +136,10 @@ jobs:
         if: github.event_name == 'pull_request' && steps.scan.outcome == 'failure'
         run: exit 1
 
-      - name: Push to ECR & Set image tag and repository output
+      - name: Push to ECR
         id: push
         if: github.event_name == 'pull_request' && steps.scan.outcome == 'success'
-        run: |
-          docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
-          REPOSITORY="${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}"
-          TAG="${{ env.IMAGE_TAG }}"
-          echo "repository=$REPOSITORY" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        run: docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
 
   deploy:
     name: Deploy Docker Image
@@ -175,3 +170,16 @@ jobs:
       - name: Exit Pipeline
         if: steps.check.outputs.exists == 'false'
         run: echo "EKS cluster does not exist. Run Terraform and K8s pipelines first." && exit 1
+
+      - name: Update Image Tag in Helm Values
+        if: steps.check.outputs.exists == 'true'
+        run: yq -i '.image.tag = "${{ env.IMAGE_TAG }}"' values.yaml
+
+      - name: Commit and Push Changes to Git
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add values.yaml
+          git commit -m "change: updated image tag to ${{ env.IMAGE_TAG }} in values.yaml [skip ci]"
+          git push
