@@ -51,4 +51,29 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ env.DOCKER_DIR }}/hadolint.sarif
+          category: hadolint
+          wait-for-processing: true
+
+  secret-scan:
+    name: Scanning Secrets
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Secrets Scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: 'repo'
+          scan-ref: '${{ env.DOCKER_DIR }}'
+          scanners: 'secret'
+          format: 'sarif'
+          output: 'trivy-secret-memos-results.sarif'
+
+      - name: Upload Trivy Secrets Scan
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-secret-memos-results.sarif'
+          category: 'trivy-secret-memos-scan'
           wait-for-processing: true
