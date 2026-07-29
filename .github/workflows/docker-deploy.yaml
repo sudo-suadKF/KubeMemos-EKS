@@ -23,6 +23,7 @@ env:
   DOCKER_DIR: ./memos
   ECR_REPOSITORY_NAME: kube-memo-eks
   IMAGE_TAG: ${{ github.sha }}
+  MY_CHART_DIR: ./kubernetes/my-chart
 
 permissions:
   id-token: write
@@ -135,6 +136,42 @@ jobs:
         if: github.event_name == 'pull_request' && steps.scan.outcome == 'failure'
         run: exit 1
 
-      - name: Push to ECR
+      - name: Push to ECR & Set image tag and repository output
+        id: push
         if: github.event_name == 'pull_request' && steps.scan.outcome == 'success'
-        run: docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
+        run: |
+          docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
+          REPOSITORY="${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}"
+          TAG="${{ env.IMAGE_TAG }}"
+          echo "repository=$REPOSITORY" >> "$GITHUB_OUTPUT"
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Deploy Docker Image
+    needs: build-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.build-push.result == 'success'
+    defaults:
+      run:
+        working-directory: ${{ env.MY_CHART_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Check if Cluster Exists
+        id: check
+        run: |
+          if aws eks describe-cluster --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exit Pipeline
+        if: steps.check.outputs.exists == 'false'
+        run: echo "EKS cluster does not exist. Run Terraform and K8s pipelines first." && exit 1
