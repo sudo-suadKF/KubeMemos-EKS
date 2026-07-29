@@ -26,9 +26,10 @@ concurrency:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
   security-events: write
+  repository-projects: write
 
 env:
   AWS_REGION: eu-west-2
