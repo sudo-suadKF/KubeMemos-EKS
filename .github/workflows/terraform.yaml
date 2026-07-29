@@ -323,7 +323,20 @@ jobs:
           path: ${{ env.TF_DIR }}
 
       - name: Apply Terraform
+        id: apply
         run: terraform apply -input=false -auto-approve tfplan
+
+      - name: Trigger K8s Deploy
+        if: steps.apply.outcome == 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'k8s-auto-deploy.yaml',
+              ref: 'main'
+            })
 
   dispatch:
     name: Manually Apply or Destroy Terraform Infra
