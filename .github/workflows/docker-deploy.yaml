@@ -44,7 +44,7 @@ jobs:
       - name: Run Hadolint
         uses: hadolint/hadolint-action@v3.3.0
         with:
-          dockerfile: Dockerfile
+          dockerfile: ${{ env.DOCKER_DIR }}/Dockerfile
           failure-threshold: warning
           ignore: DL3018
           no-color: true
