@@ -1,0 +1,18 @@
+name: Docker Build & Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      -  'memos/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'memos/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Type 'Deploy' to build and deploy Docker"
+        required: true
+        type: string
+        default: ''
