@@ -46,11 +46,13 @@ jobs:
         with:
           dockerfile: ${{ env.DOCKER_DIR }}/Dockerfile
           failure-threshold: warning
+          format: sarif
           ignore: DL3018
           no-color: true
           output-file: ${{ env.DOCKER_DIR }}/hadolint.sarif
 
       - name: Upload Hadolint Results
+        if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: ${{ env.DOCKER_DIR }}/hadolint.sarif
