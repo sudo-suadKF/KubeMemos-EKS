@@ -1,0 +1,185 @@
+name: Docker Build & Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      -  'memos/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'memos/**'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Type 'Deploy' to build and deploy Docker"
+        required: true
+        type: string
+        default: ''
+
+env:
+  AWS_REGION: eu-west-2
+  CLUSTER_NAME: my-eks-cluster
+  DOCKER_DIR: ./memos
+  ECR_REPOSITORY_NAME: kube-memo-eks
+  IMAGE_TAG: ${{ github.sha }}
+  MY_CHART_DIR: ./kubernetes/my-chart
+
+permissions:
+  id-token: write
+  contents: write
+  security-events: write
+
+jobs:
+  lint:
+    name: Linting Dockerfile
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.DOCKER_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.3.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: warning
+          ignore: DL3018
+          no-color: true
+          output-file: hadolint.sarif
+
+      - name: Upload Hadolint Results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ env.DOCKER_DIR }}/hadolint.sarif
+          category: hadolint
+          wait-for-processing: true
+
+  secret-scan:
+    name: Scanning Secrets
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Trivy Secrets Scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: 'repo'
+          scan-ref: '${{ env.DOCKER_DIR }}'
+          scanners: 'secret'
+          format: 'sarif'
+          output: 'trivy-secret-memos-results.sarif'
+
+      - name: Upload Trivy Secrets Scan
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-secret-memos-results.sarif'
+          category: 'trivy-secret-memos-scan'
+          wait-for-processing: true
+
+  build-push:
+    name: Build & Push Dockerfile
+    needs: [lint, secret-scan]
+    runs-on: ubuntu-latest
+    if: needs.secret-scan.result == 'success' && needs.lint.result == 'success'
+    defaults:
+      run:
+        working-directory: ${{ env.DOCKER_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image with Cache
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Trivy Vulnerability Scan
+        id: scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: 'image'
+          image-ref: '${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}'
+          format: 'sarif'
+          output: 'trivy-image-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-image-results.sarif'
+          category: 'trivy-image-scan'
+          wait-for-processing: true
+
+      - name: Trivy Vulnerability Scan Status
+        if: github.event_name == 'pull_request' && steps.scan.outcome == 'failure'
+        run: exit 1
+
+      - name: Push to ECR
+        id: push
+        if: github.event_name == 'pull_request' && steps.scan.outcome == 'success'
+        run: docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
+
+  deploy:
+    name: Deploy Docker Image
+    needs: build-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.build-push.result == 'success'
+    defaults:
+      run:
+        working-directory: ${{ env.MY_CHART_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v5
+        with:
+          role-to-assume: ${{ secrets.OIDC_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Check if Cluster Exists
+        id: check
+        run: |
+          if aws eks describe-cluster --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Exit Pipeline
+        if: steps.check.outputs.exists == 'false'
+        run: echo "EKS cluster does not exist. Run Terraform and K8s pipelines first." && exit 1
+
+      - name: Update Image Tag in Helm Values
+        if: steps.check.outputs.exists == 'true'
+        run: yq -i '.image.tag = "${{ env.IMAGE_TAG }}"' values.yaml
+
+      - name: Commit and Push Changes to Git
+        if: steps.check.outputs.exists == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add values.yaml
+          git commit -m "change: updated image tag to ${{ env.IMAGE_TAG }} in values.yaml [skip ci]"
+          git push
