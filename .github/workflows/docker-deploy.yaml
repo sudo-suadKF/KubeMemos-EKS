@@ -104,7 +104,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build with Cache
+      - name: Build Docker Image with Cache
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -113,3 +113,28 @@ jobs:
           tags: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Trivy Vulnerability Scan
+        id: scan
+        uses: aquasecurity/trivy-action@0.35.0
+        with:
+          scan-type: 'image'
+          image-ref: '${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}'
+          format: 'sarif'
+          output: 'trivy-image-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy Scan Results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: 'trivy-image-results.sarif'
+          category: 'trivy-image-scan'
+          wait-for-processing: true
+
+      - name: Trivy Vulnerability Scan Status
+        if: github.event_name == 'pull_request' && steps.scan.outcome == 'failure'
+        run: exit 1
+
+      - name: Push to ECR
+        if: github.event_name == 'pull_request' && steps.scan.outcome == 'success'
+        run: docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
