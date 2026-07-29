@@ -16,3 +16,15 @@ on:
         required: true
         type: string
         default: ''
+
+env:
+  AWS_REGION: eu-west-2
+  CLUSTER_NAME: my-eks-cluster
+  DOCKER_DIR: ./memos
+
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+
+jobs:
