@@ -110,12 +110,3 @@ jobs:
           kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-http.yaml
           kubectl apply -f ${{ env.PROMETHEUS_DIR }}/ingress-https.yaml
           kubectl apply -f ${{ env.MONITORING_DIR }}/middleware.yaml
-
-      - name: Wait until TLS certificates are ready
-        if: steps.check.outputs.exists == 'false'
-        run: |
-          until kubectl wait --for=condition=ready certificate --all --all-namespaces
-          do
-            echo "Certificates are not ready yet..."
-            sleep 20
-          done
