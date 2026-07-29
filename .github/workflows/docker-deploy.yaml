@@ -28,3 +28,27 @@ permissions:
   security-events: write
 
 jobs:
+  lint:
+    name: Linting Dockerfile
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.DOCKER_DIR }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Run Hadolint
+        uses: hadolint/hadolint-action@v3.3.0
+        with:
+          dockerfile: Dockerfile
+          failure-threshold: warning
+          ignore: DL3018
+          no-color: true
+          output-file: hadolint.sarif
+
+      - name: Upload Hadolint Results
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ env.DOCKER_DIR }}/hadolint.sarif
+          wait-for-processing: true
