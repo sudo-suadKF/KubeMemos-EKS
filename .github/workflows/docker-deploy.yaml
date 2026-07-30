@@ -76,8 +76,8 @@ jobs:
           category: 'trivy-secret-memos-scan'
           wait-for-processing: true
 
-  build-push:
-    name: Build & Push Dockerfile
+  build-scan:
+    name: Build & Scan Docker Image
     needs: [lint, secret-scan]
     runs-on: ubuntu-latest
     if: needs.secret-scan.result == 'success' && needs.lint.result == 'success'
@@ -119,9 +119,11 @@ jobs:
           format: 'sarif'
           output: 'trivy-image-results.sarif'
           severity: 'CRITICAL,HIGH'
+          exit-code: '1'
 
       - name: Upload Trivy Scan Results
         uses: github/codeql-action/upload-sarif@v4
+        if: always()
         with:
           sarif_file: 'trivy-image-results.sarif'
           category: 'trivy-image-scan'
@@ -131,15 +133,11 @@ jobs:
         if: github.event_name == 'pull_request' && steps.scan.outcome == 'failure'
         run: exit 1
 
-      - name: Push to ECR
-        if: github.event_name == 'pull_request' && steps.scan.outcome == 'success'
-        run: docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
-
-  deploy:
-    name: Deploy Docker Image
-    needs: build-push
+  deploy-push:
+    name: Deploy & Push Docker Image
+    needs: build-scan
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.build-push.result == 'success'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.build-scan.result == 'success'
     defaults:
       run:
         working-directory: ${{ env.MY_CHART_DIR }}
@@ -164,6 +162,25 @@ jobs:
       - name: Exit Pipeline
         if: steps.check.outputs.exists == 'false'
         run: echo "EKS cluster does not exist. Run Terraform and K8s pipelines first." && exit 1
+
+      - name: Login to Amazon ECR
+        if: steps.check.outputs.exists == 'true'
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        if: steps.check.outputs.exists == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image with Cache
+        if: steps.check.outputs.exists == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ env.DOCKER_DIR }}
+          push: true
+          tags: ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Update Image Tag in Helm Values
         if: steps.check.outputs.exists == 'true'
