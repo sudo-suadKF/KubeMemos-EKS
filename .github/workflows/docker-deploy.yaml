@@ -139,7 +139,6 @@ jobs:
         run: exit 1
 
       - name: Push to ECR
-        id: push
         if: github.event_name == 'pull_request' && steps.scan.outcome == 'success'
         run: docker push ${{ steps.ecr-login.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME }}:${{ env.IMAGE_TAG }}
 
