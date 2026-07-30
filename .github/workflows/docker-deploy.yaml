@@ -9,13 +9,6 @@ on:
     branches: [main]
     paths:
       - 'memos/**'
-  workflow_dispatch:
-    inputs:
-      action:
-        description: "Type 'Deploy' to build and deploy Docker"
-        required: true
-        type: string
-        default: ''
 
 env:
   AWS_REGION: eu-west-2
