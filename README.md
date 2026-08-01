@@ -274,12 +274,32 @@ The project also includes automated PostgreSQL credential rotation using:
 - AWS's own Python rotation function
 - External Secrets refresh
 - Automatic pod reloads
+- VPC Endpoint for secret data staying within VPC
 
 Database credentials can be rotated without manually updating Kubernetes resources or redeploying the application.
 
 #### Why this matters
 
 Automated secret rotation reduces operational overhead while improving security by limiting credential lifetime.
+
+### Private Access to AWS Services with VPC Endpoints
+
+The platform uses VPC Endpoints to allow workloads inside private subnets to access AWS services such as Secrets Manager and S3 without sending traffic through the public internet.
+
+For secret retrieval, the Secrets Manager interface endpoint provides a private network path between the VPC and AWS Secrets Manager. Private DNS is enabled so applications can continue using the standard AWS service endpoint while traffic remains inside the AWS network.
+
+The S3 gateway endpoint provides the same private access pattern for S3-backed services such as Terraform state and other platform dependencies.
+
+#### Why this matters
+
+- Secret retrieval does not traverse the public internet
+- Private workloads can access required AWS services without public IP addresses
+- Network exposure is reduced
+- Security group rules can restrict access to approved workloads
+- NAT Gateway traffic and related data-processing costs can be reduced
+- The platform keeps a clearer boundary between public ingress and private service communication
+
+This design strengthens the platform’s network security while preserving normal AWS service integrations for applications and automation.
 
 ### Security
 
