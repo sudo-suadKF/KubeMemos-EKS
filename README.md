@@ -85,3 +85,62 @@ This project demonstrates how to answer questions such as:
 The result is a complete reference architecture for running a production-ready Kubernetes workload on AWS while following modern DevOps and Platform Engineering practices.
 
 ---
+
+## High-Level Architecture
+
+The platform consists of several layers that work together to automate both infrastructure provisioning and application delivery.
+
+### Application
+
+- Memos (Go backend + React frontend)
+- PostgreSQL database
+- Docker multi-stage build
+- Private container registry (Amazon ECR)
+
+### Infrastructure
+
+- AWS EKS
+- AWS RDS PostgreSQL
+- AWS VPC
+- Private and public networking
+- Multi AZ Infrastructure
+- Security Groups
+- AWS Secrets Manager
+- AWS KMS
+- AWS Lambda
+- IAM Roles for Pod Identity
+- AWS S3 bucket for Terraform State and State locking
+- CloudWatch for monitoring and logs
+
+### Kubernetes Platform
+
+- Helm
+- Helmfile
+- ArgoCD
+- Traefik Ingress Controller
+- ExternalDNS
+- Cert Manager
+- External Secrets Operator
+- Stakater Reloader
+
+### Observability
+
+- Prometheus
+- Grafana
+
+### CI/CD & GitOps
+
+- GitHub Actions
+- ArgoCD
+
+### Security & Shift Left
+- Pre-commit Hooks
+- GitHub OIDC Authentication
+- Secret Rotation
+- Trivy
+- Checkov
+- Gitleaks
+- Hadolint
+- Tflint
+
+--- 
