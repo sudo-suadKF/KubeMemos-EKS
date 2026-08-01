@@ -77,7 +77,7 @@ This project demonstrates how to answer questions such as:
 
 - How do you provision AWS infrastructure without relying on manual configuration?
 - How do you deploy applications continuously without directly interacting with the cluster?
-- How do you manage secrets without storing credentials in Git and Terraform State?
+- How do you manage secrets without storing credentials in Git, Terrafom State or Kubernetes manifests?
 - How do you rotate database credentials without downtime?
 - How do you expose applications securely using automated TLS certificates?
 - How do you secure CI/CD pipelines without long-lived cloud credentials?
