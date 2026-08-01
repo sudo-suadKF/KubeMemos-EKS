@@ -23,8 +23,6 @@
 - [What problem this solves](#what-problem-this-solves)
 - [High-level architecture](#high-level-architecture)
 - [Key technical decisions](#key-technical-desicions)
-- [Security](#)
-- [GitOps & CI/CD](#)
 - [Repository structure](#)
 - [Technology stack](#)
 - [Screenshots](#)
@@ -311,6 +309,27 @@ The CI/CD pipelines also include multiple validation stages before infrastructur
 #### Why this matters
 
 These controls reduce operational risk while following security practices commonly used in production cloud environments.
+
+### CI/CD Pipeline
+
+GitHub Actions automates the entire delivery workflow.
+
+The pipelines perform tasks such as:
+
+- Building Docker images
+- Pushing images to Amazon ECR
+- Terraform validation and linting
+- Infrastructure deployment
+- Kubernetes deployment
+- Security scanning
+- Secret scanning
+- Code quality validation
+
+Authentication to AWS is performed using GitHub's OIDC integration instead of static AWS access keys.
+
+#### Why this matters
+
+Removing long-lived credentials improves security while allowing deployments to remain fully automated.
 
 ---
  
