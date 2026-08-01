@@ -41,3 +41,30 @@ Rather than simply deploying an application, the project demonstrates how modern
 
 The goal is to showcase the kind of architectural decisions that matter in real engineering teams, including GitOps workflows, infrastructure modularity, automated secret management, production-ready networking, and continuous security validation.
 
+---
+
+## Quick Start
+
+Want to explore **Memos** first?  
+Deploy it locally with Docker:
+
+```bash
+cd memos
+docker build -t memos:local .
+docker run -d \
+  -p 8081:8081 \
+  -v $(pwd)/memos-data:/var/opt/memos \
+  memos:local
+```
+Visit:
+
+```bash
+http://localhost:8081
+```
+and start writing.
+
+For more information about the application itself, deployment options, and available features, see:
+- Documentation: https://usememos.com/docs
+- GitHub Repository: https://github.com/usememos/memos
+
+---
