@@ -257,4 +257,34 @@ Every infrastructure and application change is version controlled, auditable, an
 
 This significantly reduces configuration drift while simplifying operational workflows.
 
---- 
+### Secrets Management
+
+Sensitive configuration is never committed to Git, stored in Terraform State or only encoded in Kubernetes.
+
+Database credentials are stored in **AWS Secrets Manager**, encrypted with AWS KMS keys.
+
+Within Kubernetes:
+
+- External Secrets Operator retrieves secrets
+- Kubernetes Secrets are generated automatically
+- Deployments consume secrets through environment variables
+- Stakater Reloader detects secret updates and restarts affected workloads automatically
+
+#### Automated Secret Rotation
+
+The project also includes automated PostgreSQL credential rotation using:
+
+- AWS Lambda
+- AWS Secrets Manager Rotation
+- AWS's own Python rotation function
+- External Secrets refresh
+- Automatic pod reloads
+
+Database credentials can be rotated without manually updating Kubernetes resources or redeploying the application.
+
+#### Why this matters
+
+Automated secret rotation reduces operational overhead while improving security by limiting credential lifetime.
+
+---
+ 
