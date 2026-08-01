@@ -178,4 +178,24 @@ Modules include:
 
 This structure improves readability, simplifies future expansion, and makes individual components easier to test and maintain.
 
+
+### Container Build (Docker)
+
+The Memos application is built using a multi-stage Docker build that separates the frontend and backend compilation from the final runtime image.  
+The build process:
+
+- Builds the React frontend using Node.js
+- Compiles the Go backend with CGO disabled
+- Produces a statically compiled binary
+- Copies only the required runtime files into a minimal final image
+- Runs as a non-root user
+
+#### Why this matters
+
+- Smaller deployment artifact
+- Reduced attack surface
+- Faster image distribution
+- Lower storage costs
+- Cleaner separation between build and runtime environments
+
 --- 
