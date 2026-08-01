@@ -219,5 +219,23 @@ Platform components include:
 
 Each component has a clear responsibility, making the cluster easier to maintain and reducing operational complexity as additional applications are introduced.
 
+### Helm & Helmfile
+
+Infrastructure services are deployed using **Helmfile**, while the Memos application is packaged as its own reusable Helm chart.
+
+The custom Helm chart manages:
+
+- Deployment
+- Service
+- Ingress
+- External Secret
+- Cluster Secret Store
+
+Application configuration is exposed through `values.yaml`, allowing deployments to be customised without modifying Kubernetes manifests.
+
+#### Why this matters
+
+Using Helm avoids duplicated manifests, simplifies configuration changes, and makes application deployments repeatable across environments.
+
 
 --- 
