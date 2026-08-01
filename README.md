@@ -286,5 +286,31 @@ Database credentials can be rotated without manually updating Kubernetes resourc
 
 Automated secret rotation reduces operational overhead while improving security by limiting credential lifetime.
 
+### Security
+
+Security was considered throughout the platform rather than added afterwards.
+
+Highlights include:
+
+- GitHub OIDC authentication (no long-lived AWS credentials)
+- Least-privilege IAM roles
+- AWS KMS encryption
+- Dockerfile linting
+- Docker image scanning
+- Private database credentials
+- HTTPS certificates issued automatically by Cert Manager
+- Automated TLS renewal
+- Secret rotation
+- Non-root application container
+- GitHub secret scanning
+- Infrastructure security scanning
+- Shift left with Pre-commit Hooks
+
+The CI/CD pipelines also include multiple validation stages before infrastructure or application changes are deployed.
+
+#### Why this matters
+
+These controls reduce operational risk while following security practices commonly used in production cloud environments.
+
 ---
  
