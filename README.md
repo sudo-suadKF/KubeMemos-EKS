@@ -237,5 +237,24 @@ Application configuration is exposed through `values.yaml`, allowing deployments
 
 Using Helm avoids duplicated manifests, simplifies configuration changes, and makes application deployments repeatable across environments.
 
+### GitOps with ArgoCD
+
+Production deployments are managed through **ArgoCD**.
+
+Instead of applying Kubernetes manifests manually, Argo CD continuously watches the Git repository and reconciles the cluster to match the desired state.
+
+The application is configured with:
+
+- Automated synchronization
+- Self-healing
+- Automatic pruning of removed resources
+- Deployment retries with exponential backoff
+
+#### Why this matters
+
+Git becomes the single source of truth.
+Every infrastructure and application change is version controlled, auditable, and automatically applied without manual intervention.
+
+This significantly reduces configuration drift while simplifying operational workflows.
 
 --- 
