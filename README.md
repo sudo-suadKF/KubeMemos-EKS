@@ -68,3 +68,20 @@ For more information about the application itself, deployment options, and avail
 - GitHub Repository: https://github.com/usememos/memos
 
 ---
+
+## What problem this solves
+
+Deploying an application to Kubernetes is relatively straightforward. Operating it securely and reliably over time is significantly more challenging.
+
+This project demonstrates how to answer questions such as:
+
+- How do you provision AWS infrastructure without relying on manual configuration?
+- How do you deploy applications continuously without directly interacting with the cluster?
+- How do you manage secrets without storing credentials in Git and Terraform State?
+- How do you rotate database credentials without downtime?
+- How do you expose applications securely using automated TLS certificates?
+- How do you secure CI/CD pipelines without long-lived cloud credentials?
+
+The result is a complete reference architecture for running a production-ready Kubernetes workload on AWS while following modern DevOps and Platform Engineering practices.
+
+---
