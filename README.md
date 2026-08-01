@@ -331,5 +331,20 @@ Authentication to AWS is performed using GitHub's OIDC integration instead of st
 
 Removing long-lived credentials improves security while allowing deployments to remain fully automated.
 
+### Agile Project Management
+
+Development work was planned and tracked using **Jira**.
+
+The project demonstrates:
+
+- User stories
+- Task breakdown
+- Progress tracking
+- Incremental delivery
+
+Using a structured ticketing workflow keeps implementation organised and mirrors how work is managed in professional software teams.
+
+For a detailed breakdown of the project planning, task tracking, and Agile workflow, see the **[Jira Kanban Board](https://suadfrlj.atlassian.net/jira/software/projects/CCS/boards/1?filter=&groupBy=none)**.
+
 ---
  
