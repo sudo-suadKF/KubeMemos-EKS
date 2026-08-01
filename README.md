@@ -198,4 +198,26 @@ The build process:
 - Lower storage costs
 - Cleaner separation between build and runtime environments
 
+### Kubernetes Platform
+
+Amazon EKS acts as the application's orchestration platform, while the supporting Kubernetes components provide networking, certificate management, DNS automation, monitoring, secret synchronization, and GitOps deployments.
+
+Rather than installing each component manually, the entire platform is managed declaratively through **Helmfile**, allowing the cluster to be recreated consistently from source control.
+
+Platform components include:
+
+- Traefik Ingress Controller
+- ExternalDNS
+- Cert Manager
+- External Secrets Operator
+- Stakater Reloader
+- Prometheus
+- Grafana
+- ArgoCD
+
+#### Why this matters
+
+Each component has a clear responsibility, making the cluster easier to maintain and reducing operational complexity as additional applications are introduced.
+
+
 --- 
