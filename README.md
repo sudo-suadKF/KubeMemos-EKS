@@ -274,7 +274,7 @@ The project also includes automated PostgreSQL credential rotation using:
 - AWS's own Python rotation function
 - External Secrets refresh
 - Automatic pod reloads
-- VPC Endpoint for secret data staying within VPC
+- VPC Endpoint for secret data to not traverse the public internet
 
 Database credentials can be rotated without manually updating Kubernetes resources or redeploying the application.
 
