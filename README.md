@@ -343,5 +343,7 @@ Using a structured ticketing workflow keeps implementation organised and mirrors
 
 For a detailed breakdown of the project planning, task tracking, and Agile workflow, see the **[Jira Kanban Board](https://suadfrlj.atlassian.net/jira/software/projects/CCS/boards/1?filter=&groupBy=none)**.
 
+
+
 ---
  
