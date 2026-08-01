@@ -23,11 +23,8 @@
 - [What problem this solves](#what-problem-this-solves)
 - [High-level architecture](#high-level-architecture)
 - [Key technical decisions](#key-technical-desicions)
-- [Repository structure](#)
-- [Technology stack](#)
 - [Screenshots](#)
 - [Future improvements](#)
-- [Further reading](#)
 
 ---
 
