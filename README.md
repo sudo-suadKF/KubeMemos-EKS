@@ -333,20 +333,38 @@ GitHub Actions automates the entire delivery workflow.
 
 The pipelines perform tasks such as:
 
-- Building Docker images
-- Pushing images to Amazon ECR
-- Terraform validation and linting
-- Infrastructure deployment
-- Kubernetes deployment
-- Security scanning
-- Secret scanning
-- Code quality validation
+- Linting and validating Terraform
+- Scanning infrastructure with Trivy and Checkov
+- Building and scanning Docker images
+- Pushing approved images to Amazon ECR
+- Generating and storing Terraform plans
+- Estimating infrastructure costs with Infracost
+- Posting Terraform plan and cost summaries directly on pull requests
+- Applying infrastructure after changes are merged
+- Triggering the Kubernetes deployment workflow
+- Authenticating to AWS through OIDC instead of long-lived access keys
 
 Authentication to AWS is performed using GitHub's OIDC integration instead of static AWS access keys.
 
 #### Why this matters
 
 Removing long-lived credentials improves security while allowing deployments to remain fully automated.
+
+### Cost Visibility with Infracost
+
+Infracost analyses the Terraform plan during the pull request workflow and posts an estimated infrastructure cost directly on the PR.
+
+This gives reviewers visibility into the financial impact of a change before it is merged or deployed.
+
+#### Why this matters
+
+- Cost changes are reviewed alongside code changes
+- Unexpected increases can be identified before deployment
+- Infrastructure decisions become easier to compare
+- Teams gain better control over cloud spending
+- Cost awareness becomes part of the normal engineering workflow
+
+This approach treats cost as another reviewable part of infrastructure design, alongside security, reliability, and maintainability.
 
 ### Agile Project Management
 
@@ -363,7 +381,35 @@ Using a structured ticketing workflow keeps implementation organised and mirrors
 
 For a detailed breakdown of the project planning, task tracking, and Agile workflow, see the **[Jira Kanban Board](https://suadfrlj.atlassian.net/jira/software/projects/CCS/boards/1?filter=&groupBy=none)**.
 
+---
 
+## Screenshots
+
+Keep screenshots focused and avoid including too many.
+
+Recommended images:
+
+- Application running in the browser
+- Architecture diagram (already at the top)
+- Argo CD application synced
+- Grafana dashboard
+- GitHub Actions pipelines
+- Jira Kanban board
+
+A few high-quality screenshots communicate more than a large gallery.
+
+---
+
+## Future Improvements
+
+Although the platform is production-oriented, there are several realistic enhancements that could be added:
+
+- Configure Horizontal Pod Autoscaling based on Prometheus metrics
+- Introduce separate development, staging, and production environments
+- Add Velero for Kubernetes backup and disaster recovery
+- Integrate Loki for centralised log aggregation
+- Add Karpenter for more efficient node provisioning
+- Introduce CloudFront for edge caching and TLS termination
 
 ---
  
