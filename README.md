@@ -143,4 +143,24 @@ The platform consists of several layers that work together to automate both infr
 - Hadolint
 - Tflint
 
+---
+
+## Key Technical Desicions
+
+### Bootstrap Infrastructure
+
+The infrastructure is intentionally divided into two Terraform layers, the bootstrap and main layer.
+
+The bootstrap layer creates resources that must already exist before the main infrastructure can be deployed, including:
+
+- Terraform remote state storage
+- State encryption
+- Amazon ECR
+- GitHub OIDC authentication
+- AWS Secrets Manager
+
+Separating bootstrap resources from workload infrastructure makes the platform easier to rebuild and prevents circular dependencies during deployment. By managing these foundational resources as code, the platform avoids manual configuration, improves consistency, and enables reliable, repeatable deployments.
+
+From an operational perspective, this approach reduces maintenance complexity and keeps infrastructure lifecycle management predictable.
+
 --- 
