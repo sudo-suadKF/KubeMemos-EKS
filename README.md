@@ -439,21 +439,6 @@ Prometheus Target Health Status:
 
 <img src="/resources/Prometheus.png"></img>
 
-
-
-Keep screenshots focused and avoid including too many.
-
-Recommended images:
-
-- Application running in the browser
-- Architecture diagram (already at the top)
-- Argo CD application synced
-- Grafana dashboard
-- GitHub Actions pipelines
-- Jira Kanban board
-
-A few high-quality screenshots communicate more than a large gallery.
-
 ---
 
 ## Future Improvements
