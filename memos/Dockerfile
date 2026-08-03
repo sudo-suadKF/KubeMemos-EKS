@@ -52,5 +52,3 @@ VOLUME /var/opt/memos
 EXPOSE 8081
 
 ENTRYPOINT ["/usr/local/bin/memos"]
-
-#test pipeline 3
