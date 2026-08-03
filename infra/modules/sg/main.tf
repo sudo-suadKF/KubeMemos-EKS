@@ -86,5 +86,3 @@ resource "aws_vpc_security_group_egress_rule" "endpoint-egress" {
   cidr_ipv4         = var.internet-cidr
   ip_protocol       = var.ip-protocol_-1
 }
-
-#test for docker pipeline
