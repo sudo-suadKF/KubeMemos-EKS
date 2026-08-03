@@ -403,6 +403,44 @@ For a detailed breakdown of the project planning, task tracking, and Agile workf
 
 ## Screenshots
 
+Application running in the web browser:
+
+<img src="/resources/MemosApp.png"></img>
+
+Jira Kanban board for Agile Project Management:
+
+<img src="/resources/JiraBoard.png"></img>
+
+PR Comments from Terraform Pipeline:
+
+<img src="/resources/pr-comments.png"></img>
+
+Terraform pipeline completed successfully:
+
+<img src="/resources/tf-pipeline.png"></img>
+
+Auto Deploy K8s pipeline, triggered by Terraform pipeline, completed successfully:
+
+<img src="/resources/auto-k8s-pipeline.png"></img>
+
+Docker pipeline completed successfully:
+
+<img src="/resources/docker-pipeline.png"></img>
+
+ArgoCD Application synched:
+
+<img src="/resources/ArgoCD.png"></img>
+
+Grafana Dashboard:
+
+<img src="/resources/Grafana.png"></img>
+
+Prometheus Target Health Status:
+
+<img src="/resources/Prometheus.png"></img>
+
+
+
 Keep screenshots focused and avoid including too many.
 
 Recommended images:
