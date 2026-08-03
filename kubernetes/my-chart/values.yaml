@@ -10,7 +10,7 @@ deployment:
 image:
   repository: "541064517911.dkr.ecr.eu-west-2.amazonaws.com/kube-memo-eks"
   pullPolicy: Always
-  tag: "cdfcc97db5a58d6ee313acee35a61ed79babc8ea"
+  tag: "d822b714158b5695a41623de1e8ce4ef0d939c20"
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 # This is to override the chart name.
