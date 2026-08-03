@@ -16,15 +16,33 @@
 
 ---
 
-## Table of Contens
+## Table of Contents
 
 - [Overview](#overview)
 - [Quick Start](#quick-start)
 - [What problem this solves](#what-problem-this-solves)
 - [High-level architecture](#high-level-architecture)
+  - [Application](#application)
+  - [Infrastructure](#infrastructure)
+  - [Kubernetes Platform](#kubernetes-platform)
+  - [Observability](#observability)
+  - [CI/CD & GitOps](#cicd--gitops)
+  - [Security & Shift Left](#security--shift-left)
 - [Key technical decisions](#key-technical-desicions)
-- [Screenshots](#)
-- [Future improvements](#)
+  - [Bootstrap Infrastructure](#bootstrap-infrastructure)
+  - [Modular Terraform](#modular-terraform)
+  - [Container Build (Docker)](#container-build-docker)
+  - [Kubernetes Platform](#kubernetes-platform-1)
+  - [Helm & Helmfile](#helm--helmfile)
+  - [GItOps with ArgoCd](#gitops-with-argocd)
+  - [Secrets Management](#secrets-management)
+  - [Private Access to AWS Services with VPC Endpoints](#private-access-to-aws-services-with-vpc-endpoints)
+  - [Security](#security)
+  - [CI/CD Pipeline](#cicd-pipeline)
+  - [Cost Visibility with Infracost](#cost-visibility-with-infracost)
+  - [Agile Project Management](#agile-project-management)
+- [Screenshots](#screenshots)
+- [Future improvements](#future-improvements)
 
 ---
 
